@@ -1,0 +1,22 @@
+1 1 successful acceptance verification
+1 2 failed acceptance verification report
+1 3 successful start of execution verification report
+1 4 failed start of execution verification report
+1 5 successful progress of execution verification report
+1 6 failed progress of execution verification report
+1 7 successful completion of execution verification report
+1 8 failed completion of execution verification report
+1 10 failed routing verification report
+3 25 housekeeping parameter report
+5 1 informative event report
+5 2 low severity anomaly report
+5 3 medium severity anomaly report
+5 4 high severity anomaly report
+5 5 enable the report generation of event definitions
+5 6 disable the report generation of event definitions
+5 7 report the list of disabled event definitions
+5 8 disabled event definitions list report
+17 1 perform an are-you-alive connection test
+17 2 are-you-alive connection test report
+17 3 perform an on-board connection test
+17 4 on-board connection test report

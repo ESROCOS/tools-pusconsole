@@ -1,0 +1,34 @@
+{
+  "primary_header": {
+    "pck_version": 1,
+    "pck_id": {
+      "pck_type": 0,
+      "sec_head_flg": 1,
+      "apid": 2
+    },
+    "pck_seq_ctrl": {
+      "pck_seq_flg": 3,
+      "pck_seq": 52
+    },
+    "pck_data_len": 1000
+  },
+  "data": {
+    "pck_sec_head": {
+      "tm_packet_pus_version_number": 0,
+      "spacecraft_time": 0,
+      "msg_type_id": {
+        "service_type_id":17,
+        "msg_subtype_id":4
+      },
+      "msg_type_counter":0,
+      "dst_id":0,
+      "time":0,
+      "spare_user_data":0
+    },
+    "user_data":{
+      "src_data": {},
+      "spare":0,
+      "pack_error_ctrl":1
+    }
+  }
+}

@@ -1,0 +1,20 @@
+*~
+.*.swp
+
+build/*
+debug/*
+release/*
+CMakeFiles
+cmake_install.cmake
+
+.idea/*
+
+__pycache__
+*.pyc
+
+# Exclude source files generated from the .ui but not the __init__.py, images directory or Ui_Files directory
+app/Views/Views_Ui/*
+!app/Views/Views_Ui/__init__.py
+!app/Views/Views_Ui/images/*
+!app/Views/Views_Ui/Ui_Files/*
+

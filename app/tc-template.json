@@ -1,0 +1,15 @@
+{
+  "tc-packet-pus-version-number": 0,
+  "ack-flags": 0,
+  "msg-type-id": {
+    "service-type-id":0,
+    "msg-subtype-id":0
+  },
+  "source-id":0,
+  "spare":0,
+  "application-data": {
+
+  },
+  "spare-user-data":0,
+  "packet-error-control":0
+}
