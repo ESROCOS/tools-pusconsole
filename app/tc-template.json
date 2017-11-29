@@ -1,15 +1,22 @@
 {
-  "tc-packet-pus-version-number": 0,
-  "ack-flags": 0,
-  "msg-type-id": {
-    "service-type-id":0,
-    "msg-subtype-id":0
+  "pck_sec_head": {
+    "tc_packet_pus_version_number": 0,
+    "ack_flags": {
+      "ack_flag_acceptance": 1,
+      "ack_flag_start": 1,
+      "ack_flag_progress": 1,
+      "ack_flag_completion": 1
+    },
+    "msg_type_id": {
+      "service_type_id": 1,
+      "msg_subtype_id": 1
+    },
+    "source_id": 0,
+    "spare": 0
   },
-  "source-id":0,
-  "spare":0,
-  "application-data": {
-
-  },
-  "spare-user-data":0,
-  "packet-error-control":0
+  "user_data": {
+    "src_data": {},
+    "spare": 0,
+    "pack_error_ctrl": 0
+  }
 }
