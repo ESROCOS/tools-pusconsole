@@ -6,7 +6,7 @@ import sys
 sys.path.insert(0, '../../pus/debug/pylib')
 import pusbinding as pb
 
-def convert(pack):
+def convert_json(pack):
     jsn = {"primary_header": {}, "data": {}}
     jsn["primary_header"]["pck_version"] = pb.pus_getPacketVersion(pack)
     jsn["primary_header"]["pck_id"] = {}
@@ -39,14 +39,9 @@ def convert(pack):
     jsn["primary_header"]["data"]["pck_sec_head"]["msg_type_id"]["service_type_id"] = srvc_type_id
     jsn["primary_header"]["data"]["pck_sec_head"]["msg_type_id"]["msg_subtype_id"] = msg_type_id
     jsn["primary_header"]["data"]["pck_sec_head"]["spare"] = 0
-    # data
-
-
-
-
-
-
-
+    # Esto es solo para el paquete 17 REVISAR
+    jsn["primary_header"]["data"]["user_data"] = {"src_data": {}, "spare": 0, "pack_error_ctrl": 0}
+    return json.dumps(jsn)
 
 gui = QtGui.QApplication(sys.argv)
 app = App()
@@ -57,7 +52,7 @@ if len(args) > 1:
         apid = pb.pusApidInfo_t()
         packet = pb.pusPacket_t()
         pb.pus_initApidInfo_(apid, 1)
-        pb.pus_tc_17_1_createConnectionTestRequest(packet, apid)
+        pb.pus_tm_17_2_createConnectionTestRequest(packet, apid)
         print(packet)
 
 
