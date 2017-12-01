@@ -17,7 +17,7 @@ class CreateTCController(object):
 
         self.__add_telecommand()
         self.set_callbacks()
-        self.svc_combobox_changed(self.view.window.serviceComboBox.currentIndex())
+        self.svc_combobox_changed_callback(self.view.window.serviceComboBox.currentIndex())
 
     def set_callbacks(self):
         self.view.window.serviceComboBox.currentIndexChanged.connect(lambda i: self.svc_combobox_changed_callback(i))
@@ -51,7 +51,7 @@ class CreateTCController(object):
         self.view.set_tc_text(json.dumps(self.command["data"]))
 
     def send_callback(self):
-        self.model.
+        self.model.add_to_table(self.command)
 
     def show_packet_json(self, svc, msg):
         packet = pb.pusPacket_t()

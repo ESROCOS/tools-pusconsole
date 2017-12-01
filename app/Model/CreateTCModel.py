@@ -1,7 +1,7 @@
 class CreateTCModel(object):
 
     def __init__(self, app_model):
-        self.appModel = app_model
+        self.app_model = app_model
         self.telecommand = {}
         with open("services.txt", "r") as services:
             for line in services:
@@ -13,4 +13,7 @@ class CreateTCModel(object):
                         self.telecommand[line[0]].append(line[1])
 
     def add_to_table(self, json_data):
-        app_model.add(json_data)
+        self.app_model.add(json_data)
+
+
+    #REVISAR AÑADIR COMANDO A TABLA TRAS SEND Y CERRAR VENTANA TRAS SEND
