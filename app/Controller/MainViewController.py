@@ -3,10 +3,13 @@ from Views.CreateTCView import CreateTCView
 from Views.NewConnectionView import NewConnectionView
 from Views.DetailsView import DetailsView
 from Views.FilterView import FilterView
-from Model.Database import Database
-from PySide import QtGui, QtCore
+from Utilities.Database import Database
+from Model.CreateTCModel import CreateTCModel
 from Model import App
+from Controller.CreateTCController import CreateTCController
+from PySide import QtGui, QtCore
 import json
+import collections
 
 
 class MainViewController(object):
@@ -24,6 +27,7 @@ class MainViewController(object):
         """
         self.model = model
         self.view = view
+
 
     def set_callbacks(self):
         """
@@ -46,11 +50,10 @@ class MainViewController(object):
         """
         self.__is_not_used__()
         create_tc_view = CreateTCView()
-        with open("tc-template.json") as tc_json:
-            tc = "".join(tc_json.readlines())
-            create_tc_view.set_tc_text(tc)
+        create_tc_model = CreateTCModel()
+        create_tc_controller = CreateTCController(create_tc_model, create_tc_view)
 
-        create_tc_view.show()
+        create_tc_controller.show()
 
     def open_filter_callback(self):
         """
@@ -81,7 +84,6 @@ class MainViewController(object):
         This method opens and writes all the information
         of the package selected in the window
         """
-        self.__is_not_used__()
         row = clicked_index.row()
         details_view = DetailsView()
         details_view.write_information(self.__convert_dict(json.loads(self.model.table[row][-1])))
@@ -107,7 +109,7 @@ class MainViewController(object):
 
         self.__is_not_used__()
 
-    def __convert_dict(self, elem: dict, tab_count: int = 0):
+    def __convert_dict(self, elem: collections.OrderedDict, tab_count: int = 0):
         """
         Intern function to convert a dictionary to str
         :param elem: The dictionary to convert
@@ -115,8 +117,9 @@ class MainViewController(object):
         :return: A string representing the dict
         """
         result = """"""
-        for k in elem.keys():
-            result += "\t" * tab_count + str(k) + ":"
+        boolean = True if tab_count == 0 else False
+        for k in sorted(elem.keys(), reverse=boolean):
+            result += "\t" * tab_count + str(k) + ": "
             if type(elem[k]) == dict:
                 result += "\n" + self.__convert_dict(elem[k], tab_count + 1) + "\n"
             else:
@@ -135,13 +138,17 @@ class MainViewController(object):
             self.view.window.packagesTable.insertRow(row_count)
 
         for i, e in enumerate(elem[:-1]):
-            self.view.window.packagesTable.setItem(row, i, QtGui.QTableWidgetItem(str(e)))
+            itm = QtGui.QTableWidgetItem(str(e))
+            self.view.window.packagesTable.setItem(row, i, itm)
             self.view.window.packagesTable.item(row, i).setTextAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
 
     def clear_qtable_callback(self):
         self.view.window.packagesTable.clearContents()
         self.view.window.packagesTable.setRowCount(1)
         self.__is_not_used__()
+
+    def show(self):
+        self.view.get_window().show()
 
     @staticmethod
     def __is_not_used__():

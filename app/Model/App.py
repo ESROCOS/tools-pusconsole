@@ -2,7 +2,7 @@ import json
 
 from Views import MainView
 from Controller import MainViewController
-from Model.MyTable import Table
+from Utilities.MyTable import Table
 
 
 class App(object):
@@ -13,9 +13,9 @@ class App(object):
         main_window = MainView()
         self.c = MainViewController(self, main_window)
         self.c.set_callbacks()
-        main_window.get_window().show()
+        self.c.show()
 
-    def add(self, elem):
+    def add(self, elem: dict):
         from datetime import datetime
         list_ = []
         type_ = int(elem["primary_header"]["pck_id"]["pck_type"])
@@ -29,7 +29,7 @@ class App(object):
             src = int(elem["data"]["pck_sec_head"]["src_id"])
             dst = None
         pck_seq_ctrl = int(elem["primary_header"]["pck_seq_ctrl"]["pck_seq"])
-        status = "OK" if elem["data"]["user_data"]["pack_error_ctrl"] else "ERROR"
+        status = "OK" # Mirar
         information = self.__create_info_string__(elem)
 
         list_.append("TM" if type_ == 0 else "TC")
@@ -49,8 +49,7 @@ class App(object):
         services = {}
         with open("services.txt", "r") as serv:
             for line in serv:
-                line = line.split()
-                line[2] = " ".join(line[2:])
+                line = line.strip('\n').split("|")
                 if line[0] not in services:
                     services[line[0]] = {}
                 if line[1] not in services[line[0]]:
