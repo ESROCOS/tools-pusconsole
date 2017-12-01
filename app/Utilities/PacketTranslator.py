@@ -1,5 +1,7 @@
-import sys, collections, time
-sys.path.insert(0, '../../../pus/debug/pylib')
+import os, sys, collections, time, glob
+dir_path = os.path.dirname(os.path.realpath(__file__))
+lib_path = os.path.join(dir_path, '../../../pus/debug/pylib')
+sys.path.append(lib_path)
 import pusbinding as pb
 
 

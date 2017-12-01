@@ -50,7 +50,7 @@ class MainViewController(object):
         """
         self.__is_not_used__()
         create_tc_view = CreateTCView()
-        create_tc_model = CreateTCModel()
+        create_tc_model = CreateTCModel(self.model)
         create_tc_controller = CreateTCController(create_tc_model, create_tc_view)
 
         create_tc_controller.show()

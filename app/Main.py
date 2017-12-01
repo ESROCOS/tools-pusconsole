@@ -2,7 +2,10 @@ import json, time, sys, collections
 from PySide import QtCore, QtGui
 from Model import App
 from Utilities import PacketTranslator
-sys.path.insert(0, '../../pus/debug/pylib')
+import os, sys
+dir_path = os.path.dirname(os.path.realpath(__file__))
+lib_path = os.path.join(dir_path, '../../pus/debug/pylib')
+sys.path.append(lib_path)
 import pusbinding as pb
 
 gui = QtGui.QApplication(sys.argv)
