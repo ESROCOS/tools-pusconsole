@@ -40,7 +40,7 @@ class PacketTranslator(object):
             jsn["data"]["pck_sec_head"]["ack_flags"]["ack_flag_completion"] = pb.pus_getTcAckFlagCompletion(pack)
             srvc_type_id = pb.pus_getTcService(pack)
             msg_type_id = pb.pus_getTcSubtype(pack)
-            jsn["data"]["pck_sec_head"]["source_id"] = pb.pus_getTcSource(pack)
+            jsn["data"]["pck_sec_head"]["src_id"] = pb.pus_getTcSource(pack)
 
         jsn["data"]["pck_sec_head"]["msg_type_id"] = collections.OrderedDict()
         jsn["data"]["pck_sec_head"]["msg_type_id"]["service_type_id"] = srvc_type_id

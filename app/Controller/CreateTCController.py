@@ -48,12 +48,13 @@ class CreateTCController(object):
             return
 
         self.command = self.show_packet_json(svc_type, msg_type)
-        self.view.set_tc_text(json.dumps(self.command["data"]))
+        self.view.set_tc_text(json.dumps(self.command["data"], indent=2))
 
     def send_callback(self):
         self.model.add_to_table(self.command)
 
-    def show_packet_json(self, svc, msg):
+    @staticmethod
+    def show_packet_json(svc, msg):
         packet = pb.pusPacket_t()
         apid = pb.pusApidInfo_t()
         pb.pus_initApidInfo_(apid, os.getpid())
