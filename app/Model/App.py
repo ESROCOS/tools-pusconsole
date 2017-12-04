@@ -17,7 +17,6 @@ class App(object):
 
     def add(self, elem: dict):
         from datetime import datetime
-        print(elem)
         list_ = []
         type_ = int(elem["primary_header"]["pck_id"]["pck_type"])
         svc_type_id = int(elem["data"]["pck_sec_head"]["msg_type_id"]["service_type_id"])
@@ -60,6 +59,7 @@ class App(object):
         msg_subtype_id = str(elem["data"]["pck_sec_head"]["msg_type_id"]["msg_subtype_id"])
 
         info = "Telemetry " if type_ == "TM" else "Telecommand " + "package."
+        print(svc_type_id, msg_subtype_id)
         info += " " + services[svc_type_id][msg_subtype_id] + " ."
 
         return info

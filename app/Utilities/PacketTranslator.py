@@ -46,10 +46,58 @@ class PacketTranslator(object):
         jsn["data"]["pck_sec_head"]["msg_type_id"]["service_type_id"] = srvc_type_id
         jsn["data"]["pck_sec_head"]["msg_type_id"]["msg_subtype_id"] = msg_type_id
         jsn["data"]["pck_sec_head"]["spare"] = 0
-        # Esto es solo para el paquete 17 REVISAR
+
         jsn["data"]["user_data"] = {"src_data": {}, "spare": 0, "pack_error_ctrl": 0}
+
+        if srvc_type_id == 1:  # If it's a request verification packet
+            jsn["data"]["user_data"]["src_data"] = self.tm_1_x_data(pack)
+        elif (srvc_type_id, msg_type_id) == (3, 25):
+            jsn["data"]["user_data"]["src_data"] = self.tm_3_25_data(pack)
+        print(jsn)
         return jsn
 
     def json2packet(self, json_data):
         # Ver si en un futuro tengo que anadir los campos de la primary header
         pass
+
+    @staticmethod
+    def tm_1_x_data(packet):
+        """
+        This functions parses the st01 packet data field to json
+        :param packet: The packet which data field we want to parse
+        :return: A JSON object with all the parsed information
+        """
+        data = dict()
+        data["request"] = dict()
+        data["request"]["packet_version"] = pb.pus_tm_1_X_getReportPacketVersionNumber(packet)
+        data["request"]["packet_type"] = pb.pus_tm_1_X_getReportPacketType(packet)
+        data["request"]["sec_head_flag"] = pb.pus_tm_1_X_getReportSecondaryHeaderFlag(packet)
+        data["request"]["apid"] = pb.pus_tm_1_X_getReportApid(packet)
+        data["request"]["seq_flags"] = pb.pus_tm_1_X_getReportSequenceFlags(packet)
+        data["request"]["seq_count"] = pb.pus_tm_1_X_getReportSequenceCount(packet)
+
+        data["step"] = pb.pus_tm_1_X_getStep(packet)
+
+        data["failure"] = dict()
+        data["failure"]["code"] = pb.pus_tm_1_X_getFailureCode(packet)
+        data["failure"]["info"] = dict()
+        data["failure"]["info"]["subcode"] = pb.pus_getSt01FailureSubcode(packet)
+        data["failure"]["info"]["data"] = pb.pus_getSt01FailureData(packet)
+        data["failure"]["info"]["address"] = pb.pus_getSt01FailureAddress(packet)
+
+        return data
+
+    @staticmethod
+    def tm_3_25_data(packet):
+        data = dict()
+        data["hk_param_report_id"] = pb.pus_tm_3_25_getReportId(packet)
+        num_param = int()
+        pb.pus_tm_3_25_getNumParameters(packet, num_param)
+        for i in range(num_param):
+            param = int()
+            pb.pus_tm_3_25_getParameterValue(packet, i, param)
+            data["param"+str(i+1)] = param
+        return data
+
+
+
