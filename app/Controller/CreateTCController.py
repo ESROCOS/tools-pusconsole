@@ -62,6 +62,9 @@ class CreateTCController(object):
         if (svc, msg) == (17, 1):
             pb.pus_tc_17_1_createConnectionTestRequest(packet, apid)
             return packet_translator.packet2json(packet)
+        elif (svc, msg) == (8, 1):
+            pb.pus_tc_8_1_createPerformFuctionRequest(packet, apid, 0)
+            return packet_translator.packet2json(packet)
         else:
             pass
 

@@ -53,7 +53,8 @@ class PacketTranslator(object):
             jsn["data"]["user_data"]["src_data"] = self.tm_1_x_data(pack)
         elif (srvc_type_id, msg_type_id) == (3, 25):
             jsn["data"]["user_data"]["src_data"] = self.tm_3_25_data(pack)
-        print(jsn)
+        elif (srvc_type_id, msg_type_id) == (8, 1):
+            jsn["data"]["user_data"]["src_data"] = self.tc_8_1_data(pack)
         return jsn
 
     def json2packet(self, json_data):
@@ -98,6 +99,29 @@ class PacketTranslator(object):
             pb.pus_tm_3_25_getParameterValue(packet, i, param)
             data["param"+str(i+1)] = param
         return data
+
+    @staticmethod
+    def tm_5_x_data(packet):
+        data = dict()
+        event_id = int()
+        pb.pus_tm_get_5_X_event_id(packet, event_id)
+        data["event_id"] = event_id
+        aux1 = int()
+        pb.pus_tm_get_5_X_event_auxdata1(packet, aux1)
+        aux2 = int()
+        pb.pus_tm_get_5_X_event_auxdata2(packet, aux2)
+        data["auxdata"] = {"data1": aux1, "data2": aux2}
+        return data
+
+    @staticmethod
+    def tc_8_1_data(packet):
+        data = dict()
+        function_id = int()
+        pb.pus_tc_8_1_getFunctionId(function_id, packet)
+        data["function_id"] = function_id
+        return data
+
+
 
 
 

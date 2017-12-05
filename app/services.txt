@@ -16,6 +16,7 @@
 5|6|Disable the report generation of event definitions|
 5|7|Report the list of disabled event definitions|
 5|8|Disabled event definitions list report|
+8|1|Perform a function|tc
 17|1|Perform an are-you-alive connection test|tc
 17|2|Are-you-alive connection test report|
 17|3|Perform an on-board connection test|
