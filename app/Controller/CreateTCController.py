@@ -1,6 +1,7 @@
 from PySide import QtCore
 from Model import CreateTCModel
 from Views.CreateTCView import CreateTCView
+from Views.AddTCView import AddTCView
 from Utilities import PacketTranslator
 import os, sys, json
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -53,22 +54,47 @@ class CreateTCController(object):
     def send_callback(self):
         self.model.add_to_table(self.command)
 
-    @staticmethod
-    def show_packet_json(svc, msg):
+    def show_packet_json(self, svc, msg):
         packet = pb.pusPacket_t()
         apid = pb.pusApidInfo_t()
-        pb.pus_initApidInfo_(apid, os.getpid())
+        pb.pus_initApidInfo_(apid, os.getpid()) # APID == PID
         packet_translator = PacketTranslator()
-        if (svc, msg) == (17, 1):
-            pb.pus_tc_17_1_createConnectionTestRequest(packet, apid)
-            return packet_translator.packet2json(packet)
-        elif (svc, msg) == (8, 1):
+
+        if (svc, msg) == (8, 1):
             pb.pus_tc_8_1_createPerformFuctionRequest(packet, apid, 0)
             return packet_translator.packet2json(packet)
+        elif svc == 12:
+            if msg == 1:
+                pb.pus_tc_12_1_createEnableParameterMonitoringDefinitions(packet, apid, 0)
+                return packet_translator.packet2json(packet)
+            elif msg == 2:
+                pb.pus_tc_12_2_createDisableParameterMonitoringDefinitions(packet, apid, 0)
+                return packet_translator.packet2json(packet)
+            elif msg == 15:
+                pb.pus_tc_12_15_createEnableParameterMonitoring(packet, apid)
+                return packet_translator.packet2json(packet)
+            elif msg == 16:
+                pb.pus_tc_12_16_createDisableParameterMonitoring(packet, apid)
+                return packet_translator.packet2json(packet)
+        elif (svc, msg) == (17, 1):
+            pb.pus_tc_17_1_createConnectionTestRequest(packet, apid)
+            return packet_translator.packet2json(packet)
+        elif svc == 19:
+            if msg == 1:
+                scndpacket = self.createAddTCWindow()
+            else:
+                pass
+
         else:
             pass
 
     def show(self):
         self.view.show()
+
+    @staticmethod
+    def createAddTCWindow():
+        a = AddTCView()
+        a.show()
+
 
 

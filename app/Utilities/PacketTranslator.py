@@ -55,6 +55,8 @@ class PacketTranslator(object):
             jsn["data"]["user_data"]["src_data"] = self.tm_3_25_data(pack)
         elif (srvc_type_id, msg_type_id) == (8, 1):
             jsn["data"]["user_data"]["src_data"] = self.tc_8_1_data(pack)
+        elif srvc_type_id == 12:
+            jsn["data"]["user_data"]["src_data"] = self.tc_12_x_data(pack, msg_type_id)
         return jsn
 
     def json2packet(self, json_data):
@@ -121,7 +123,12 @@ class PacketTranslator(object):
         data["function_id"] = function_id
         return data
 
+    @staticmethod
+    def tc_12_x_data(packet, msg_id):
+        data = dict()
 
-
-
-
+        if msg_id == 1 or msg_id == 2:
+            pmon_id = int()
+            pb.pus_tc_12_1_2_getPmonId(packet, pmon_id)
+            data["pmon_id"] = pmon_id
+        return data

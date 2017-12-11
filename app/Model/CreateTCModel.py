@@ -14,6 +14,3 @@ class CreateTCModel(object):
 
     def add_to_table(self, json_data):
         self.app_model.add(json_data)
-
-
-    #REVISAR AÑADIR COMANDO A TABLA TRAS SEND Y CERRAR VENTANA TRAS SEND
