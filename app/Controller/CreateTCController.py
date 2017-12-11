@@ -91,10 +91,12 @@ class CreateTCController(object):
     def show(self):
         self.view.show()
 
-    @staticmethod
-    def createAddTCWindow():
+    def createAddTCWindow(self):
         a = AddTCView()
-        a.show()
+        for elem in sorted(self.model.telecommand):
+            a.add_item_svc_type_combo_box(elem)
+        tc = a.show()
+        return tc
 
 
 

@@ -12,7 +12,7 @@ class AddTCView(object):
     resizeFlag = False
 
     def __init__(self):
-        self.view = QtGui.QWidget()
+        self.view = QtGui.QDialog()
         self.window = Ui_AddTCView()
         self.window.setupUi(self.view)
         self.extra_customization()
@@ -48,11 +48,6 @@ class AddTCView(object):
         cte_x = self.window.commandTextEdit.pos().x()
         cte_y = self.window.commandTextEdit.pos().y()
 
-        hl_w = self.window.historyList.frameGeometry().width()
-        hl_h = self.window.historyList.frameGeometry().height()
-        hl_x = self.window.historyList.pos().x()
-        hl_y = self.window.historyList.pos().y()
-
         if self.resizeFlag:
             self.window.commandTextEdit.resize(self.view.frameGeometry().width() - 2 * padding,
                                                self.view.frameGeometry().height() - 3 * padding + 4 - cte_y)
@@ -73,7 +68,7 @@ class AddTCView(object):
         This method calls to the .show() method of the view referenced
         by this class
         """
-        self.view.show()
+        self.view.exec_()
 
     def set_tc_text(self, json):
         """
