@@ -1,6 +1,7 @@
 from PySide import QtGui
 
 from Views.Views_Ui.Ui_CreateTCView import Ui_CreateTCView
+import json
 
 
 class CreateTCView(object):
@@ -97,3 +98,9 @@ class CreateTCView(object):
         metrics = QtGui.QFontMetrics(font)
         self.window.commandTextEdit.setTabStopWidth(metrics.width(' '))
         self.window.commandTextEdit.setPlainText(json)
+
+    def get_tc_text(self):
+        return json.loads(self.window.commandTextEdit.toPlainText())
+
+    def close(self):
+        self.view.close()

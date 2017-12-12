@@ -1,9 +1,7 @@
-from PySide import QtCore, QtGui
+from PySide import QtCore
 from Model import CreateTCModel
-from Views.CreateTCView import CreateTCView
 from Views.AddTCView import AddTCView
 from Utilities import PacketTranslator
-from Controller.AddTCController import AddTCController
 import os, sys, json
 dir_path = os.path.dirname(os.path.realpath(__file__))
 lib_path = os.path.join(dir_path, '../../../pus/debug/pylib')
@@ -11,12 +9,12 @@ sys.path.append(lib_path)
 import pusbinding as pb
 
 
-class CreateTCController(object):
-    def __init__(self, model: CreateTCModel, view: CreateTCView):
+class AddTCController(object):
+    def __init__(self, model: CreateTCModel, view: AddTCView):
         self.model = model
         self.view = view
         self.command = ""
-        self.command_packet = None
+        self.current_packet = None
 
         self.__add_telecommand()
         self.set_callbacks()
@@ -25,16 +23,16 @@ class CreateTCController(object):
     def set_callbacks(self):
         self.view.window.serviceComboBox.currentIndexChanged.connect(lambda i: self.svc_combobox_changed_callback(i))
         self.view.window.msgComboBox.currentIndexChanged.connect(lambda i: self.msg_combobox_changed_callback(i))
-        self.view.window.sendButton.clicked.connect(self.send_callback)
 
     def __add_telecommand(self):
+        excluded = ("19",)
         for elem in sorted(self.model.telecommand, key=int):
-            self.view.add_item_svc_type_combo_box(elem)
+            if elem not in excluded:
+                self.view.add_item_svc_type_combo_box(elem)
 
     def svc_combobox_changed_callback(self, index):
         svcComboBox = self.view.window.serviceComboBox
         svc = svcComboBox.itemText(index)
-        self.view.clear_msg_type_combo_box()
         self.view.window.msgComboBox.addItem("", None)
         for msg in sorted(self.model.telecommand[svc], key=int):
             self.view.add_item_msg_type_combo_box(msg)
@@ -49,20 +47,11 @@ class CreateTCController(object):
         msg_type = msgComboBox.itemData(index)
 
         if msg_type is None:
-            self.view.set_tc_text("")
             return
 
-        self.command, self.command_packet = self.show_packet_json(svc_type, msg_type)
-        if self.command is not None:
-            self.view.set_tc_text(json.dumps(self.command["data"], indent=2))
-        else:
-            self.view.set_tc_text("")
-
-    def send_callback(self):
-        self.model.add_to_table(self.command)
-        print(self.command)
-        self.update_json_changes()
-        self.view.close()
+        self.command = self.show_packet_json(svc_type, msg_type)
+        self.view.current_json = json.dumps(self.command)
+        self.view.set_tc_text(json.dumps(self.command["data"], indent=2))
 
     def show_packet_json(self, svc, msg):
         packet = pb.pusPacket_t()
@@ -83,37 +72,14 @@ class CreateTCController(object):
                 pb.pus_tc_12_16_createDisableParameterMonitoring(packet, apid)
         elif (svc, msg) == (17, 1):
             pb.pus_tc_17_1_createConnectionTestRequest(packet, apid)
-        elif svc == 19:
-            if msg == 1:
-                scndpacket = self.open_add_tc_window()
-                if scndpacket is None:
-                    self.view.window.msgComboBox.setCurrentIndex(-1)
-                    return None, None  # Revisar
-                else:
-                    pb.pus_tc_19_1_createAddEventActionDefinitionsRequest(packet, apid, 0, scndpacket)
-            elif msg == 2:
-                pb.pus_tc_19_2_createDeleteEventActionDefinitionsRequest(packet, apid, 0)
-            elif msg == 4:
-                pb.pus_tc_19_4_createEnableEventActionDefinitions(packet, apid, 0)
-            elif msg == 5:
-                pb.pus_tc_19_5_createDisableEventActionDefinitions(packet, apid, 0)
         else:
             pass
-        return packet_translator.packet2json(packet), packet
+        self.current_packet = packet
+        return packet_translator.packet2json(packet)
 
     def show(self):
-        self.view.show()
-
-    def open_add_tc_window(self):
-        view = AddTCView()
-        controller = AddTCController(self.model, view)
-        return controller.show()
-
-    def update_json_changes(self):
-        current_json = self.view.get_tc_text()
-        # Movidon
-        # Usar sets para cambiar los campos que difieran del paquete
-        # Comprobar que no se cambian las etiquetas
-        # Saltar error si se cambia un campo que no se puede cambiar.
-
-
+        code = self.view.show()
+        if code == 1:
+            return self.current_packet
+        else:
+            return None

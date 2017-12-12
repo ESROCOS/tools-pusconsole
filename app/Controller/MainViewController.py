@@ -86,7 +86,7 @@ class MainViewController(object):
         """
         row = clicked_index.row()
         details_view = DetailsView()
-        details_view.write_information(self.__convert_dict(json.loads(self.model.table[row][-1])))
+        details_view.write_information(json.dumps(json.loads(self.model.table[row][-1]), indent=8))
         details_view.show()
 
     def open_savefile_window_callback(self):

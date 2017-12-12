@@ -57,6 +57,11 @@ class PacketTranslator(object):
             jsn["data"]["user_data"]["src_data"] = self.tc_8_1_data(pack)
         elif srvc_type_id == 12:
             jsn["data"]["user_data"]["src_data"] = self.tc_12_x_data(pack, msg_type_id)
+        elif srvc_type_id == 19:
+            if msg_type_id == 1:
+                jsn["data"]["user_data"]["src_data"] = self.tc_19_1_data(pack)
+            else:
+                jsn["data"]["user_data"]["src_data"] = self.tc_19_2_4_5_data(pack)
         return jsn
 
     def json2packet(self, json_data):
@@ -129,6 +134,26 @@ class PacketTranslator(object):
 
         if msg_id == 1 or msg_id == 2:
             pmon_id = int()
-            pb.pus_tc_12_1_2_getPmonId(packet, pmon_id)
+            pb.pus_tc_12_1_2_getPmonId(pmon_id, packet)
             data["pmon_id"] = pmon_id
+        return data
+
+    def tc_19_1_data(self, packet):
+        data = dict()
+        packet_reduced = pb.pusPacketReduced_t()
+        pb.pus_tc_19_1_getAction(packet_reduced, packet)
+        data_packet = pb.pusPacket_t()
+        pb.pus_tc_19_X_createPacketFromPacketReduced(data_packet, packet_reduced)
+        event_id = int()
+        pb.pus_tc_19_X_getEventId(event_id, packet)
+        data["event_id"] = event_id
+        data["request"] = self.packet2json(data_packet)
+        return data
+
+    @staticmethod
+    def tc_19_2_4_5_data(packet):
+        data = dict()
+        event_id = int()
+        pb.pus_tc_19_X_getEventId(event_id, packet)
+        data["event_id"] = event_id
         return data

@@ -65,10 +65,10 @@ class AddTCView(object):
 
     def show(self):
         """
-        This method calls to the .show() method of the view referenced
+        This method calls to the .exec()_ method of the qDialog referenced
         by this class
         """
-        self.view.exec_()
+        return self.view.exec_()
 
     def set_tc_text(self, json):
         """
@@ -85,3 +85,17 @@ class AddTCView(object):
         metrics = QtGui.QFontMetrics(font)
         self.window.commandTextEdit.setTabStopWidth(metrics.width(' '))
         self.window.commandTextEdit.setPlainText(json)
+
+    """        
+    def accept(self):
+        pass
+
+    def reject(self):
+
+        pass
+    """
+
+    """
+    Due to QtDesigner definition of Dialogs this callback needs to be implemented
+    in this class instead of being implemented in the corresponding Controller
+    """
