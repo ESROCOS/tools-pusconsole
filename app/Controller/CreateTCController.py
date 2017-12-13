@@ -1,4 +1,3 @@
-from PySide import QtCore, QtGui
 from Model import CreateTCModel
 from Views.CreateTCView import CreateTCView
 from Views.AddTCView import AddTCView
@@ -60,14 +59,14 @@ class CreateTCController(object):
 
     def send_callback(self):
         self.model.add_to_table(self.command)
-        print(self.command)
-        self.update_json_changes()
         self.view.close()
 
     def show_packet_json(self, svc, msg):
         packet = pb.pusPacket_t()
         apid = pb.pusApidInfo_t()
-        pb.pus_initApidInfo_(apid, os.getpid()) # APID == PID
+        with open('apid.json', 'r') as json_apid:
+            apid_value = json.load(json_apid)['apid']
+            pb.pus_initApidInfo_(apid, apid_value)
         packet_translator = PacketTranslator()
 
         if (svc, msg) == (8, 1):
@@ -88,7 +87,7 @@ class CreateTCController(object):
                 scndpacket = self.open_add_tc_window()
                 if scndpacket is None:
                     self.view.window.msgComboBox.setCurrentIndex(-1)
-                    return None, None  # Revisar
+                    return None, None
                 else:
                     pb.pus_tc_19_1_createAddEventActionDefinitionsRequest(packet, apid, 0, scndpacket)
             elif msg == 2:
@@ -108,12 +107,3 @@ class CreateTCController(object):
         view = AddTCView()
         controller = AddTCController(self.model, view)
         return controller.show()
-
-    def update_json_changes(self):
-        current_json = self.view.get_tc_text()
-        # Movidon
-        # Usar sets para cambiar los campos que difieran del paquete
-        # Comprobar que no se cambian las etiquetas
-        # Saltar error si se cambia un campo que no se puede cambiar.
-
-

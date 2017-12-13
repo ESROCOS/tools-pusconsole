@@ -41,6 +41,7 @@ class MainView:
         header.setResizeMode(6, QtGui.QHeaderView.ResizeToContents)
         header.setResizeMode(7, QtGui.QHeaderView.ResizeToContents)
         header.setResizeMode(8, QtGui.QHeaderView.ResizeToContents)
+        header.setResizeMode(9, QtGui.QHeaderView.ResizeToContents)
         self.window.packagesTable.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
         self.view.setStyleSheet("background-color: white")
         self.window.menubar.setStyleSheet("background: 3c3b37")
@@ -49,6 +50,8 @@ class MainView:
                                                      "<img src=\"Views/Views_Ui/images/logo_gmv.svg\""
                                                      "width=\"120\" height=\"67\"/></p></body></html>",
                                          None, QtGui.QApplication.UnicodeUTF8))
+        header.sortIndicatorOrder()
+        self.window.packagesTable.hideColumn(0)
 
 
     def resize_elements(self, event):

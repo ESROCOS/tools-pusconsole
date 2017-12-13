@@ -34,8 +34,13 @@ if len(args) > 1:
 
         p = PacketTranslator()
         app.add(p.packet2json(packet))
+        import time
+        time.sleep(1)
         app.add(p.packet2json(packet2))
+        time.sleep(1)
         app.add(p.packet2json(packet3))
+        time.sleep(1)
         app.add(p.packet2json(packet4))
+        time.sleep(1)
 sys.exit(gui.exec_())
 

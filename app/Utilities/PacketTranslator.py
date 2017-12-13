@@ -13,7 +13,7 @@ class PacketTranslator(object):
         jsn["data"] = collections.OrderedDict()
         jsn["primary_header"]["pck_version"] = pb.pus_getPacketVersion(pack)
         jsn["primary_header"]["pck_id"] = collections.OrderedDict()
-        type = jsn["primary_header"]["pck_id"]["pck_type"] = pb.pus_getPacketType(pack)
+        type_ = jsn["primary_header"]["pck_id"]["pck_type"] = pb.pus_getPacketType(pack)
         jsn["primary_header"]["pck_id"]["sec_head_flg"] = pb.pus_getSecondaryHeaderFlag(pack)
         jsn["primary_header"]["pck_id"]["apid"] = pb.pus_getApid(pack)
         jsn["primary_header"]["pck_seq_ctrl"] = collections.OrderedDict()
@@ -23,7 +23,7 @@ class PacketTranslator(object):
         jsn["data"] = collections.OrderedDict()
         jsn["data"]["pck_sec_head"] = collections.OrderedDict()
         jsn["data"]["user_data"] = collections.OrderedDict()
-        if type == 0:  # TM
+        if type_ == 0:  # TM
             jsn["data"]["pck_sec_head"]["tm_packet_pus_version_number"] = pb.pus_getTmPusVersion(pack)
             jsn["data"]["pck_sec_head"]["spacecraft_time"] = pb.pus_getTmTimeReferenceStatus(pack)
             srvc_type_id = pb.pus_getTmService(pack)
@@ -64,9 +64,61 @@ class PacketTranslator(object):
                 jsn["data"]["user_data"]["src_data"] = self.tc_19_2_4_5_data(pack)
         return jsn
 
-    def json2packet(self, json_data):
-        # Ver si en un futuro tengo que anadir los campos de la primary header
-        pass
+    def json2packet(self, jsn):
+        # Vamos a empezar parseando solos los campos de data
+        type_ = jsn["primary_header"]["pck_id"]["pck_type"]
+        if type_ == 0:  # TM
+            tm_version = jsn["data"]["pck_sec_head"]["tm_packet_pus_version_number"]
+            pb.pus_setTmPusVersion(pack, tm_version)
+
+            time_ref = jsn["data"]["pck_sec_head"]["spacecraft_time"]
+            pb.pus_setTmTimeReferenceStatus(pack, time_ref)
+
+            srvc_type_id = jsn["data"]["pck_sec_head"]["msg_type_id"]["service_type_id"]
+            pb.pus_setTmService(pack, srvc_type_id)
+
+            msg_type_id = jsn["data"]["pck_sec_head"]["msg_type_id"]["msg_subtype_id"]
+            pb.pus_setTmSubtype(pack, msg_type_id)
+
+            msg_type_counter = jsn["data"]["pck_sec_head"]["msg_type_counter"]
+            pb.pus_setTmMessageTypeCounter(pack, msg_type_counter)
+
+            tm_dest = jsn["data"]["pck_sec_head"]["dst_id"]
+            pb.pus_getTmDestination(pack, tm_dest)
+
+            time = jsn["data"]["pck_sec_head"]["time"]  # Revisar, puede ser que esté en string
+            pb.pus_setTmPacketTime(pack, time)
+        else:
+            srvc_type_id = jsn["data"]["pck_sec_head"]["msg_type_id"]["service_type_id"]
+            pb.pus_setTcService(pack, srvc_type_id)
+
+            msg_type_id = jsn["data"]["pck_sec_head"]["msg_type_id"]["msg_subtype_id"]
+            pb.pus_setTcSubtype(pack, msg_type_id)
+
+            tc_version = jsn["data"]["pck_sec_head"]["tc_packet_pus_version_number"]
+            pb.pus_setTcPusVersion(pack, tc_version)
+            ack_f_acceptance = jsn["data"]["pck_sec_head"]["ack_flags"]["ack_flag_acceptance"]
+            ack_f_start = jsn["data"]["pck_sec_head"]["ack_flags"]["ack_flag_start"]
+            ack_f_progress = jsn["data"]["pck_sec_head"]["ack_flags"]["ack_flag_progress"]
+            ack_f_completion = jsn["data"]["pck_sec_head"]["ack_flags"]["ack_flag_completion"]
+            pb.pusTcAckFlags(pack, ack_f_acceptance, ack_f_start, ack_f_progress, ack_f_completion)
+            src_id = jsn["data"]["pck_sec_head"]["src_id"]
+            pb.pus_setTcSource(pack, src_id)
+
+        if srvc_type_id == 1:  # If it's a request verification packet
+            jsn["data"]["user_data"]["src_data"] = self.tm_1_x_data(pack)
+        elif (srvc_type_id, msg_type_id) == (3, 25):
+            jsn["data"]["user_data"]["src_data"] = self.tm_3_25_data(pack)
+        elif (srvc_type_id, msg_type_id) == (8, 1):
+            jsn["data"]["user_data"]["src_data"] = self.tc_8_1_data(pack)
+        elif srvc_type_id == 12:
+            jsn["data"]["user_data"]["src_data"] = self.tc_12_x_data(pack, msg_type_id)
+        elif srvc_type_id == 19:
+            if msg_type_id == 1:
+                jsn["data"]["user_data"]["src_data"] = self.tc_19_1_data(pack)
+            else:
+                jsn["data"]["user_data"]["src_data"] = self.tc_19_2_4_5_data(pack)
+        return jsn
 
     @staticmethod
     def tm_1_x_data(packet):

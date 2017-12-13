@@ -85,8 +85,9 @@ class MainViewController(object):
         of the package selected in the window
         """
         row = clicked_index.row()
+        index = int(self.view.window.packagesTable.item(row, 0).text())
         details_view = DetailsView()
-        details_view.write_information(json.dumps(json.loads(self.model.table[row][-1]), indent=8))
+        details_view.write_information(json.dumps(json.loads(self.model.table[index][-1]), indent=8))
         details_view.show()
 
     def open_savefile_window_callback(self):
@@ -133,14 +134,21 @@ class MainViewController(object):
         :param row: place where the new package will be shown
         :param elem: json of the package to add to the table
         """
+        column_type = [QtGui.QTableWidgetItem, IntegerTableWidgetItem, IntegerTableWidgetItem,
+                       TimeTableWidgetItem, QtGui.QTableWidgetItem, QtGui.QTableWidgetItem,
+                       IntegerTableWidgetItem, QtGui.QTableWidgetItem, QtGui.QTableWidgetItem]
+
+        self.view.window.packagesTable.setSortingEnabled(False)
         row_count = self.view.window.packagesTable.rowCount()
         if row == row_count - 1:
             self.view.window.packagesTable.insertRow(row_count)
 
+        self.view.window.packagesTable.setItem(row, 0, QtGui.QTableWidgetItem(str(row)))
         for i, e in enumerate(elem[:-1]):
-            itm = QtGui.QTableWidgetItem(str(e))
-            self.view.window.packagesTable.setItem(row, i, itm)
-            self.view.window.packagesTable.item(row, i).setTextAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
+            itm = column_type[i](str(e))
+            self.view.window.packagesTable.setItem(row, i+1, itm)
+            self.view.window.packagesTable.item(row, i+1).setTextAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
+        self.view.window.packagesTable.setSortingEnabled(True)
 
     def clear_qtable_callback(self):
         self.view.window.packagesTable.clearContents()
@@ -154,4 +162,26 @@ class MainViewController(object):
     def __is_not_used__():
         pass
 
+
+class IntegerTableWidgetItem(QtGui.QTableWidgetItem):
+    def __lt__(self, other):
+        if isinstance(other, QtGui.QTableWidgetItem):
+            my_value = int(self.data(QtCore.Qt.EditRole))
+            other_value = int(other.data(QtCore.Qt.EditRole))
+
+            return my_value < other_value
+
+        return super().__lt__(other)
+
+
+class TimeTableWidgetItem(QtGui.QTableWidgetItem):
+    def __lt__(self, other):
+        if isinstance(other, QtGui.QTableWidgetItem):
+            import datetime
+            my_value = datetime.datetime.strptime(self.data(QtCore.Qt.EditRole), '%H:%M:%S').time()
+            other_value = datetime.datetime.strptime(other.data(QtCore.Qt.EditRole), '%H:%M:%S').time()
+
+            return my_value < other_value
+
+        return super().__lt__(other)
 
