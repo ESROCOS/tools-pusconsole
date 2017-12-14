@@ -12,5 +12,5 @@ class CreateTCModel(object):
                     else:
                         self.telecommand[line[0]].append(line[1])
 
-    def add_to_table(self, json_data):
-        self.app_model.add(json_data)
+    def add_to_table(self, json_data, packet):
+        self.app_model.add(json_data, packet)

@@ -15,7 +15,7 @@ class App(object):
         self.c.set_callbacks()
         self.c.show()
 
-    def add(self, elem: dict):
+    def add(self, elem: dict, packet):
         from datetime import datetime
         list_ = []
         type_ = int(elem["primary_header"]["pck_id"]["pck_type"])
@@ -41,6 +41,7 @@ class App(object):
         list_.append(pck_seq_ctrl)
         list_.append(status)
         list_.append(information)
+        list_.append(packet)
         list_.append(json.dumps(elem))
         self.table.append(list_)
 

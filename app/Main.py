@@ -33,14 +33,14 @@ if len(args) > 1:
         pb.pus_events_finalize()
 
         p = PacketTranslator()
-        app.add(p.packet2json(packet))
+        app.add(p.packet2json(packet), packet)
         import time
         time.sleep(1)
-        app.add(p.packet2json(packet2))
+        app.add(p.packet2json(packet2), packet2)
         time.sleep(1)
-        app.add(p.packet2json(packet3))
+        app.add(p.packet2json(packet3), packet3)
         time.sleep(1)
-        app.add(p.packet2json(packet4))
+        app.add(p.packet2json(packet4), packet4)
         time.sleep(1)
 sys.exit(gui.exec_())
 

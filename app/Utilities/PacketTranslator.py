@@ -3,6 +3,7 @@ dir_path = os.path.dirname(os.path.realpath(__file__))
 lib_path = os.path.join(dir_path, '../../../pus/debug/pylib')
 sys.path.append(lib_path)
 import pusbinding as pb
+import json
 
 
 class PacketTranslator(object):
@@ -50,22 +51,38 @@ class PacketTranslator(object):
         jsn["data"]["user_data"] = {"src_data": {}, "spare": 0, "pack_error_ctrl": 0}
 
         if srvc_type_id == 1:  # If it's a request verification packet
-            jsn["data"]["user_data"]["src_data"] = self.tm_1_x_data(pack)
+            jsn["data"]["user_data"]["src_data"] = self.tm_1_x_get_data(pack)
         elif (srvc_type_id, msg_type_id) == (3, 25):
-            jsn["data"]["user_data"]["src_data"] = self.tm_3_25_data(pack)
+            jsn["data"]["user_data"]["src_data"] = self.tm_3_25_get_data(pack)
         elif (srvc_type_id, msg_type_id) == (8, 1):
-            jsn["data"]["user_data"]["src_data"] = self.tc_8_1_data(pack)
+            jsn["data"]["user_data"]["src_data"] = self.tc_8_1_get_data(pack)
         elif srvc_type_id == 12:
-            jsn["data"]["user_data"]["src_data"] = self.tc_12_x_data(pack, msg_type_id)
+            jsn["data"]["user_data"]["src_data"] = self.tc_12_x_get_data(pack, msg_type_id)
         elif srvc_type_id == 19:
             if msg_type_id == 1:
-                jsn["data"]["user_data"]["src_data"] = self.tc_19_1_data(pack)
+                jsn["data"]["user_data"]["src_data"] = self.tc_19_1_get_data(pack)
             else:
-                jsn["data"]["user_data"]["src_data"] = self.tc_19_2_4_5_data(pack)
+                jsn["data"]["user_data"]["src_data"] = self.tc_19_2_4_5_get_data(pack)
         return jsn
 
     def json2packet(self, jsn):
         # Vamos a empezar parseando solos los campos de data
+        pack = self.create_default_packet(jsn)
+        version = jsn["primary_header"]["pck_version"]  # Shall be integer
+        pb.pus_setPacketVersion(pack, version)
+        type_ = jsn["primary_header"]["pck_id"]["pck_type"]  # Shall be integer
+        pb.pus_setPacketType(pack, type_)
+        sec_head_flag = jsn["primary_header"]["pck_id"]["sec_head_flg"]  # Shall be boolean
+        pb.pus_setSecondaryHeaderFlag(pack, sec_head_flag)
+        ap_id = jsn["primary_header"]["pck_id"]["apid"]
+        pb.pus_setApid(pack, ap_id)
+        seq_flags = jsn["primary_header"]["pck_seq_ctrl"]["pck_seq_flg"]
+        pb.pus_setSequenceFlags(pack, seq_flags)
+        seq_count = jsn["primary_header"]["pck_seq_ctrl"]["pck_seq"]
+        pb.pus_setSequenceCount(pack, seq_count)
+        data_len = jsn["primary_header"]["pck_data_len"]
+        pb.pus_setPacketDataLength(pack, data_len)
+
         type_ = jsn["primary_header"]["pck_id"]["pck_type"]
         if type_ == 0:  # TM
             tm_version = jsn["data"]["pck_sec_head"]["tm_packet_pus_version_number"]
@@ -84,14 +101,13 @@ class PacketTranslator(object):
             pb.pus_setTmMessageTypeCounter(pack, msg_type_counter)
 
             tm_dest = jsn["data"]["pck_sec_head"]["dst_id"]
-            pb.pus_getTmDestination(pack, tm_dest)
+            pb.pus_setTmDestination(pack, tm_dest)
 
-            time = jsn["data"]["pck_sec_head"]["time"]  # Revisar, puede ser que esté en string
-            pb.pus_setTmPacketTime(pack, time)
+            time_ = jsn["data"]["pck_sec_head"]["time"]  # Revisar, puede ser que esté en string
+            pb.pus_setTmPacketTime(pack, time_)
         else:
             srvc_type_id = jsn["data"]["pck_sec_head"]["msg_type_id"]["service_type_id"]
             pb.pus_setTcService(pack, srvc_type_id)
-
             msg_type_id = jsn["data"]["pck_sec_head"]["msg_type_id"]["msg_subtype_id"]
             pb.pus_setTcSubtype(pack, msg_type_id)
 
@@ -101,27 +117,56 @@ class PacketTranslator(object):
             ack_f_start = jsn["data"]["pck_sec_head"]["ack_flags"]["ack_flag_start"]
             ack_f_progress = jsn["data"]["pck_sec_head"]["ack_flags"]["ack_flag_progress"]
             ack_f_completion = jsn["data"]["pck_sec_head"]["ack_flags"]["ack_flag_completion"]
-            pb.pusTcAckFlags(pack, ack_f_acceptance, ack_f_start, ack_f_progress, ack_f_completion)
+            pb.pus_setTcAckFlags(pack, ack_f_acceptance, ack_f_start, ack_f_progress, ack_f_completion)
             src_id = jsn["data"]["pck_sec_head"]["src_id"]
             pb.pus_setTcSource(pack, src_id)
 
         if srvc_type_id == 1:  # If it's a request verification packet
-            jsn["data"]["user_data"]["src_data"] = self.tm_1_x_data(pack)
+            #  jsn["data"]["user_data"]["src_data"] = self.tm_1_x_set_data(pack)
+            pass
         elif (srvc_type_id, msg_type_id) == (3, 25):
-            jsn["data"]["user_data"]["src_data"] = self.tm_3_25_data(pack)
+            #  jsn["data"]["user_data"]["src_data"] = self.tm_3_25_set_data(pack)
+            pass
         elif (srvc_type_id, msg_type_id) == (8, 1):
-            jsn["data"]["user_data"]["src_data"] = self.tc_8_1_data(pack)
+            data = jsn["data"]["user_data"]["src_data"]
+            print(data)
+            self.tc_8_1_set_data(pack, data)
         elif srvc_type_id == 12:
-            jsn["data"]["user_data"]["src_data"] = self.tc_12_x_data(pack, msg_type_id)
+            data = jsn["data"]["user_data"]["src_data"]
+            self.tc_12_x_set_data(pack, msg_type_id, data)
         elif srvc_type_id == 19:
+            data = jsn["data"]["user_data"]["src_data"]
             if msg_type_id == 1:
-                jsn["data"]["user_data"]["src_data"] = self.tc_19_1_data(pack)
+                self.tc_19_1_set_data(pack, data)
             else:
-                jsn["data"]["user_data"]["src_data"] = self.tc_19_2_4_5_data(pack)
-        return jsn
+                self.tc_19_2_4_5_set_data(pack, data)
+        return pack
 
     @staticmethod
-    def tm_1_x_data(packet):
+    def create_default_packet(jsn):
+        packet = pb.pusPacket_t()
+        apid = pb.pusApidInfo_t()
+        svc = jsn["data"]["pck_sec_head"]["msg_type_id"]["service_type_id"]
+        msg = jsn["data"]["pck_sec_head"]["msg_type_id"]["msg_subtype_id"]
+        with open('apid.json', 'r') as json_apid:
+            apid_value = json.load(json_apid)['apid']
+            pb.pus_initApidInfo_(apid, apid_value)
+
+        if (svc, msg) == (8, 1):
+            pb.pus_tc_8_1_createPerformFuctionRequest(packet, apid, 0)
+        elif svc == 12:
+            pb.pus_tc_12_X_createDefaultPacket(packet, apid, msg)
+        elif (svc, msg) == (17, 1):
+            pb.pus_tc_17_1_createConnectionTestRequest(packet, apid)
+        elif svc == 19:
+            pb.pus_tc_19_X_createDefaultEventActionRequest(packet, apid)
+        else:
+            pass
+
+        return packet
+
+    @staticmethod
+    def tm_1_x_get_data(packet):
         """
         This functions parses the st01 packet data field to json
         :param packet: The packet which data field we want to parse
@@ -148,7 +193,7 @@ class PacketTranslator(object):
         return data
 
     @staticmethod
-    def tm_3_25_data(packet):
+    def tm_3_25_get_data(packet):
         data = dict()
         data["hk_param_report_id"] = pb.pus_tm_3_25_getReportId(packet)
         num_param = int()
@@ -160,7 +205,7 @@ class PacketTranslator(object):
         return data
 
     @staticmethod
-    def tm_5_x_data(packet):
+    def tm_5_x_get_data(packet):
         data = dict()
         event_id = int()
         pb.pus_tm_get_5_X_event_id(packet, event_id)
@@ -173,7 +218,7 @@ class PacketTranslator(object):
         return data
 
     @staticmethod
-    def tc_8_1_data(packet):
+    def tc_8_1_get_data(packet):
         data = dict()
         function_id = int()
         pb.pus_tc_8_1_getFunctionId(function_id, packet)
@@ -181,7 +226,15 @@ class PacketTranslator(object):
         return data
 
     @staticmethod
-    def tc_12_x_data(packet, msg_id):
+    def tc_8_1_set_data(packet, data):
+        function_id = data["function_id"]  # Shall be integer
+        print(pb.pus_tc_8_1_setFunctionId(packet, function_id))
+        function_id = int()
+        pb.pus_tc_8_1_getFunctionId(function_id, packet)
+        print(function_id)
+
+    @staticmethod
+    def tc_12_x_get_data(packet, msg_id):
         data = dict()
 
         if msg_id == 1 or msg_id == 2:
@@ -190,7 +243,14 @@ class PacketTranslator(object):
             data["pmon_id"] = pmon_id
         return data
 
-    def tc_19_1_data(self, packet):
+    @staticmethod
+    def tc_12_x_set_data(packet, msg_id, data):
+        if msg_id == 1 or msg_id == 2:
+            pmon_id = data["pmon_id"]  # Shall be integer
+            pb.pus_tc_12_1_2_setPmonId(packet, pmon_id)
+        return packet
+
+    def tc_19_1_get_data(self, packet):
         data = dict()
         packet_reduced = pb.pusPacketReduced_t()
         pb.pus_tc_19_1_getAction(packet_reduced, packet)
@@ -202,10 +262,28 @@ class PacketTranslator(object):
         data["request"] = self.packet2json(data_packet)
         return data
 
+    def tc_19_1_set_data(self, packet, data):
+        packet_reduced = pb.pusPacketReduced_t()
+        action_packet = self.json2packet(data["request"])
+        pb.pus_tc_19_X_createPacketReducedFromPacket(packet_reduced, action_packet)
+        pb.pus_tc_19_1_setAction(packet, packet_reduced)
+        event_id = data["event_id"]
+        pb.pus_tc_19_X_setEventId(packet, event_id)
+        return packet
+
     @staticmethod
-    def tc_19_2_4_5_data(packet):
+    def tc_19_2_4_5_get_data(packet):
         data = dict()
         event_id = int()
         pb.pus_tc_19_X_getEventId(event_id, packet)
         data["event_id"] = event_id
         return data
+
+    @staticmethod
+    def tc_19_2_4_5_set_data(packet, msg, data):
+        event_id = data["event_id"] # Shall be integer
+        print(pb.pus_tc_19_X_setEventId(packet, event_id))
+        event_id = int()
+        pb.pus_tc_19_X_getEventId(event_id, packet)
+        print(event_id)
+        return packet

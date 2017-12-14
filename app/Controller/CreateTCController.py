@@ -58,7 +58,10 @@ class CreateTCController(object):
             self.view.set_tc_text("")
 
     def send_callback(self):
-        self.model.add_to_table(self.command)
+        pt = PacketTranslator()
+        self.command["data"] = self.view.get_tc_text()
+        print(self.command)
+        self.model.add_to_table(self.command, pt.json2packet(self.command))
         self.view.close()
 
     def show_packet_json(self, svc, msg):
@@ -104,6 +107,11 @@ class CreateTCController(object):
         self.view.show()
 
     def open_add_tc_window(self):
+        """
+        This method opens a new window to create a telecommand that
+        will be embedded in st19 telecommand
+        :return: The inner telecommand
+        """
         view = AddTCView()
         controller = AddTCController(self.model, view)
         return controller.show()

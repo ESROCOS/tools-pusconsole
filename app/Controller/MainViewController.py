@@ -4,6 +4,7 @@ from Views.NewConnectionView import NewConnectionView
 from Views.DetailsView import DetailsView
 from Views.FilterView import FilterView
 from Utilities.Database import Database
+from Utilities import PacketTranslator
 from Model.CreateTCModel import CreateTCModel
 from Model import App
 from Controller.CreateTCController import CreateTCController
@@ -85,9 +86,10 @@ class MainViewController(object):
         of the package selected in the window
         """
         row = clicked_index.row()
+        pt = PacketTranslator()
         index = int(self.view.window.packagesTable.item(row, 0).text())
         details_view = DetailsView()
-        details_view.write_information(json.dumps(json.loads(self.model.table[index][-1]), indent=8))
+        details_view.write_information(json.dumps(pt.packet2json(self.model.table[index][-2]), indent=8))
         details_view.show()
 
     def open_savefile_window_callback(self):
@@ -144,7 +146,7 @@ class MainViewController(object):
             self.view.window.packagesTable.insertRow(row_count)
 
         self.view.window.packagesTable.setItem(row, 0, QtGui.QTableWidgetItem(str(row)))
-        for i, e in enumerate(elem[:-1]):
+        for i, e in enumerate(elem[:-2]):
             itm = column_type[i](str(e))
             self.view.window.packagesTable.setItem(row, i+1, itm)
             self.view.window.packagesTable.item(row, i+1).setTextAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
