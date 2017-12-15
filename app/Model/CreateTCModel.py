@@ -2,6 +2,7 @@ class CreateTCModel(object):
 
     def __init__(self, app_model):
         self.app_model = app_model
+        self.apid_info = self.app_model.tc_apid
         self.telecommand = {}
         with open("services.txt", "r") as services:
             for line in services:

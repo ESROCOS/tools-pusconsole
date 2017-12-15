@@ -66,39 +66,38 @@ class CreateTCController(object):
 
     def show_packet_json(self, svc, msg):
         packet = pb.pusPacket_t()
-        apid = pb.pusApidInfo_t()
-        with open('apid.json', 'r') as json_apid:
-            apid_value = json.load(json_apid)['apid']
-            pb.pus_initApidInfo_(apid, apid_value)
         packet_translator = PacketTranslator()
+        apid_info = self.model.apid_info
+        apid = pb.pus_getInfoApid(apid_info)
+        seq = pb.pus_getNextPacketCount(apid_info)
 
         if (svc, msg) == (8, 1):
-            pb.pus_tc_8_1_createPerformFuctionRequest(packet, apid, 0)
+            pb.pus_tc_8_1_createPerformFuctionRequest(packet, apid, seq, 0)
         elif svc == 12:
             if msg == 1:
-                pb.pus_tc_12_1_createEnableParameterMonitoringDefinitions(packet, apid, 0)
+                pb.pus_tc_12_1_createEnableParameterMonitoringDefinitions(packet, apid, seq, 0)
             elif msg == 2:
-                pb.pus_tc_12_2_createDisableParameterMonitoringDefinitions(packet, apid, 0)
+                pb.pus_tc_12_2_createDisableParameterMonitoringDefinitions(packet, apid, seq, 0)
             elif msg == 15:
-                pb.pus_tc_12_15_createEnableParameterMonitoring(packet, apid)
+                pb.pus_tc_12_15_createEnableParameterMonitoring(packet, apid, seq)
             elif msg == 16:
-                pb.pus_tc_12_16_createDisableParameterMonitoring(packet, apid)
+                pb.pus_tc_12_16_createDisableParameterMonitoring(packet, apid, seq)
         elif (svc, msg) == (17, 1):
-            pb.pus_tc_17_1_createConnectionTestRequest(packet, apid)
+            pb.pus_tc_17_1_createConnectionTestRequest(packet, apid, seq)
         elif svc == 19:
             if msg == 1:
                 scndpacket = self.open_add_tc_window()
                 if scndpacket is None:
-                    self.view.window.msgComboBox.setCurrentIndex(-1)
+                    self.view.window.msgComboBox.setCurrentIndex(0)
                     return None, None
                 else:
-                    pb.pus_tc_19_1_createAddEventActionDefinitionsRequest(packet, apid, 0, scndpacket)
+                    pb.pus_tc_19_1_createAddEventActionDefinitionsRequest(packet, apid, seq, 0, scndpacket)
             elif msg == 2:
-                pb.pus_tc_19_2_createDeleteEventActionDefinitionsRequest(packet, apid, 0)
+                pb.pus_tc_19_2_createDeleteEventActionDefinitionsRequest(packet, apid, seq, 0)
             elif msg == 4:
-                pb.pus_tc_19_4_createEnableEventActionDefinitions(packet, apid, 0)
+                pb.pus_tc_19_4_createEnableEventActionDefinitions(packet, apid, seq, 0)
             elif msg == 5:
-                pb.pus_tc_19_5_createDisableEventActionDefinitions(packet, apid, 0)
+                pb.pus_tc_19_5_createDisableEventActionDefinitions(packet, apid, seq, 0)
         else:
             pass
         return packet_translator.packet2json(packet), packet

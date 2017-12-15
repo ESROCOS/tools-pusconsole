@@ -14,7 +14,6 @@ class AddTCController(object):
         self.model = model
         self.view = view
         self.command = ""
-        self.current_packet = None
 
         self.__add_telecommand()
         self.set_callbacks()
@@ -55,31 +54,35 @@ class AddTCController(object):
 
     def show_packet_json(self, svc, msg):
         packet = pb.pusPacket_t()
-        apid = pb.pusApidInfo_t()
-        pb.pus_initApidInfo_(apid, os.getpid()) # APID == PID
         packet_translator = PacketTranslator()
 
+        apid_info = self.model.apid_info
+        apid = pb.pus_getInfoApid(apid_info)
+        seq = pb.pus_getNextPacketCount(apid_info)
+
         if (svc, msg) == (8, 1):
-            pb.pus_tc_8_1_createPerformFuctionRequest(packet, apid, 0)
+            pb.pus_tc_8_1_createPerformFuctionRequest(packet, apid, seq, 0)
         elif svc == 12:
             if msg == 1:
-                pb.pus_tc_12_1_createEnableParameterMonitoringDefinitions(packet, apid, 0)
+                pb.pus_tc_12_1_createEnableParameterMonitoringDefinitions(packet, apid, seq, 0)
             elif msg == 2:
-                pb.pus_tc_12_2_createDisableParameterMonitoringDefinitions(packet, apid, 0)
+                pb.pus_tc_12_2_createDisableParameterMonitoringDefinitions(packet, apid, seq, 0)
             elif msg == 15:
-                pb.pus_tc_12_15_createEnableParameterMonitoring(packet, apid)
+                pb.pus_tc_12_15_createEnableParameterMonitoring(packet, apid, seq)
             elif msg == 16:
-                pb.pus_tc_12_16_createDisableParameterMonitoring(packet, apid)
+                pb.pus_tc_12_16_createDisableParameterMonitoring(packet, apid, seq)
         elif (svc, msg) == (17, 1):
-            pb.pus_tc_17_1_createConnectionTestRequest(packet, apid)
+            pb.pus_tc_17_1_createConnectionTestRequest(packet, apid, seq)
         else:
             pass
-        self.current_packet = packet
         return packet_translator.packet2json(packet)
 
     def show(self):
         code = self.view.show()
+        packet_translator = PacketTranslator()
+        self.command["data"] = self.view.get_tc_text()
+        print(self.command["data"])
         if code == 1:
-            return self.current_packet
+            return packet_translator.json2packet(self.command)
         else:
             return None

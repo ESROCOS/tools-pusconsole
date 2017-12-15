@@ -145,21 +145,17 @@ class PacketTranslator(object):
     @staticmethod
     def create_default_packet(jsn):
         packet = pb.pusPacket_t()
-        apid = pb.pusApidInfo_t()
         svc = jsn["data"]["pck_sec_head"]["msg_type_id"]["service_type_id"]
         msg = jsn["data"]["pck_sec_head"]["msg_type_id"]["msg_subtype_id"]
-        with open('apid.json', 'r') as json_apid:
-            apid_value = json.load(json_apid)['apid']
-            pb.pus_initApidInfo_(apid, apid_value)
 
         if (svc, msg) == (8, 1):
-            pb.pus_tc_8_1_createPerformFuctionRequest(packet, apid, 0)
+            pb.pus_tc_8_1_createPerformFuctionRequest(packet, 0, 0, 0)
         elif svc == 12:
-            pb.pus_tc_12_X_createDefaultPacket(packet, apid, msg)
+            pb.pus_tc_12_X_createDefaultPacket(packet, 0, 0, msg)
         elif (svc, msg) == (17, 1):
-            pb.pus_tc_17_1_createConnectionTestRequest(packet, apid)
+            pb.pus_tc_17_1_createConnectionTestRequest(packet, 0, 0)
         elif svc == 19:
-            pb.pus_tc_19_X_createDefaultEventActionRequest(packet, apid)
+            pb.pus_tc_19_X_createDefaultEventActionRequest(packet, 0, 0)
         else:
             pass
 
@@ -220,26 +216,21 @@ class PacketTranslator(object):
     @staticmethod
     def tc_8_1_get_data(packet):
         data = dict()
-        function_id = int()
-        pb.pus_tc_8_1_getFunctionId(function_id, packet)
+        function_id = pb.pus_tc_8_1_getFunctionId(packet)
         data["function_id"] = function_id
         return data
 
     @staticmethod
     def tc_8_1_set_data(packet, data):
         function_id = data["function_id"]  # Shall be integer
-        print(pb.pus_tc_8_1_setFunctionId(packet, function_id))
-        function_id = int()
-        pb.pus_tc_8_1_getFunctionId(function_id, packet)
-        print(function_id)
+        pb.pus_tc_8_1_setFunctionId(packet, function_id)
 
     @staticmethod
     def tc_12_x_get_data(packet, msg_id):
         data = dict()
 
         if msg_id == 1 or msg_id == 2:
-            pmon_id = int()
-            pb.pus_tc_12_1_2_getPmonId(pmon_id, packet)
+            pmon_id = pb.pus_tc_12_1_2_getPmonId(packet)
             data["pmon_id"] = pmon_id
         return data
 
@@ -255,7 +246,7 @@ class PacketTranslator(object):
         packet_reduced = pb.pusPacketReduced_t()
         pb.pus_tc_19_1_getAction(packet_reduced, packet)
         data_packet = pb.pusPacket_t()
-        pb.pus_tc_19_X_createPacketFromPacketReduced(data_packet, packet_reduced)
+        pb.pus_packetReduced_createPacketFromPacketReduced(data_packet, packet_reduced)
         event_id = int()
         pb.pus_tc_19_X_getEventId(event_id, packet)
         data["event_id"] = event_id
@@ -265,7 +256,7 @@ class PacketTranslator(object):
     def tc_19_1_set_data(self, packet, data):
         packet_reduced = pb.pusPacketReduced_t()
         action_packet = self.json2packet(data["request"])
-        pb.pus_tc_19_X_createPacketReducedFromPacket(packet_reduced, action_packet)
+        pb.pus_packetReduced_createPacketReducedFromPacket(packet_reduced, action_packet)
         pb.pus_tc_19_1_setAction(packet, packet_reduced)
         event_id = data["event_id"]
         pb.pus_tc_19_X_setEventId(packet, event_id)

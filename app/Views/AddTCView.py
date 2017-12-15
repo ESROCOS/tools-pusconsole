@@ -1,6 +1,7 @@
 from PySide import QtGui
 
 from Views.Views_Ui.Ui_AddTCView import Ui_AddTCView
+import json
 
 
 class AddTCView(object):
@@ -86,16 +87,5 @@ class AddTCView(object):
         self.window.commandTextEdit.setTabStopWidth(metrics.width(' '))
         self.window.commandTextEdit.setPlainText(json)
 
-    """        
-    def accept(self):
-        pass
-
-    def reject(self):
-
-        pass
-    """
-
-    """
-    Due to QtDesigner definition of Dialogs this callback needs to be implemented
-    in this class instead of being implemented in the corresponding Controller
-    """
+    def get_tc_text(self):
+        return json.loads(self.window.commandTextEdit.toPlainText())

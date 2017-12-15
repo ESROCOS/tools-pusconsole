@@ -114,7 +114,7 @@ class MainViewController(object):
 
     def __convert_dict(self, elem: collections.OrderedDict, tab_count: int = 0):
         """
-        Intern function to convert a dictionary to str
+        Private method to convert a dictionary to str
         :param elem: The dictionary to convert
         :param tab_count: Number of tab for indenting elements of dict
         :return: A string representing the dict
@@ -132,7 +132,7 @@ class MainViewController(object):
 
     def add_elem(self, row, elem: list):
         """
-        This method is called whenever a new package arrives or is sended
+        This method is called whenever a new package arrives or is sent
         :param row: place where the new package will be shown
         :param elem: json of the package to add to the table
         """

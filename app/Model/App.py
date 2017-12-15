@@ -1,14 +1,21 @@
-import json
-
 from Views import MainView
 from Controller import MainViewController
 from Utilities.MyTable import Table
+import os, json, sys
+dir_path = os.path.dirname(os.path.realpath(__file__))
+lib_path = os.path.join(dir_path, '../../../pus/debug/pylib')
+sys.path.append(lib_path)
+import pusbinding as pb
 
 
 class App(object):
 
     def __init__(self):
         self.table = Table()
+        self.tc_apid = pb.pusApidInfo_t()
+        with open('apid.json', 'r') as json_apid:
+            apid_value = json.load(json_apid)['apid']
+            pb.pus_initApidInfo_null(self.tc_apid, apid_value)
 
         main_window = MainView()
         self.c = MainViewController(self, main_window)
@@ -16,6 +23,12 @@ class App(object):
         self.c.show()
 
     def add(self, elem: dict, packet):
+        """
+        This method adds a packet in its packet representation and json representation
+        to the app packet table
+        :param elem: json of packet
+        :param packet: packet object
+        """
         from datetime import datetime
         list_ = []
         type_ = int(elem["primary_header"]["pck_id"]["pck_type"])
@@ -47,6 +60,13 @@ class App(object):
 
     @staticmethod
     def __create_info_string__(elem):
+        """
+        This method format a packet represented in json to a string
+        (This method is not used currently because we found a similar
+         functionality in json.dumps method)
+        :param elem: A packet represented in json
+        :return: The json formatted in an string
+        """
         services = {}
         with open("services.txt", "r") as serv:
             for line in serv:
