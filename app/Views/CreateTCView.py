@@ -100,7 +100,10 @@ class CreateTCView(object):
         self.window.commandTextEdit.setPlainText(json)
 
     def get_tc_text(self):
-        return json.loads(self.window.commandTextEdit.toPlainText())
+        try:
+            return json.loads(self.window.commandTextEdit.toPlainText())
+        except json.JSONDecodeError:
+            raise
 
     def close(self):
         self.view.close()

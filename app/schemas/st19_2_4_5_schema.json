@@ -90,7 +90,7 @@
             "src_data": {
               "type": "object", 
               "properties": {
-                "function_id": {
+                "event_id": {
                   "type": "integer"
                 }
               }

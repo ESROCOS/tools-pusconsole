@@ -1,3 +1,4 @@
-from Utilities.PacketTranslator import PacketTranslator
-from Utilities.Database import Database
-from Utilities.MyTable import Table
+from .PacketTranslator import PacketTranslator
+from .Database import Database
+from .MyTable import Table
+from .ValidateJson import ValidateJson

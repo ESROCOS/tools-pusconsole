@@ -1,9 +1,13 @@
+from PySide import QtGui
 from Model import CreateTCModel
-from Views.CreateTCView import CreateTCView
-from Views.AddTCView import AddTCView
-from Utilities import PacketTranslator
-from Controller.AddTCController import AddTCController
-import os, sys, json
+from Views import CreateTCView
+from Views import AddTCView
+from Utilities import PacketTranslator, ValidateJson
+from Controller import AddTCController
+import os
+import sys
+import json
+
 dir_path = os.path.dirname(os.path.realpath(__file__))
 lib_path = os.path.join(dir_path, '../../../pus/debug/pylib')
 sys.path.append(lib_path)
@@ -59,10 +63,18 @@ class CreateTCController(object):
 
     def send_callback(self):
         pt = PacketTranslator()
-        self.command["data"] = self.view.get_tc_text()
-        print(self.command)
-        self.model.add_to_table(self.command, pt.json2packet(self.command))
-        self.view.close()
+        vj = ValidateJson()
+
+        try:
+            self.command["data"] = self.view.get_tc_text()
+            vj.check(self.command)
+            self.model.add_to_table(self.command, pt.json2packet(self.command))
+            self.view.close()
+        except Exception as err:
+            msg_box = QtGui.QMessageBox()
+            msg_box.setText('Some fields may be incorrect {}'.format(err))
+            msg_box.setStandardButtons(QtGui.QMessageBox.Ok | QtGui.QMessageBox.Cancel)
+            msg_box.exec_()
 
     def show_packet_json(self, svc, msg):
         packet = pb.pusPacket_t()

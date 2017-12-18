@@ -1,32 +1,33 @@
 import sys, json
+from collections import OrderedDict
 
 
-def convert(dic, tab):
+def convert(dic):
+    mapa = OrderedDict()
     for k in dic:
         v = dic[k]
-        print(' '*tab + "\"" + k + "\":{")
+        mapa[k] = OrderedDict()
         if type(v) == dict:
-            print(' '*(tab+2) + "\"type\":\"object\",")
-            print(' '*(tab+2) + "\"properties\":{")
-            convert(v, tab+4)
-            print(' '*(tab+2), "},")
+            mapa[k]["type"] = "object"
+            mapa[k]["properties"] = convert(v)
         elif type(v) == bool:
-            print(' '*(tab+2) + "\"type\":\"boolean\",")
+            mapa[k]["type"] = "boolean"
         elif type(v) == int:
-            print(' '*(tab+2) + "\"type\":\"integer\",")
+            mapa[k]["type"] = "integer"
         elif type(v) == str:
-            print(' '*(tab+2) + "\"type\":\"string\",")
-        print(' '*tab + "}")
+            mapa[k]["type"] = "string"
+    return mapa
 
 
 file = "jsonexample.json"
 f = open(file, "r")
 dic = json.load(f)
-print("""{
-  "$schema": "http://json-schema.org/schema#",
-  "id": "https://github.com/esrocos/TBD",
-  "type": "object",
-  "properties": {""")
-convert(dic, 4)
-print("  }")
-print("}")
+
+mapa = OrderedDict()
+mapa["$schema"] = "http://json-schema.org/schema#"
+mapa["id"] = "https://github.com/esrocos/TBD"
+mapa["type"] = "object"
+mapa["properties"] = convert(dic)
+
+print(json.dumps(mapa, indent=2))
+

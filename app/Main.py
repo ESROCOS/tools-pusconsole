@@ -21,6 +21,10 @@ if len(args) > 1:
         packet2 = pb.pusPacket_t()
         packet3 = pb.pusPacket_t()
         packet4 = pb.pusPacket_t()
+        packet5 = pb.pusPacket_t()
+        packet6 = pb.pusPacket_t()
+        packet7 = pb.pusPacket_t()
+        packet8 = pb.pusPacket_t()
 
         pb.pus_initApidInfo_null(apid_info, 1)
 

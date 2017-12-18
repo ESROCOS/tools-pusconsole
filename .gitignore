@@ -12,6 +12,10 @@ cmake_install.cmake
 __pycache__
 *.pyc
 
+jsonexample.json
+pythonscript.py
+pythonscript2.py
+
 # Exclude source files generated from the .ui but not the __init__.py, images directory or Ui_Files directory
 app/Views/Views_Ui/*
 !app/Views/Views_Ui/__init__.py

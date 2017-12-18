@@ -8,7 +8,7 @@
                 },
                 "pck_seq_ctrl": {
                         "pck_seq_flg": 3,
-                        "pck_seq": 0
+                        "pck_seq": 13
                 },
                 "pck_data_len": 360
         },
@@ -23,15 +23,15 @@
                         },
                         "src_id": 2047,
                         "msg_type_id": {
-                                "service_type_id": 8,
-                                "msg_subtype_id": 1
+                                "service_type_id": 19,
+                                "msg_subtype_id": 5
                         },
                         "spare": 0
                 },
                 "user_data": {
                         "pack_error_ctrl": 0,
                         "src_data": {
-                                "function_id": 0
+                                "event_id": 0
                         },
                         "spare": 0
                 }

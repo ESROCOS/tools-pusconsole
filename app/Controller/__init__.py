@@ -1,3 +1,3 @@
-from Controller.MainViewController import MainViewController
-from Controller.CreateTCController import CreateTCController
-from Controller.AddTCController import AddTCController
+from .MainViewController import MainViewController
+from .CreateTCController import CreateTCController
+from .AddTCController import AddTCController

@@ -89,11 +89,7 @@
           "properties": {
             "src_data": {
               "type": "object", 
-              "properties": {
-                "function_id": {
-                  "type": "integer"
-                }
-              }
+              "properties": {}
             }, 
             "spare": {
               "type": "integer"
