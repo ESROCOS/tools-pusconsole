@@ -83,6 +83,7 @@ class AddTCController(object):
         self.command["data"] = self.view.get_tc_text()
         print(self.command["data"])
         if code == 1:
-            return packet_translator.json2packet(self.command)
+            packet = packet_translator.json2packet(self.command)
+            return packet
         else:
             return None

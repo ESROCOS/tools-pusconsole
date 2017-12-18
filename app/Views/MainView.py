@@ -1,4 +1,4 @@
-from PySide import QtGui
+from PySide import QtGui, QtCore
 
 from Views.Views_Ui.Ui_MainView import Ui_MainView
 
@@ -51,7 +51,8 @@ class MainView:
                                                      "width=\"120\" height=\"67\"/></p></body></html>",
                                          None, QtGui.QApplication.UnicodeUTF8))
         header.sortIndicatorOrder()
-        self.window.packagesTable.hideColumn(0)
+        self.window.packagesTable.verticalHeader().setVisible(False)
+        self.window.packagesTable.sortByColumn(0, QtCore.Qt.AscendingOrder)
 
 
     def resize_elements(self, event):

@@ -87,11 +87,13 @@ class CreateTCController(object):
         elif svc == 19:
             if msg == 1:
                 scndpacket = self.open_add_tc_window()
+
                 if scndpacket is None:
                     self.view.window.msgComboBox.setCurrentIndex(0)
                     return None, None
                 else:
-                    pb.pus_tc_19_1_createAddEventActionDefinitionsRequest(packet, apid, seq, 0, scndpacket)
+                    print(pb.pus_tc_19_1_createAddEventActionDefinitionsRequest(packet, apid, seq, 0, scndpacket))
+                    print(pb.getError())
             elif msg == 2:
                 pb.pus_tc_19_2_createDeleteEventActionDefinitionsRequest(packet, apid, seq, 0)
             elif msg == 4:

@@ -150,12 +150,24 @@ class PacketTranslator(object):
 
         if (svc, msg) == (8, 1):
             pb.pus_tc_8_1_createPerformFuctionRequest(packet, 0, 0, 0)
-        elif svc == 12:
-            pb.pus_tc_12_X_createDefaultPacket(packet, 0, 0, msg)
+        elif (svc, msg) == (12, 1):
+            pb.pus_tc_12_1_createEnableParameterMonitoringDefinitions(packet, 0, 0, 0)
+        elif (svc, msg) == (12, 2):
+            pb.pus_tc_12_2_createDisableParameterMonitoringDefinitions(packet, 0, 0, 0)
+        elif (svc, msg) == (12, 15):
+            pb.pus_tc_12_15_createEnableParameterMonitoring(packet, 0, 0)
+        elif (svc, msg) == (12, 16):
+            pb.pus_tc_12_16_createDisableParameterMonitoring(packet, 0, 0)
         elif (svc, msg) == (17, 1):
             pb.pus_tc_17_1_createConnectionTestRequest(packet, 0, 0)
-        elif svc == 19:
-            pb.pus_tc_19_X_createDefaultEventActionRequest(packet, 0, 0)
+        elif (svc, msg) == (19, 1):
+            pb.pus_tc_19_1_createAddEventActionDefinitionsRequest(packet, 0, 0, 0, pb.pusPacket_t())
+        elif (svc, msg) == (19, 2):
+            pb.pus_tc_19_2_createDeleteEventActionDefinitionsRequest(packet, 0, 0, 0)
+        elif (svc, msg) == (19, 4):
+            pb.pus_tc_19_4_createEnableEventActionDefinitions(packet, 0, 0, 0)
+        elif (svc, msg) == (19, 5):
+            pb.pus_tc_19_5_createDisableEventActionDefinitions(packet, 0, 0, 0)
         else:
             pass
 
@@ -271,7 +283,7 @@ class PacketTranslator(object):
         return data
 
     @staticmethod
-    def tc_19_2_4_5_set_data(packet, msg, data):
+    def tc_19_2_4_5_set_data(packet, data):
         event_id = data["event_id"] # Shall be integer
         print(pb.pus_tc_19_X_setEventId(packet, event_id))
         event_id = int()

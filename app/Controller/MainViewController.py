@@ -136,19 +136,22 @@ class MainViewController(object):
         :param row: place where the new package will be shown
         :param elem: json of the package to add to the table
         """
-        column_type = [QtGui.QTableWidgetItem, IntegerTableWidgetItem, IntegerTableWidgetItem,
-                       TimeTableWidgetItem, QtGui.QTableWidgetItem, QtGui.QTableWidgetItem,
-                       IntegerTableWidgetItem, QtGui.QTableWidgetItem, QtGui.QTableWidgetItem]
-
         self.view.window.packagesTable.setSortingEnabled(False)
-        row_count = self.view.window.packagesTable.rowCount()
-        if row == row_count - 1:
-            self.view.window.packagesTable.insertRow(row_count)
+        column_type = [IntegerTableWidgetItem, QtGui.QTableWidgetItem, IntegerTableWidgetItem,
+                       IntegerTableWidgetItem, TimeTableWidgetItem, QtGui.QTableWidgetItem,
+                       QtGui.QTableWidgetItem, IntegerTableWidgetItem, QtGui.QTableWidgetItem,
+                       QtGui.QTableWidgetItem]
 
-        self.view.window.packagesTable.setItem(row, 0, QtGui.QTableWidgetItem(str(row)))
+        row_count = self.view.window.packagesTable.rowCount()
+        self.view.window.packagesTable.insertRow(row_count)
+
+        self.view.window.packagesTable.setItem(row, 0, column_type[0](str(row)))
+        self.view.window.packagesTable.item(row, 0).setTextAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
+
         for i, e in enumerate(elem[:-2]):
-            itm = column_type[i](str(e))
+            itm = column_type[i+1](str(e))
             self.view.window.packagesTable.setItem(row, i+1, itm)
+
             self.view.window.packagesTable.item(row, i+1).setTextAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
         self.view.window.packagesTable.setSortingEnabled(True)
 
