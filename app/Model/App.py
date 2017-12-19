@@ -1,6 +1,7 @@
 from Views import MainView
 from Controller import MainViewController
 from Utilities.MyTable import Table
+from PySide.QtCore import Slot
 import os, json, sys
 dir_path = os.path.dirname(os.path.realpath(__file__))
 lib_path = os.path.join(dir_path, '../../../pus/debug/pylib')
@@ -13,16 +14,15 @@ class App(object):
     def __init__(self):
         self.table = Table()
         self.tc_apid = pb.pusApidInfo_t()
+        self.currentFilter = None
+        self.elem_count = 0
+
         with open('apid.json', 'r') as json_apid:
             apid_value = json.load(json_apid)['apid']
             pb.pus_initApidInfo_null(self.tc_apid, apid_value)
 
-        main_window = MainView()
-        self.c = MainViewController(self, main_window)
-        self.c.set_callbacks()
-        self.c.show()
-
-    def add(self, elem: dict, packet):
+    @Slot(dict, pb.pusPacket_t)
+    def add(self, elem, packet):
         """
         This method adds a packet in its packet representation and json representation
         to the app packet table
@@ -45,6 +45,8 @@ class App(object):
         status = "OK" # Mirar
         information = self.__create_info_string__(elem)
 
+        list_.append(self.elem_count)
+        self.elem_count+=1
         list_.append("TM" if type_ == 0 else "TC")
         list_.append(svc_type_id)
         list_.append(msg_subtype_id)
@@ -57,6 +59,30 @@ class App(object):
         list_.append(packet)
         list_.append(json.dumps(elem))
         self.table.append(list_)
+
+    def set_filter(self, filter_: dict):
+        self.currentFilter = filter_
+        return self.__apply_filter__()
+
+    def __apply_filter__(self):
+        if self.currentFilter is None:
+            return [e[0] for e in self.table]
+
+        table = []
+        type_ = self.currentFilter["type"]
+        svc = self.currentFilter["svc"]
+        msg = self.currentFilter["msg"]
+        for e in self.table:
+            aux = e
+            if type_ != "":
+                aux = e if e[1] == type_ else None
+            if svc != 0 and aux is not None:
+                aux = aux if aux[2] == svc else None
+            if msg != 0 and aux is not None:
+                aux = aux if aux[3] == msg else None
+            if aux is not None:
+                table.append(aux[0])
+        return table
 
     @staticmethod
     def __create_info_string__(elem):

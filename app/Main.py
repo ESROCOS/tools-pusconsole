@@ -1,19 +1,54 @@
 import json, time, sys, collections
 from PySide import QtCore, QtGui
+from PySide.QtCore import QThread
 from Model import App
 from Utilities import PacketTranslator
 from Controller import MainViewController
+
+from Views import MainView
 import os, sys
 dir_path = os.path.dirname(os.path.realpath(__file__))
 lib_path = os.path.join(dir_path, '../../pus/debug/pylib')
 sys.path.append(lib_path)
 import pusbinding as pb
+import threading, time
+
+"""
+def work(app_):
+    pt = PacketTranslator()
+    with open("test.json", "r") as json_data:
+        tcs = json.load(json_data)
+        for elem in tcs["telecommands"]:
+            time.sleep(elem["elapsed_time"])
+            app_.add(elem["packet"], pt.json2packet(elem["packet"]))
+"""
+
 
 gui = QtGui.QApplication(sys.argv)
 app = App()
+view = MainView()
+controller = MainViewController(app, view)
 
 args = sys.argv
 
+if len(args) > 1:
+    if args[1] == "-test":
+        controller.show()
+
+
+sys.exit(gui.exec_())
+
+
+
+
+
+
+
+
+
+
+
+"""
 if len(args) > 1:
     if args[1] == "-test":
         apid_info = pb.pusApidInfo_t()
@@ -48,6 +83,7 @@ if len(args) > 1:
         pb.pus_events_finalize()
 
         p = PacketTranslator()
+        print(json.dumps(p.packet2json(packet2), indent=2))
         app.add(p.packet2json(packet), packet)
         import time
         time.sleep(1)
@@ -57,5 +93,10 @@ if len(args) > 1:
         time.sleep(1)
         app.add(p.packet2json(packet4), packet4)
         time.sleep(1)
+        
+        thread = QThread()
+        thread.emit
+        thread.start(target=work, args=(app,))
+        thread.start()
 sys.exit(gui.exec_())
-
+"""

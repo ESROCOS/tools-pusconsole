@@ -5,21 +5,31 @@ from Views.DetailsView import DetailsView
 from Views.FilterView import FilterView
 from Utilities.Database import Database
 from Utilities import PacketTranslator
+from Utilities import PusThread
 from Model.CreateTCModel import CreateTCModel
 from Model import App
+from Model.FilterModel import FilterModel
 from Controller.CreateTCController import CreateTCController
+from Controller.FilterController import FilterController
 from PySide import QtGui, QtCore
+from PySide.QtCore import Signal
+import os
+import sys
 import json
 import collections
+dir_path = os.path.dirname(os.path.realpath(__file__))
+lib_path = os.path.join(dir_path, '../../../pus/debug/pylib')
+sys.path.append(lib_path)
+import pusbinding as pb
 
 
-class MainViewController(object):
+
+class MainViewController(QtCore.QObject):
     """Controller of MainView view"""
 
     def __init__(self, model: App, view: MainView):
         """
         The constructor instantiates a MainViewController object
-
 
         :param model: The model of the application
         :param view: The view that will be controlled by this class.
@@ -28,7 +38,9 @@ class MainViewController(object):
         """
         self.model = model
         self.view = view
-
+        self.thread = PusThread("test.json", Signal(dict))
+        self.thread.start()
+        super().__init__()
 
     def set_callbacks(self):
         """
@@ -40,10 +52,12 @@ class MainViewController(object):
         self.view.window.actionNew_connection.triggered.connect(self.open_new_connection_callback)
         self.view.window.packagesTable.clicked.connect(self.open_more_details_window_callback)
         self.view.window.actionCreate_filter.triggered.connect(self.open_filter_callback)
+        self.view.window.actionDelete_filter.triggered.connect(self.deactivate_filter_callback)
         self.view.window.actionSave_as.triggered.connect(self.open_savefile_window_callback)
         self.view.window.actionLoad.triggered.connect(self.open_openfile_window_callback)
         self.model.table.onClear = self.clear_qtable_callback
         self.model.table.onChange = self.add_elem
+        QtCore.QObject.
 
     def open_create_tc_callback(self):
         """
@@ -62,7 +76,24 @@ class MainViewController(object):
         """
         self.__is_not_used__()
         filter_view = FilterView()
-        filter_view.show()
+        filter_model = FilterModel()
+        filter_controller = FilterController(filter_model, filter_view)
+        filtered_index = self.model.set_filter(filter_controller.show())
+
+        qtable = self.view.window.packagesTable
+
+        for i in range(qtable.rowCount()):
+            qtable.setRowHidden(i, False)
+        for i in range(qtable.rowCount()):
+            id_ = int(qtable.item(i, 0).text())
+            if id_ not in filtered_index:
+                qtable.setRowHidden(i, True)
+
+    def deactivate_filter_callback(self):
+        self.model.set_filter(None)
+        qtable = self.view.window.packagesTable
+        for i in range(qtable.rowCount()):
+            qtable.setRowHidden(i, False)
 
     def open_about_callback(self):
         """
@@ -145,14 +176,11 @@ class MainViewController(object):
         row_count = self.view.window.packagesTable.rowCount()
         self.view.window.packagesTable.insertRow(row_count)
 
-        self.view.window.packagesTable.setItem(row, 0, column_type[0](str(row)))
-        self.view.window.packagesTable.item(row, 0).setTextAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
-
         for i, e in enumerate(elem[:-2]):
-            itm = column_type[i+1](str(e))
-            self.view.window.packagesTable.setItem(row, i+1, itm)
+            itm = column_type[i](str(e))
+            self.view.window.packagesTable.setItem(row, i, itm)
 
-            self.view.window.packagesTable.item(row, i+1).setTextAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
+            self.view.window.packagesTable.item(row, i).setTextAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
         self.view.window.packagesTable.setSortingEnabled(True)
 
     def clear_qtable_callback(self):
@@ -161,7 +189,7 @@ class MainViewController(object):
         self.__is_not_used__()
 
     def show(self):
-        self.view.get_window().show()
+        self.view.show()
 
     @staticmethod
     def __is_not_used__():

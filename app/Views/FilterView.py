@@ -1,4 +1,4 @@
-from PySide import QtGui
+from PySide import QtGui, QtCore
 
 from Views.Views_Ui.Ui_FilterView import Ui_FilterView
 
@@ -12,7 +12,7 @@ class FilterView(object):
     resizeFlag = False
 
     def __init__(self):
-        self.view = QtGui.QWidget()
+        self.view = QtGui.QDialog()
         self.window = Ui_FilterView()
         self.window.setupUi(self.view)
         self.fixedWidth = 0
@@ -40,6 +40,10 @@ class FilterView(object):
         self.view.setMinimumSize(fixed_width, fixed_height)
         self.view.setMaximumSize(fixed_width, fixed_height)
 
+        self.window.typeComboBox.setItemData(0, "")
+        self.window.typeComboBox.setItemData(1, "TC")
+        self.window.typeComboBox.setItemData(2, "TM")
+
     def resize_elements(self, event):
         """
         This method defines all the instructions needed to make
@@ -51,7 +55,8 @@ class FilterView(object):
 
     def show(self):
         """
-        This method calls to the .show() method of the view referenced
-        by this class
+        This method calls to the .exec_() method of the view referenced
+        by this class. Exec method blocks the execution of the program until
+        an answer is given.
         """
-        self.view.show()
+        return self.view.exec_()

@@ -76,3 +76,10 @@ class MainView:
         self.window.packagesTable.resize(self.window.centralwidget.frameGeometry().width() - img_w - padding,
                                          self.window.centralwidget.frameGeometry().height() - padding)
         self.window.label.move(self.window.packagesTable.frameGeometry().width()+padding, img_y)
+
+    def show(self):
+        """
+        This method calls to the .show_() method of the view referenced
+        by this class.
+        """
+        return self.view.show()
