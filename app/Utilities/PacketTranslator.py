@@ -56,6 +56,11 @@ class PacketTranslator(object):
             jsn["data"]["user_data"]["src_data"] = self.tm_3_25_get_data(pack)
         elif (srvc_type_id, msg_type_id) == (8, 1):
             jsn["data"]["user_data"]["src_data"] = self.tc_8_1_get_data(pack)
+        elif srvc_type_id == 9:
+            if msg_type_id == 1:
+                jsn["data"]["user_data"]["src_data"] = self.tc_9_1_get_data(pack)
+            elif msg_type_id == 2:
+                pass
         elif srvc_type_id == 12:
             jsn["data"]["user_data"]["src_data"] = self.tc_12_x_get_data(pack, msg_type_id)
         elif srvc_type_id == 19:
@@ -121,21 +126,20 @@ class PacketTranslator(object):
             src_id = jsn["data"]["pck_sec_head"]["src_id"]
             pb.pus_setTcSource(pack, src_id)
 
+        data = jsn["data"]["user_data"]["src_data"]
         if srvc_type_id == 1:  # If it's a request verification packet
             #  jsn["data"]["user_data"]["src_data"] = self.tm_1_x_set_data(pack)
             pass
         elif (srvc_type_id, msg_type_id) == (3, 25):
             #  jsn["data"]["user_data"]["src_data"] = self.tm_3_25_set_data(pack)
             pass
+        elif (srvc_type_id, msg_type_id) == (9, 1):
+            self.tc_9_1_set_data(pack, data)
         elif (srvc_type_id, msg_type_id) == (8, 1):
-            data = jsn["data"]["user_data"]["src_data"]
-            print(data)
             self.tc_8_1_set_data(pack, data)
         elif srvc_type_id == 12:
-            data = jsn["data"]["user_data"]["src_data"]
             self.tc_12_x_set_data(pack, msg_type_id, data)
         elif srvc_type_id == 19:
-            data = jsn["data"]["user_data"]["src_data"]
             if msg_type_id == 1:
                 self.tc_19_1_set_data(pack, data)
             else:
@@ -150,6 +154,8 @@ class PacketTranslator(object):
 
         if (svc, msg) == (8, 1):
             pb.pus_tc_8_1_createPerformFuctionRequest(packet, 0, 0, 0)
+        elif (svc, msg) == (9, 1):
+            pb.pus_tc_9_1_createSetTimeReportRate(packet, 0, 0, 0)
         elif (svc, msg) == (12, 1):
             pb.pus_tc_12_1_createEnableParameterMonitoringDefinitions(packet, 0, 0, 0)
         elif (svc, msg) == (12, 2):
@@ -236,6 +242,18 @@ class PacketTranslator(object):
     def tc_8_1_set_data(packet, data):
         function_id = data["function_id"]  # Shall be integer
         pb.pus_tc_8_1_setFunctionId(packet, function_id)
+
+    @staticmethod
+    def tc_9_1_get_data(packet):
+        data = dict()
+        exp_rate = pb.pus_tc_9_1_getExponentialRate(packet)
+        data["exp_rate"] = exp_rate
+        return data
+
+    @staticmethod
+    def tc_9_1_set_data(packet, data):
+        exp_rate = data["exp_rate"]
+        pb.pus_tc_9_1_setExponentialRate(packet, exp_rate)
 
     @staticmethod
     def tc_12_x_get_data(packet, msg_id):

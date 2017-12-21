@@ -12,7 +12,7 @@ from Model.FilterModel import FilterModel
 from Controller.CreateTCController import CreateTCController
 from Controller.FilterController import FilterController
 from PySide import QtGui, QtCore
-from PySide.QtCore import Signal
+from PySide.QtCore import Slot
 import os
 import sys
 import json
@@ -23,8 +23,7 @@ sys.path.append(lib_path)
 import pusbinding as pb
 
 
-
-class MainViewController(QtCore.QObject):
+class MainViewController(object):
     """Controller of MainView view"""
 
     def __init__(self, model: App, view: MainView):
@@ -38,9 +37,9 @@ class MainViewController(QtCore.QObject):
         """
         self.model = model
         self.view = view
-        self.thread = PusThread("test.json", Signal(dict))
+        self.set_callbacks()
+        self.thread = PusThread("test.json", self.model)
         self.thread.start()
-        super().__init__()
 
     def set_callbacks(self):
         """
@@ -57,7 +56,6 @@ class MainViewController(QtCore.QObject):
         self.view.window.actionLoad.triggered.connect(self.open_openfile_window_callback)
         self.model.table.onClear = self.clear_qtable_callback
         self.model.table.onChange = self.add_elem
-        QtCore.QObject.
 
     def open_create_tc_callback(self):
         """
@@ -180,8 +178,11 @@ class MainViewController(QtCore.QObject):
             itm = column_type[i](str(e))
             self.view.window.packagesTable.setItem(row, i, itm)
 
-            self.view.window.packagesTable.item(row, i).setTextAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
+            if i != len(elem[:-2])-1:
+                self.view.window.packagesTable.item(row, i).setTextAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
         self.view.window.packagesTable.setSortingEnabled(True)
+        if not self.model.check_filter(elem):
+            self.view.window.packagesTable.setRowHidden(row, True)
 
     def clear_qtable_callback(self):
         self.view.window.packagesTable.clearContents()

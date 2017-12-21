@@ -17,6 +17,7 @@
 5|7|Report the list of disabled event definitions|
 5|8|Disabled event definitions list report|
 8|1|Perform a function|tc
+9|1|Create time report generation rate|tc
 12|1|Enable parameter monitoring definitions|tc
 12|2|Disable parameter monitoring definitions|tc
 12|15|Enable the parameter monitoring function|tc

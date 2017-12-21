@@ -3,7 +3,7 @@ from Model import CreateTCModel
 from Views import CreateTCView
 from Views import AddTCView
 from Utilities import PacketTranslator, ValidateJson
-from Controller import AddTCController
+from .AddTCController import AddTCController
 import os
 import sys
 import json
@@ -85,6 +85,8 @@ class CreateTCController(object):
 
         if (svc, msg) == (8, 1):
             pb.pus_tc_8_1_createPerformFuctionRequest(packet, apid, seq, 0)
+        elif (svc, msg) == (9, 1):
+            pb.pus_tc_9_1_createSetTimeReportRate(packet, apid, seq, 0)
         elif svc == 12:
             if msg == 1:
                 pb.pus_tc_12_1_createEnableParameterMonitoringDefinitions(packet, apid, seq, 0)
@@ -104,8 +106,7 @@ class CreateTCController(object):
                     self.view.window.msgComboBox.setCurrentIndex(0)
                     return None, None
                 else:
-                    print(pb.pus_tc_19_1_createAddEventActionDefinitionsRequest(packet, apid, seq, 0, scndpacket))
-                    print(pb.getError())
+                    pb.pus_tc_19_1_createAddEventActionDefinitionsRequest(packet, apid, seq, 0, scndpacket)
             elif msg == 2:
                 pb.pus_tc_19_2_createDeleteEventActionDefinitionsRequest(packet, apid, seq, 0)
             elif msg == 4:

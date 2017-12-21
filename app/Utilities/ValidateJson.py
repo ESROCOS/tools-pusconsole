@@ -15,9 +15,9 @@ class ValidateJson(object):
                 if msg == 1 or msg == 2:
                     self.__validate__(file, dir + "st12_1_2_schema.json")
                 else:
-                    self.__validate__(file, dir + "st12_4_5_schema.json")
+                    self.__validate__(file, dir + "st12_15_16_schema.json")
             elif svc == 17:
-                self.__validate__(file, dir + "sst17_1_schema.json")
+                self.__validate__(file, dir + "st17_1_schema.json")
             elif svc == 19:
                 if msg == 1:
                     pass
