@@ -50,6 +50,9 @@ class PacketTranslator(object):
 
         jsn["data"]["user_data"] = {"src_data": {}, "spare": 0, "pack_error_ctrl": 0}
 
+        print("-------------")
+        print(srvc_type_id, msg_type_id)
+        print("-------------")
         if srvc_type_id == 1:  # If it's a request verification packet
             jsn["data"]["user_data"]["src_data"] = self.tm_1_x_get_data(pack)
         elif (srvc_type_id, msg_type_id) == (3, 25):

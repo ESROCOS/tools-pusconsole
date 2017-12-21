@@ -104,13 +104,31 @@ class App(object):
         # ack_flags = data["pck_sec_head"]["ack_flags"]
 
         info = "-"
-        if (svc, msg) == (8, 1):
+        if svc == 1:
+            failure = src_data["failure"]
+            request = src_data["request"]
+            info = "Req. Apid = {}. ".format(request["apid"])
+            if msg == 5 or msg == 6:
+                info += "Step = {}. ".format(src_data["step"])
+            if msg == 1 or msg == 4 or msg == 6 or msg == 8:
+                info += "Failure = {}".format(failure["code"])
+                # info += "Failure = {}, Address = {}, Data = {}, Subcode = {}. ".format(failure["code"],
+                #                                                                      failure["info"]["address"],
+                #                                                                      failure["info"]["data"],
+                #                                                                      failure["info"]["subcode"])
+        elif (svc, msg) == (8, 1):
             info = "Function id = {}.".format(src_data["function_id"])
         elif (svc, msg) == (9, 1):
             info = "Rate = 2^{}".format(src_data["exp_rate"])
         elif svc == 12:
             if msg == 1 or msg == 2:
                 info = "Param monitoring id = {}".format(src_data["pmon_id"])
+        elif svc == 19:
+            info = "Event id = {}. ".format(src_data["event_id"])
+            if msg == 1:
+                sub_svc = data["pck_sec_head"]["msg_type_id"]["service_type_id"]
+                sub_msg = data["pck_sec_head"]["msg_type_id"]["msg_subtype_id"]
+                info += "Encapsulated: Svc = {}, Msg = {}.".format(sub_svc, sub_msg)
 
 
         # ack_str = " acks: none"

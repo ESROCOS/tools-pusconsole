@@ -21,6 +21,11 @@ pt = PacketTranslator()
 if len(args) > 1:
     if args[1] == "-test":
         controller.show()
+        for i in range(9):
+            packet = pb.pusPacket_t()
+            print(pb.ret_packets(packet, i))
+            app.add(pt.packet2json(packet), packet)
+            print(pb.getError())
         # packet0 = pb.pusPacket_t()
         # pb.pus_tc_17_1_createConnectionTestRequest(packet0, 0, 0)
         # packet = pb.pusPacket_t()
