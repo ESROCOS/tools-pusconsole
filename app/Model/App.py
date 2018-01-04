@@ -116,6 +116,20 @@ class App(object):
                 #                                                                      failure["info"]["address"],
                 #                                                                      failure["info"]["data"],
                 #                                                                      failure["info"]["subcode"])
+
+
+
+        # BIENVENIDO DE NUEVO. TE HABÍAS QUEDADO AQUI, TENIAS QUE SEGUIR CON LA IMPRESION
+        # DE LA INFORMACION DE LOS SERVICIOS, ESTABAS EN EL 3. HAY Q DOCUMENTAR
+        elif (svc, msg) == (3, 25):
+            info = "Report id: {}. Params: ".format(src_data["hk_param_report_id"])
+            params = []
+            for k in sorted(src_data.keys()):
+                if k != "hk_param_report_id":
+                    params.append(str(src_data[k]))
+            print(params)
+            info += ', '.join(params)
+
         elif (svc, msg) == (8, 1):
             info = "Function id = {}.".format(src_data["function_id"])
         elif (svc, msg) == (9, 1):

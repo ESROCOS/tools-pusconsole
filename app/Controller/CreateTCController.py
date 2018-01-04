@@ -96,6 +96,24 @@ class CreateTCController(object):
                 pb.pus_tc_12_15_createEnableParameterMonitoring(packet, apid, seq)
             elif msg == 16:
                 pb.pus_tc_12_16_createDisableParameterMonitoring(packet, apid, seq)
+        elif svc == 11:
+            if msg == 1:
+                pb.pus_tc_11_1_createEnableTimeBasedSchedule(packet, apid, seq)
+            elif msg == 2:
+                pb.pus_tc_11_2_createDisableTimeBasedSchedule(packet, apid, seq)
+            elif msg == 3:
+                pb.pus_tc_11_3_createResetTimeBasedSchedule(packet, apid, seq)
+            elif msg == 4:
+                pb.pus_tc_11_4_createInsertActivityIntoSchedule(packet, apid, seq)
+                scndpacket = self.open_add_tc_window()
+                if scndpacket is None:
+                    self.view.window.msgComboBox.setCurrentIndex(0)
+                    return None, None
+                else:
+                    now = pb.pusTime_t()
+                    pb.pus_now(now)
+                    pb.pus_tc_11_4_setActivity(packet, scndpacket, now)
+
         elif (svc, msg) == (17, 1):
             pb.pus_tc_17_1_createConnectionTestRequest(packet, apid, seq)
         elif svc == 19:
@@ -123,7 +141,7 @@ class CreateTCController(object):
     def open_add_tc_window(self):
         """
         This method opens a new window to create a telecommand that
-        will be embedded in st19 telecommand
+        will be embedded in st11 or st19 telecommands
         :return: The inner telecommand
         """
         view = AddTCView()

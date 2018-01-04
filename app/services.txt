@@ -18,6 +18,10 @@
 5|8|Disabled event definitions list report|
 8|1|Perform a function|tc
 9|1|Create time report generation rate|tc
+11|1|Enable the time-based schedule execution function|tc
+11|2|Disable the time-based schedule execution function|tc
+11|3|Reset the time-based schedule|tc
+11|4|Insert activities into the time-based schedule|tc
 12|1|Enable parameter monitoring definitions|tc
 12|2|Disable parameter monitoring definitions|tc
 12|15|Enable the parameter monitoring function|tc

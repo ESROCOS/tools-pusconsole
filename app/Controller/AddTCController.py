@@ -24,7 +24,7 @@ class AddTCController(object):
         self.view.window.msgComboBox.currentIndexChanged.connect(lambda i: self.msg_combobox_changed_callback(i))
 
     def __add_telecommand(self):
-        excluded = ("19",)
+        excluded = ("19", "11")
         for elem in sorted(self.model.telecommand, key=int):
             if elem not in excluded:
                 self.view.add_item_svc_type_combo_box(elem)

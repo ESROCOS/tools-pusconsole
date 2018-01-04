@@ -50,9 +50,6 @@ class PacketTranslator(object):
 
         jsn["data"]["user_data"] = {"src_data": {}, "spare": 0, "pack_error_ctrl": 0}
 
-        print("-------------")
-        print(srvc_type_id, msg_type_id)
-        print("-------------")
         if srvc_type_id == 1:  # If it's a request verification packet
             jsn["data"]["user_data"]["src_data"] = self.tm_1_x_get_data(pack)
         elif (srvc_type_id, msg_type_id) == (3, 25):
@@ -66,6 +63,9 @@ class PacketTranslator(object):
                 pass
         elif srvc_type_id == 12:
             jsn["data"]["user_data"]["src_data"] = self.tc_12_x_get_data(pack, msg_type_id)
+        elif srvc_type_id == 11:
+            if msg_type_id == 4:
+                jsn["data"]["user_data"]["src_data"] = self.tc_11_4_get_data(pack)
         elif srvc_type_id == 19:
             if msg_type_id == 1:
                 jsn["data"]["user_data"]["src_data"] = self.tc_19_1_get_data(pack)
@@ -74,7 +74,6 @@ class PacketTranslator(object):
         return jsn
 
     def json2packet(self, jsn):
-        # Vamos a empezar parseando solos los campos de data
         pack = self.create_default_packet(jsn)
         version = jsn["primary_header"]["pck_version"]  # Shall be integer
         pb.pus_setPacketVersion(pack, version)
@@ -213,11 +212,9 @@ class PacketTranslator(object):
     def tm_3_25_get_data(packet):
         data = dict()
         data["hk_param_report_id"] = pb.pus_tm_3_25_getReportId(packet)
-        num_param = int()
-        pb.pus_tm_3_25_getNumParameters(packet, num_param)
+        num_param = pb.pus_tm_3_25_getNumParameters(packet)
         for i in range(num_param):
-            param = int()
-            pb.pus_tm_3_25_getParameterValue(packet, i, param)
+            param = pb.pus_tm_3_25_getParameterValue(packet, i)
             data["param"+str(i+1)] = param
         return data
 
@@ -257,6 +254,18 @@ class PacketTranslator(object):
     def tc_9_1_set_data(packet, data):
         exp_rate = data["exp_rate"]
         pb.pus_tc_9_1_setExponentialRate(packet, exp_rate)
+
+    def tc_11_4_get_data(self, packet):
+        data = dict()
+        packet_reduced = pb.pusPacketReduced_t()
+        ncount = pb.pus_tc_11_4_getNCount(packet)
+        for i in range(ncount):
+            data["activity"+str(i+1)] = dict()
+            data_packet = pb.pusPacket_t()
+            pb.pus_tc_11_4_get_request(i, packet, data_packet, 10)
+            data["activity"+str(i+1)]["packet"] = self.packet2json(data_packet)
+            data["activity" + str(i + 1)]["time"] = 0
+        return data
 
     @staticmethod
     def tc_12_x_get_data(packet, msg_id):
