@@ -21,7 +21,7 @@ pt = PacketTranslator()
 if len(args) > 1:
     if args[1] == "-test":
         controller.show()
-        for i in range(10):
+        for i in range(11):
             packet = pb.pusPacket_t()
             print(pb.ret_packets(packet, i))
             app.add(pt.packet2json(packet), packet)

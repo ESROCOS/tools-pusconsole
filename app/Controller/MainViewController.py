@@ -122,6 +122,9 @@ class MainViewController(object):
         details_view.show()
 
     def open_savefile_window_callback(self):
+        """
+        This method makes an insert query to the database 
+        """
         file = QtGui.QFileDialog.getSaveFileName()
         d = Database(file[0])
         packages = [tuple(e) for e in self.model.table]
@@ -131,6 +134,11 @@ class MainViewController(object):
         self.__is_not_used__()
 
     def open_openfile_window_callback(self):
+        """
+        This method is triggered when the user hits the button to load a
+        dump from file. This method makes a query to the database and adds each
+        result to the table
+        """
         file = QtGui.QFileDialog.getOpenFileName()
         d = Database(file[0])
 
@@ -185,11 +193,17 @@ class MainViewController(object):
             self.view.window.packagesTable.setRowHidden(row, True)
 
     def clear_qtable_callback(self):
+        """
+        This method clears the table of the main window
+        """
         self.view.window.packagesTable.clearContents()
         self.view.window.packagesTable.setRowCount(1)
         self.__is_not_used__()
 
     def show(self):
+        """
+        This method calls the .show() method of the view
+        """
         self.view.show()
 
     @staticmethod
@@ -198,6 +212,10 @@ class MainViewController(object):
 
 
 class IntegerTableWidgetItem(QtGui.QTableWidgetItem):
+    """
+    This class inherits QTableWidgetItem to be able to
+    sort the table by integers
+    """
     def __lt__(self, other):
         if isinstance(other, QtGui.QTableWidgetItem):
             my_value = int(self.data(QtCore.Qt.EditRole))
@@ -209,6 +227,10 @@ class IntegerTableWidgetItem(QtGui.QTableWidgetItem):
 
 
 class TimeTableWidgetItem(QtGui.QTableWidgetItem):
+    """
+        This class inherits QTableWidgetItem to be able to
+        sort the table by time
+        """
     def __lt__(self, other):
         if isinstance(other, QtGui.QTableWidgetItem):
             import datetime

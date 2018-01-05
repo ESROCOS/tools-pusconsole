@@ -10,7 +10,15 @@ import pusbinding as pb
 
 
 class AddTCController(object):
+    """
+    This class controls AddTCView
+    """
     def __init__(self, model: CreateTCModel, view: AddTCView):
+        """
+        Constructor of the class
+        :param model: The model the controller references
+        :param view: The view the controller references
+        """
         self.model = model
         self.view = view
         self.command = ""
@@ -20,23 +28,42 @@ class AddTCController(object):
         self.svc_combobox_changed_callback(self.view.window.serviceComboBox.currentIndex())
 
     def set_callbacks(self):
+        """
+        This method is used to set the callbacks to every action that the
+        user triggers
+        """
         self.view.window.serviceComboBox.currentIndexChanged.connect(lambda i: self.svc_combobox_changed_callback(i))
         self.view.window.msgComboBox.currentIndexChanged.connect(lambda i: self.msg_combobox_changed_callback(i))
 
     def __add_telecommand(self):
-        excluded = ("19", "11")
+        """
+        This method fills service id combobox
+        """
         for elem in sorted(self.model.telecommand, key=int):
-            if elem not in excluded:
-                self.view.add_item_svc_type_combo_box(elem)
+            self.view.add_item_svc_type_combo_box(elem)
 
     def svc_combobox_changed_callback(self, index):
+        """
+        This method is triggered when the selected index of the
+        service id combobox changes. This method fills the message
+        id combobox depending on the service id selected.
+        :param index: The new selected index
+        """
         svcComboBox = self.view.window.serviceComboBox
         svc = svcComboBox.itemText(index)
         self.view.window.msgComboBox.addItem("", None)
+        self.view.clear_msg_type_combo_box()
         for msg in sorted(self.model.telecommand[svc], key=int):
-            self.view.add_item_msg_type_combo_box(msg)
+            if (svc, msg) != ('19', '1') and (svc, msg) != ('11', '4'):
+                self.view.add_item_msg_type_combo_box(msg)
 
     def msg_combobox_changed_callback(self, index):
+        """
+        This method is triggered when the selected index of the
+        message id combobox changes. This method creates a default
+        packet of type (service id, message id)
+        :param index: The new selected index
+        """
         svcComboBox = self.view.window.serviceComboBox
         msgComboBox = self.view.window.msgComboBox
 
@@ -53,6 +80,13 @@ class AddTCController(object):
         self.view.set_tc_text(json.dumps(self.command["data"], indent=2))
 
     def show_packet_json(self, svc, msg):
+        """
+        This method writes the packet with the service id and message id
+        specified in json format in the textbox of the window.
+        :param svc: Service id of the packet
+        :param msg: Message id of the packet
+        :return: The packet in json format
+        """
         packet = pb.pusPacket_t()
         packet_translator = PacketTranslator()
 
@@ -62,6 +96,15 @@ class AddTCController(object):
 
         if (svc, msg) == (8, 1):
             pb.pus_tc_8_1_createPerformFuctionRequest(packet, apid, seq, 0)
+        elif (svc, msg) == (9, 1):
+            pb.pus_tc_9_1_createSetTimeReportRate(packet, apid, seq, 0)
+        elif svc == 11:
+            if msg == 1:
+                pb.pus_tc_11_1_createEnableTimeBasedSchedule(packet, apid, seq)
+            elif msg == 2:
+                pb.pus_tc_11_2_createDisableTimeBasedSchedule(packet, apid, seq)
+            elif msg == 3:
+                pb.pus_tc_11_3_createResetTimeBasedSchedule(packet, apid, seq)
         elif svc == 12:
             if msg == 1:
                 pb.pus_tc_12_1_createEnableParameterMonitoringDefinitions(packet, apid, seq, 0)
@@ -73,15 +116,26 @@ class AddTCController(object):
                 pb.pus_tc_12_16_createDisableParameterMonitoring(packet, apid, seq)
         elif (svc, msg) == (17, 1):
             pb.pus_tc_17_1_createConnectionTestRequest(packet, apid, seq)
+        elif svc == 19:
+            if msg == 2:
+                pb.pus_tc_19_2_createDeleteEventActionDefinitionsRequest(packet, apid, seq, 0)
+            elif msg == 4:
+                pb.pus_tc_19_4_createEnableEventActionDefinitions(packet, apid, seq, 0)
+            elif msg == 5:
+                pb.pus_tc_19_5_createDisableEventActionDefinitions(packet, apid, seq, 0)
         else:
             pass
         return packet_translator.packet2json(packet)
 
     def show(self):
+        """
+        This method calls the .show() method of the view and returns
+        the packet that the user creates in this window
+        :return: The created packet
+        """
         code = self.view.show()
         packet_translator = PacketTranslator()
         self.command["data"] = self.view.get_tc_text()
-        print(self.command["data"])
         if code == 1:
             packet = packet_translator.json2packet(self.command)
             return packet

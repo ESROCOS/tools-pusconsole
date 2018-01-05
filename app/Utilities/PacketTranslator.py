@@ -1,4 +1,4 @@
-import os, sys, collections, time, glob
+import os, sys, collections, time, datetime, glob
 dir_path = os.path.dirname(os.path.realpath(__file__))
 lib_path = os.path.join(dir_path, '../../../pus/debug/pylib')
 sys.path.append(lib_path)
@@ -54,6 +54,8 @@ class PacketTranslator(object):
             jsn["data"]["user_data"]["src_data"] = self.tm_1_x_get_data(pack)
         elif (srvc_type_id, msg_type_id) == (3, 25):
             jsn["data"]["user_data"]["src_data"] = self.tm_3_25_get_data(pack)
+        elif srvc_type_id == 5:
+            jsn["data"]["user_data"]["src_data"] = self.tm_5_x_get_data(pack)
         elif (srvc_type_id, msg_type_id) == (8, 1):
             jsn["data"]["user_data"]["src_data"] = self.tc_8_1_get_data(pack)
         elif srvc_type_id == 9:
@@ -111,6 +113,8 @@ class PacketTranslator(object):
             pb.pus_setTmDestination(pack, tm_dest)
 
             time_ = jsn["data"]["pck_sec_head"]["time"]  # Revisar, puede ser que esté en string
+            if type(time_) == str:
+                time_ = datetime.datetime.strptime(time_, '%H:%M:%S').time()
             pb.pus_setTmPacketTime(pack, time_)
         else:
             srvc_type_id = jsn["data"]["pck_sec_head"]["msg_type_id"]["service_type_id"]
@@ -221,13 +225,10 @@ class PacketTranslator(object):
     @staticmethod
     def tm_5_x_get_data(packet):
         data = dict()
-        event_id = int()
-        pb.pus_tm_get_5_X_event_id(packet, event_id)
+        event_id = pb.pus_tm_get_5_X_event_id(packet)
         data["event_id"] = event_id
-        aux1 = int()
-        pb.pus_tm_get_5_X_event_auxdata1(packet, aux1)
-        aux2 = int()
-        pb.pus_tm_get_5_X_event_auxdata2(packet, aux2)
+        aux1 = pb.pus_tm_get_5_X_event_auxdata1(packet)
+        aux2 = pb.pus_tm_get_5_X_event_auxdata2(packet)
         data["auxdata"] = {"data1": aux1, "data2": aux2}
         return data
 
@@ -257,14 +258,14 @@ class PacketTranslator(object):
 
     def tc_11_4_get_data(self, packet):
         data = dict()
-        packet_reduced = pb.pusPacketReduced_t()
         ncount = pb.pus_tc_11_4_getNCount(packet)
         for i in range(ncount):
             data["activity"+str(i+1)] = dict()
             data_packet = pb.pusPacket_t()
             pb.pus_tc_11_4_get_request(i, packet, data_packet, 10)
+            t = pb.pus_tc_11_4_get_release_time(i, packet, 10)
             data["activity"+str(i+1)]["packet"] = self.packet2json(data_packet)
-            data["activity" + str(i + 1)]["time"] = 0
+            data["activity" + str(i + 1)]["time"] = t # Revisar, tiempo
         return data
 
     @staticmethod

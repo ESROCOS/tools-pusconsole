@@ -116,11 +116,6 @@ class App(object):
                 #                                                                      failure["info"]["address"],
                 #                                                                      failure["info"]["data"],
                 #                                                                      failure["info"]["subcode"])
-
-
-
-        # BIENVENIDO DE NUEVO. TE HABÍAS QUEDADO AQUI, TENIAS QUE SEGUIR CON LA IMPRESION
-        # DE LA INFORMACION DE LOS SERVICIOS, ESTABAS EN EL 3. HAY Q DOCUMENTAR
         elif (svc, msg) == (3, 25):
             info = "Report id: {}. Params: ".format(src_data["hk_param_report_id"])
             params = []
@@ -129,7 +124,9 @@ class App(object):
                     params.append(str(src_data[k]))
             print(params)
             info += ', '.join(params)
-
+        elif svc == 5:
+            info = "Event id: {}. Data1: {}. Data2: {}".format(src_data["event_id"], src_data["auxdata"]["data1"],
+                                                               src_data["auxdata"]["data2"])
         elif (svc, msg) == (8, 1):
             info = "Function id = {}.".format(src_data["function_id"])
         elif (svc, msg) == (9, 1):

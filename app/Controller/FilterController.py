@@ -4,16 +4,33 @@ from Model import FilterModel
 
 
 class FilterController(object):
+    """
+    This class controls the filter functionality
+    """
     def __init__(self, model: FilterModel, view: FilterView):
+        """
+        Constructor of FilterCotroller class
+        :param model: The model referenced by the class
+        :param view: The view referenced by the class
+        """
         self.model = model
         self.view = view
         self.set_callbacks()
 
     def set_callbacks(self):
+        """
+        This method is used to set the callbacks to every action that the
+        user triggers
+        """
         self.view.window.okButton.clicked.connect(self.accept_callback)
         self.view.window.cancelButton.clicked.connect(self.reject_callback)
 
     def accept_callback(self):
+        """
+        This method is triggered when the user hits the accept button of
+        the window once the filter is already defined. The filter is saved
+        and lately applied
+        """
         type_combo_box = self.view.window.typeComboBox
         type = type_combo_box.itemData(type_combo_box.currentIndex())
 
@@ -39,9 +56,17 @@ class FilterController(object):
             msg_box.exec_()
 
     def reject_callback(self):
+        """
+        This method is called when the user hits the cancel button of the view
+        """
         self.view.view.reject()
 
     def show(self):
+        """
+        This method calls the .show() method of the view
+        and returns the options defined in the filter.
+        :return: Options of the filter
+        """
         code = self.view.show()
         if code == 1:
             return self.model.get_filter_options()
