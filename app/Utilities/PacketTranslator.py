@@ -7,8 +7,16 @@ import json
 
 
 class PacketTranslator(object):
-
+    """
+    This class implements the functionality to parse between
+    json and packet.
+    """
     def packet2json(self, pack):
+        """
+        This method creates a json from a packet format
+        :param pack: Packet to be parsed
+        :return: The packet in json format
+        """
         jsn = collections.OrderedDict()
         jsn["primary_header"] = collections.OrderedDict()
         jsn["data"] = collections.OrderedDict()
@@ -76,6 +84,11 @@ class PacketTranslator(object):
         return jsn
 
     def json2packet(self, jsn):
+        """
+        This method creates a packet from a json format
+        :param jsn: The packet in json format
+        :return: A packet object
+        """
         pack = self.create_default_packet(jsn)
         version = jsn["primary_header"]["pck_version"]  # Shall be integer
         pb.pus_setPacketVersion(pack, version)
@@ -154,6 +167,12 @@ class PacketTranslator(object):
 
     @staticmethod
     def create_default_packet(jsn):
+        """
+        This method creates a default packet for the packet specified
+        in the json passed as an argument
+        :param jsn: The packet in json format
+        :return: A packet object
+        """
         packet = pb.pusPacket_t()
         svc = jsn["data"]["pck_sec_head"]["msg_type_id"]["service_type_id"]
         msg = jsn["data"]["pck_sec_head"]["msg_type_id"]["msg_subtype_id"]
@@ -188,7 +207,7 @@ class PacketTranslator(object):
     @staticmethod
     def tm_1_x_get_data(packet):
         """
-        This functions parses the st01 packet data field to json
+        This function parses the st01 packet data field to json
         :param packet: The packet which data field we want to parse
         :return: A JSON object with all the parsed information
         """
@@ -214,6 +233,11 @@ class PacketTranslator(object):
 
     @staticmethod
     def tm_3_25_get_data(packet):
+        """
+        This function parses the st03-25 packet data field to json
+        :param packet: The packet which data field we want to parse
+        :return: A JSON object with all the parsed information
+        """
         data = dict()
         data["hk_param_report_id"] = pb.pus_tm_3_25_getReportId(packet)
         num_param = pb.pus_tm_3_25_getNumParameters(packet)
@@ -224,6 +248,11 @@ class PacketTranslator(object):
 
     @staticmethod
     def tm_5_x_get_data(packet):
+        """
+        This function parses the st05 packet data field to json
+        :param packet: The packet which data field we want to parse
+        :return: A JSON object with all the parsed information
+        """
         data = dict()
         event_id = pb.pus_tm_get_5_X_event_id(packet)
         data["event_id"] = event_id
@@ -234,6 +263,11 @@ class PacketTranslator(object):
 
     @staticmethod
     def tc_8_1_get_data(packet):
+        """
+        This function parses the st08-1 packet data field to json
+        :param packet: The packet which data field we want to parse
+        :return: A JSON object with all the parsed information
+        """
         data = dict()
         function_id = pb.pus_tc_8_1_getFunctionId(packet)
         data["function_id"] = function_id
@@ -241,11 +275,22 @@ class PacketTranslator(object):
 
     @staticmethod
     def tc_8_1_set_data(packet, data):
+        """
+        This function fills in a st08-1 packet data field with
+        a data dictionary passed as an argument
+        :param packet: The packet we want to fill in
+        :param data: A data dictionary with all the parameters
+        """
         function_id = data["function_id"]  # Shall be integer
         pb.pus_tc_8_1_setFunctionId(packet, function_id)
 
     @staticmethod
     def tc_9_1_get_data(packet):
+        """
+        This function parses the st09-1 packet data field to json
+        :param packet: The packet which data field we want to parse
+        :return: A JSON object with all the parsed information
+        """
         data = dict()
         exp_rate = pb.pus_tc_9_1_getExponentialRate(packet)
         data["exp_rate"] = exp_rate
@@ -253,10 +298,21 @@ class PacketTranslator(object):
 
     @staticmethod
     def tc_9_1_set_data(packet, data):
+        """
+        This function fills in a st09-1 packet data field with
+        a data dictionary passed as an argument
+        :param packet: The packet we want to fill in
+        :param data: A data dictionary with all the parameters
+        """
         exp_rate = data["exp_rate"]
         pb.pus_tc_9_1_setExponentialRate(packet, exp_rate)
 
     def tc_11_4_get_data(self, packet):
+        """
+        This function parses the st011-4 packet data field to json
+        :param packet: The packet which data field we want to parse
+        :return: A JSON object with all the parsed information
+        """
         data = dict()
         ncount = pb.pus_tc_11_4_getNCount(packet)
         for i in range(ncount):
@@ -270,6 +326,11 @@ class PacketTranslator(object):
 
     @staticmethod
     def tc_12_x_get_data(packet, msg_id):
+        """
+        This function parses the st12 packet data field to json
+        :param packet: The packet which data field we want to parse
+        :return: A JSON object with all the parsed information
+        """
         data = dict()
 
         if msg_id == 1 or msg_id == 2:
@@ -279,12 +340,23 @@ class PacketTranslator(object):
 
     @staticmethod
     def tc_12_x_set_data(packet, msg_id, data):
+        """
+        This function fills in a st12 packet data field with
+        a data dictionary passed as an argument
+        :param packet: The packet we want to fill in
+        :param data: A data dictionary with all the parameters
+        """
         if msg_id == 1 or msg_id == 2:
             pmon_id = data["pmon_id"]  # Shall be integer
             pb.pus_tc_12_1_2_setPmonId(packet, pmon_id)
         return packet
 
     def tc_19_1_get_data(self, packet):
+        """
+        This function parses the st19 packet data field to json
+        :param packet: The packet which data field we want to parse
+        :return: A JSON object with all the parsed information
+        """
         data = dict()
         packet_reduced = pb.pusPacketReduced_t()
         pb.pus_tc_19_1_getAction(packet_reduced, packet)
@@ -297,6 +369,12 @@ class PacketTranslator(object):
         return data
 
     def tc_19_1_set_data(self, packet, data):
+        """
+        This function fills in a st19-1 packet data field with
+        a data dictionary passed as an argument
+        :param packet: The packet we want to fill in
+        :param data: A data dictionary with all the parameters
+        """
         packet_reduced = pb.pusPacketReduced_t()
         action_packet = self.json2packet(data["request"])
         pb.pus_packetReduced_createPacketReducedFromPacket(packet_reduced, action_packet)
@@ -307,6 +385,11 @@ class PacketTranslator(object):
 
     @staticmethod
     def tc_19_2_4_5_get_data(packet):
+        """
+        This function parses the st19-2-4-5 packet data field to json
+        :param packet: The packet which data field we want to parse
+        :return: A JSON object with all the parsed information
+        """
         data = dict()
         event_id = int()
         pb.pus_tc_19_X_getEventId(event_id, packet)
@@ -315,6 +398,12 @@ class PacketTranslator(object):
 
     @staticmethod
     def tc_19_2_4_5_set_data(packet, data):
+        """
+        This function fills in a st19-2-4-5 packet data field with
+        a data dictionary passed as an argument
+        :param packet: The packet we want to fill in
+        :param data: A data dictionary with all the parameters
+        """
         event_id = data["event_id"] # Shall be integer
         print(pb.pus_tc_19_X_setEventId(packet, event_id))
         event_id = int()

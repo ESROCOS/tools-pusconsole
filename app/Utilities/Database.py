@@ -3,14 +3,26 @@ from sqlite3 import Error
 
 
 class Database(object):
-
+    """
+    This class represents a database object. It implements
+    some methods to ease insertion and query tasks
+    """
     def __init__(self, dbname: str):
+        """
+        This is the constructor of the class
+        :param dbname: The name of the database to open
+        """
         self.db = None
         self.cursor = None
         self.open_db(dbname)
         self.create_table()
 
     def create_table(self, table_name: str = "packages"):
+        """
+        This method creates a table in the database with the
+        name passed as argument
+        :param table_name: The name of the table
+        """
         query = """CREATE TABLE
                     IF NOT EXISTS """ + table_name + """(
                         type text,
@@ -28,6 +40,10 @@ class Database(object):
         self.cursor.execute(query)
 
     def open_db(self, db_name: str):
+        """
+        This method opens the database with the name passed as an argument
+        :param db_name: The name of the database to be opened
+        """
         try:
             self.db = sq3.connect(db_name)
             self.cursor = self.db.cursor()

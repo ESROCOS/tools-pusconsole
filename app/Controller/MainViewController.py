@@ -123,7 +123,7 @@ class MainViewController(object):
 
     def open_savefile_window_callback(self):
         """
-        This method makes an insert query to the database 
+        This method makes an insert query to the database
         """
         file = QtGui.QFileDialog.getSaveFileName()
         d = Database(file[0])

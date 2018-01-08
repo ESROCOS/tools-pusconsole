@@ -67,12 +67,25 @@ class CreateTCView(object):
             self.resizeFlag = True
 
     def add_item_svc_type_combo_box(self, item: str):
+        """
+        This method fills in the service id combobox.
+        :param item: element to be added to the combobox
+        """
         self.window.serviceComboBox.addItem(item, int(item))
 
     def add_item_msg_type_combo_box(self, item: str):
+        """
+        This method fills in the message id combobox, for each
+        service in the service combobox, with the messages ids
+        of that service.
+        :param item: element to be added to the combobox
+        """
         self.window.msgComboBox.addItem(item, int(item))
 
     def clear_msg_type_combo_box(self):
+        """
+        This method clears the message combobox
+        """
         self.window.msgComboBox.clear()
 
     def show(self):
@@ -99,10 +112,18 @@ class CreateTCView(object):
         self.window.commandTextEdit.setPlainText(json)
 
     def get_tc_text(self):
+        """
+        This method returns the json that appears in
+        the window textbox
+        :return: json with the packet
+        """
         try:
             return json.loads(self.window.commandTextEdit.toPlainText())
         except json.JSONDecodeError:
             raise
 
     def close(self):
+        """
+        This method closes the view
+        """
         self.view.close()

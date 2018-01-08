@@ -11,8 +11,15 @@ import pusbinding as pb
 
 
 class App(object):
-
+    """
+    This class represents the model of the application. It saves an
+    instance of the packet table, the current filter and the apid of the
+    app.
+    """
     def __init__(self):
+        """
+        Constructor of the class
+        """
         self.table = Table()
         self.tc_apid = pb.pusApidInfo_t()
         self.currentFilter = None
@@ -62,10 +69,18 @@ class App(object):
         print([t[2] for t in self.table])
 
     def set_filter(self, filter_: dict):
+        """
+        This method sets a filter and applies it to the table
+        :param filter_: The filter to be applied
+        """
         self.currentFilter = filter_
         return self.apply_filter()
 
     def apply_filter(self):
+        """
+        This method applies a filter to the table
+        :return: A matrix with all the elements to be shown
+        """
         if self.currentFilter is None:
             return [e[0] for e in self.table]
 
@@ -79,6 +94,13 @@ class App(object):
         return table
 
     def check_filter(self, e):
+        """
+        This method checks if an element passed as an argument
+        satisfies the current filter
+        :param e: The element to be checked
+        :return: True if the element satisfies the filter
+        and false in other case
+        """
         if self.currentFilter is not None:
             type_ = self.currentFilter["type"]
             svc = self.currentFilter["svc"]
@@ -96,6 +118,12 @@ class App(object):
 
     @staticmethod
     def __create_info_string__(elem):
+        """
+        This static method creates the information string for each
+        telemetry or telecommand in the table
+        :param elem: The telemetry or telecommand packet
+        :return: The information string
+        """
         info = ""
         svc = elem["data"]["pck_sec_head"]["msg_type_id"]["service_type_id"]
         msg = elem["data"]["pck_sec_head"]["msg_type_id"]["msg_subtype_id"]

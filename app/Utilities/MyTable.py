@@ -1,5 +1,8 @@
 class Table(list):
-
+    """
+    This class override the list class to be able
+    to implement events when an element is added
+    """
     def __init__(self):
         self.onChange = None
         self.onClear = None
