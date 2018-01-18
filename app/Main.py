@@ -1,4 +1,4 @@
-from PySide import QtCore, QtGui
+from PySide import QtGui
 from Model import App
 from Controller import MainViewController
 from Views import MainView
@@ -19,13 +19,15 @@ args = sys.argv
 pt = PacketTranslator()
 
 if len(args) > 1:
-    if args[1] == "-test":
-        controller.show()
-        for i in range(11):
-            packet = pb.pusPacket_t()
-            print(pb.ret_packets(packet, i))
-            app.add(pt.packet2json(packet), packet)
-            print(pb.getError())
+    #if args[1] == "-test":
+    controller.show()
+    """
+    test purpose below
+    """
+    for i in range(12):
+        packet = pb.pusPacket_t()
+        pb.ret_packets(packet, i)
+        app.add(pt.packet2json(packet), packet)
         # packet0 = pb.pusPacket_t()
         # pb.pus_tc_17_1_createConnectionTestRequest(packet0, 0, 0)
         # packet = pb.pusPacket_t()

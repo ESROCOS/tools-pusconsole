@@ -1,8 +1,4 @@
-from Views import MainView
-from Controller import MainViewController
-from Utilities import PacketTranslator
 from Utilities.MyTable import Table
-from PySide.QtCore import Slot
 import os, json, sys
 dir_path = os.path.dirname(os.path.realpath(__file__))
 lib_path = os.path.join(dir_path, '../../../pus/debug/pylib')
@@ -63,10 +59,9 @@ class App(object):
         list_.append(pck_seq_ctrl)
         list_.append(status)
         list_.append(information)
-        list_.append(packet)
         list_.append(json.dumps(elem))
+        list_.append(packet)
         self.table.append(list_)
-        print([t[2] for t in self.table])
 
     def set_filter(self, filter_: dict):
         """
@@ -159,15 +154,31 @@ class App(object):
             info = "Function id = {}.".format(src_data["function_id"])
         elif (svc, msg) == (9, 1):
             info = "Rate = 2^{}".format(src_data["exp_rate"])
+        elif (svc, msg) == (11, 4):
+            info = ""
+            for i, k in enumerate(sorted(src_data.keys())):
+                activity_i_packet = src_data[k]["packet"]["data"]["pck_sec_head"]["msg_type_id"]
+                time_i = src_data[k]["time"]
+                src = activity_i_packet["service_type_id"]
+                msg = activity_i_packet["msg_subtype_id"]
+                info += "Act{}: Time: {}, Packet: ({}, {}). ".format(i+1, time_i, src, msg)
+
         elif svc == 12:
             if msg == 1 or msg == 2:
                 info = "Param monitoring id = {}".format(src_data["pmon_id"])
         elif svc == 19:
             info = "Event id = {}. ".format(src_data["event_id"])
             if msg == 1:
-                sub_svc = data["pck_sec_head"]["msg_type_id"]["service_type_id"]
-                sub_msg = data["pck_sec_head"]["msg_type_id"]["msg_subtype_id"]
-                info += "Encapsulated: Svc = {}, Msg = {}.".format(sub_svc, sub_msg)
+                request_data = data["user_data"]["src_data"]["request"]["data"]
+                sub_svc = request_data["pck_sec_head"]["msg_type_id"]["service_type_id"]
+                sub_msg = request_data["pck_sec_head"]["msg_type_id"]["msg_subtype_id"]
+                info += "Packet request: ({}, {}).".format(sub_svc, sub_msg)
+        elif svc == 20:
+            info = "Param id = {}".format(src_data["param_id"])
+            if msg == 2 or msg == 3:
+                info += " Value = {}".format(src_data["value"])
+
+        # ANADIR INFOSTRING 12
 
 
         # ack_str = " acks: none"

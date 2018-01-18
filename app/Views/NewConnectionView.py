@@ -11,6 +11,9 @@ class NewConnectionView:
     resizeFlag = False
 
     def __init__(self):
+        """
+        This is the constructor of the class
+        """
         self.view = QtGui.QWidget()
         self.window = Ui_NewConnectionView()
         self.window.setupUi(self.view)

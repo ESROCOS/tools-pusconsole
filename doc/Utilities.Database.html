@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: class Database</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><strong>Utilities.Database</strong> = <a name="Utilities.Database">class Database</a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>This&nbsp;class&nbsp;represents&nbsp;a&nbsp;database&nbsp;object.&nbsp;It&nbsp;implements<br>
+some&nbsp;methods&nbsp;to&nbsp;ease&nbsp;insertion&nbsp;and&nbsp;query&nbsp;tasks<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Database-__init__"><strong>__init__</strong></a>(self, dbname:str)</dt><dd><tt>This&nbsp;is&nbsp;the&nbsp;constructor&nbsp;of&nbsp;the&nbsp;class<br>
+:param&nbsp;dbname:&nbsp;The&nbsp;name&nbsp;of&nbsp;the&nbsp;database&nbsp;to&nbsp;open</tt></dd></dl>
+
+<dl><dt><a name="Database-create_table"><strong>create_table</strong></a>(self, table_name:str='packages')</dt><dd><tt>This&nbsp;method&nbsp;creates&nbsp;a&nbsp;table&nbsp;in&nbsp;the&nbsp;database&nbsp;with&nbsp;the<br>
+name&nbsp;passed&nbsp;as&nbsp;argument<br>
+:param&nbsp;table_name:&nbsp;The&nbsp;name&nbsp;of&nbsp;the&nbsp;table</tt></dd></dl>
+
+<dl><dt><a name="Database-insert_db"><strong>insert_db</strong></a>(self, query:str, _list:list=None)</dt><dd><tt>This&nbsp;methods&nbsp;execute&nbsp;an&nbsp;insertion&nbsp;in&nbsp;the&nbsp;db<br>
+:param&nbsp;query:&nbsp;Query&nbsp;using&nbsp;prepared&nbsp;statement<br>
+:param&nbsp;_list:&nbsp;Parameters&nbsp;of&nbsp;the&nbsp;prepared&nbsp;statement</tt></dd></dl>
+
+<dl><dt><a name="Database-open_db"><strong>open_db</strong></a>(self, db_name:str)</dt><dd><tt>This&nbsp;method&nbsp;opens&nbsp;the&nbsp;database&nbsp;with&nbsp;the&nbsp;name&nbsp;passed&nbsp;as&nbsp;an&nbsp;argument<br>
+:param&nbsp;db_name:&nbsp;The&nbsp;name&nbsp;of&nbsp;the&nbsp;database&nbsp;to&nbsp;be&nbsp;opened</tt></dd></dl>
+
+<dl><dt><a name="Database-query_db"><strong>query_db</strong></a>(self, query:str, _list:tuple=None)</dt><dd><tt>This&nbsp;methods&nbsp;execute&nbsp;a&nbsp;query&nbsp;or&nbsp;an&nbsp;insertion&nbsp;in&nbsp;the&nbsp;db<br>
+:param&nbsp;query:&nbsp;Query&nbsp;using&nbsp;prepared&nbsp;statement<br>
+:param&nbsp;_list:&nbsp;Parameters&nbsp;of&nbsp;the&nbsp;prepared&nbsp;statement<br>
+:return:&nbsp;Results&nbsp;of&nbsp;the&nbsp;query</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table>
+</body></html>

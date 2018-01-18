@@ -33,6 +33,11 @@ class ValidateJson(object):
                     pass
                 else:
                     self.__validate__(packet, dir + "st19_2_4_5_schema.json")
+            elif svc == 20:
+                if msg == 1:
+                    self.__validate__(packet, dir + "st20_1_schema.json")
+                elif msg == 3:
+                    self.__validate__(packet, dir + "st20_3_schema.json")
         except Exception:
             raise
 

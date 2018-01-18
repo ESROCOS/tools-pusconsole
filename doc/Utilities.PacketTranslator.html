@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: class PacketTranslator</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><strong>Utilities.PacketTranslator</strong> = <a name="Utilities.PacketTranslator">class PacketTranslator</a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>This&nbsp;class&nbsp;implements&nbsp;the&nbsp;functionality&nbsp;to&nbsp;parse&nbsp;between<br>
+json&nbsp;and&nbsp;packet.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="PacketTranslator-json2packet"><strong>json2packet</strong></a>(self, jsn)</dt><dd><tt>This&nbsp;method&nbsp;creates&nbsp;a&nbsp;packet&nbsp;from&nbsp;a&nbsp;json&nbsp;format<br>
+:param&nbsp;jsn:&nbsp;The&nbsp;packet&nbsp;in&nbsp;json&nbsp;format<br>
+:return:&nbsp;A&nbsp;packet&nbsp;object</tt></dd></dl>
+
+<dl><dt><a name="PacketTranslator-packet2json"><strong>packet2json</strong></a>(self, pack)</dt><dd><tt>This&nbsp;method&nbsp;creates&nbsp;a&nbsp;json&nbsp;from&nbsp;a&nbsp;packet&nbsp;format<br>
+:param&nbsp;pack:&nbsp;Packet&nbsp;to&nbsp;be&nbsp;parsed<br>
+:return:&nbsp;The&nbsp;packet&nbsp;in&nbsp;json&nbsp;format</tt></dd></dl>
+
+<dl><dt><a name="PacketTranslator-tc_11_4_get_data"><strong>tc_11_4_get_data</strong></a>(self, packet)</dt><dd><tt>This&nbsp;function&nbsp;parses&nbsp;the&nbsp;st011-4&nbsp;packet&nbsp;data&nbsp;field&nbsp;to&nbsp;json<br>
+:param&nbsp;packet:&nbsp;The&nbsp;packet&nbsp;which&nbsp;data&nbsp;field&nbsp;we&nbsp;want&nbsp;to&nbsp;parse<br>
+:return:&nbsp;A&nbsp;JSON&nbsp;object&nbsp;with&nbsp;all&nbsp;the&nbsp;parsed&nbsp;information</tt></dd></dl>
+
+<dl><dt><a name="PacketTranslator-tc_19_1_get_data"><strong>tc_19_1_get_data</strong></a>(self, packet)</dt><dd><tt>This&nbsp;function&nbsp;parses&nbsp;the&nbsp;st19&nbsp;packet&nbsp;data&nbsp;field&nbsp;to&nbsp;json<br>
+:param&nbsp;packet:&nbsp;The&nbsp;packet&nbsp;which&nbsp;data&nbsp;field&nbsp;we&nbsp;want&nbsp;to&nbsp;parse<br>
+:return:&nbsp;A&nbsp;JSON&nbsp;object&nbsp;with&nbsp;all&nbsp;the&nbsp;parsed&nbsp;information</tt></dd></dl>
+
+<dl><dt><a name="PacketTranslator-tc_19_1_set_data"><strong>tc_19_1_set_data</strong></a>(self, packet, data)</dt><dd><tt>This&nbsp;function&nbsp;fills&nbsp;in&nbsp;a&nbsp;st19-1&nbsp;packet&nbsp;data&nbsp;field&nbsp;with<br>
+a&nbsp;data&nbsp;dictionary&nbsp;passed&nbsp;as&nbsp;an&nbsp;argument<br>
+:param&nbsp;packet:&nbsp;The&nbsp;packet&nbsp;we&nbsp;want&nbsp;to&nbsp;fill&nbsp;in<br>
+:param&nbsp;data:&nbsp;A&nbsp;data&nbsp;dictionary&nbsp;with&nbsp;all&nbsp;the&nbsp;parameters</tt></dd></dl>
+
+<hr>
+Static methods defined here:<br>
+<dl><dt><a name="PacketTranslator-create_default_packet"><strong>create_default_packet</strong></a>(jsn)</dt><dd><tt>This&nbsp;method&nbsp;creates&nbsp;a&nbsp;default&nbsp;packet&nbsp;for&nbsp;the&nbsp;packet&nbsp;specified<br>
+in&nbsp;the&nbsp;json&nbsp;passed&nbsp;as&nbsp;an&nbsp;argument<br>
+:param&nbsp;jsn:&nbsp;The&nbsp;packet&nbsp;in&nbsp;json&nbsp;format<br>
+:return:&nbsp;A&nbsp;packet&nbsp;object</tt></dd></dl>
+
+<dl><dt><a name="PacketTranslator-tc_12_x_get_data"><strong>tc_12_x_get_data</strong></a>(packet, msg_id)</dt><dd><tt>This&nbsp;function&nbsp;parses&nbsp;the&nbsp;st12&nbsp;packet&nbsp;data&nbsp;field&nbsp;to&nbsp;json<br>
+:param&nbsp;packet:&nbsp;The&nbsp;packet&nbsp;which&nbsp;data&nbsp;field&nbsp;we&nbsp;want&nbsp;to&nbsp;parse<br>
+:return:&nbsp;A&nbsp;JSON&nbsp;object&nbsp;with&nbsp;all&nbsp;the&nbsp;parsed&nbsp;information</tt></dd></dl>
+
+<dl><dt><a name="PacketTranslator-tc_12_x_set_data"><strong>tc_12_x_set_data</strong></a>(packet, msg_id, data)</dt><dd><tt>This&nbsp;function&nbsp;fills&nbsp;in&nbsp;a&nbsp;st12&nbsp;packet&nbsp;data&nbsp;field&nbsp;with<br>
+a&nbsp;data&nbsp;dictionary&nbsp;passed&nbsp;as&nbsp;an&nbsp;argument<br>
+:param&nbsp;packet:&nbsp;The&nbsp;packet&nbsp;we&nbsp;want&nbsp;to&nbsp;fill&nbsp;in<br>
+:param&nbsp;data:&nbsp;A&nbsp;data&nbsp;dictionary&nbsp;with&nbsp;all&nbsp;the&nbsp;parameters</tt></dd></dl>
+
+<dl><dt><a name="PacketTranslator-tc_19_2_4_5_get_data"><strong>tc_19_2_4_5_get_data</strong></a>(packet)</dt><dd><tt>This&nbsp;function&nbsp;parses&nbsp;the&nbsp;st19-2-4-5&nbsp;packet&nbsp;data&nbsp;field&nbsp;to&nbsp;json<br>
+:param&nbsp;packet:&nbsp;The&nbsp;packet&nbsp;which&nbsp;data&nbsp;field&nbsp;we&nbsp;want&nbsp;to&nbsp;parse<br>
+:return:&nbsp;A&nbsp;JSON&nbsp;object&nbsp;with&nbsp;all&nbsp;the&nbsp;parsed&nbsp;information</tt></dd></dl>
+
+<dl><dt><a name="PacketTranslator-tc_19_2_4_5_set_data"><strong>tc_19_2_4_5_set_data</strong></a>(packet, data)</dt><dd><tt>This&nbsp;function&nbsp;fills&nbsp;in&nbsp;a&nbsp;st19-2-4-5&nbsp;packet&nbsp;data&nbsp;field&nbsp;with<br>
+a&nbsp;data&nbsp;dictionary&nbsp;passed&nbsp;as&nbsp;an&nbsp;argument<br>
+:param&nbsp;packet:&nbsp;The&nbsp;packet&nbsp;we&nbsp;want&nbsp;to&nbsp;fill&nbsp;in<br>
+:param&nbsp;data:&nbsp;A&nbsp;data&nbsp;dictionary&nbsp;with&nbsp;all&nbsp;the&nbsp;parameters</tt></dd></dl>
+
+<dl><dt><a name="PacketTranslator-tc_8_1_get_data"><strong>tc_8_1_get_data</strong></a>(packet)</dt><dd><tt>This&nbsp;function&nbsp;parses&nbsp;the&nbsp;st08-1&nbsp;packet&nbsp;data&nbsp;field&nbsp;to&nbsp;json<br>
+:param&nbsp;packet:&nbsp;The&nbsp;packet&nbsp;which&nbsp;data&nbsp;field&nbsp;we&nbsp;want&nbsp;to&nbsp;parse<br>
+:return:&nbsp;A&nbsp;JSON&nbsp;object&nbsp;with&nbsp;all&nbsp;the&nbsp;parsed&nbsp;information</tt></dd></dl>
+
+<dl><dt><a name="PacketTranslator-tc_8_1_set_data"><strong>tc_8_1_set_data</strong></a>(packet, data)</dt><dd><tt>This&nbsp;function&nbsp;fills&nbsp;in&nbsp;a&nbsp;st08-1&nbsp;packet&nbsp;data&nbsp;field&nbsp;with<br>
+a&nbsp;data&nbsp;dictionary&nbsp;passed&nbsp;as&nbsp;an&nbsp;argument<br>
+:param&nbsp;packet:&nbsp;The&nbsp;packet&nbsp;we&nbsp;want&nbsp;to&nbsp;fill&nbsp;in<br>
+:param&nbsp;data:&nbsp;A&nbsp;data&nbsp;dictionary&nbsp;with&nbsp;all&nbsp;the&nbsp;parameters</tt></dd></dl>
+
+<dl><dt><a name="PacketTranslator-tc_9_1_get_data"><strong>tc_9_1_get_data</strong></a>(packet)</dt><dd><tt>This&nbsp;function&nbsp;parses&nbsp;the&nbsp;st09-1&nbsp;packet&nbsp;data&nbsp;field&nbsp;to&nbsp;json<br>
+:param&nbsp;packet:&nbsp;The&nbsp;packet&nbsp;which&nbsp;data&nbsp;field&nbsp;we&nbsp;want&nbsp;to&nbsp;parse<br>
+:return:&nbsp;A&nbsp;JSON&nbsp;object&nbsp;with&nbsp;all&nbsp;the&nbsp;parsed&nbsp;information</tt></dd></dl>
+
+<dl><dt><a name="PacketTranslator-tc_9_1_set_data"><strong>tc_9_1_set_data</strong></a>(packet, data)</dt><dd><tt>This&nbsp;function&nbsp;fills&nbsp;in&nbsp;a&nbsp;st09-1&nbsp;packet&nbsp;data&nbsp;field&nbsp;with<br>
+a&nbsp;data&nbsp;dictionary&nbsp;passed&nbsp;as&nbsp;an&nbsp;argument<br>
+:param&nbsp;packet:&nbsp;The&nbsp;packet&nbsp;we&nbsp;want&nbsp;to&nbsp;fill&nbsp;in<br>
+:param&nbsp;data:&nbsp;A&nbsp;data&nbsp;dictionary&nbsp;with&nbsp;all&nbsp;the&nbsp;parameters</tt></dd></dl>
+
+<dl><dt><a name="PacketTranslator-tm_1_x_get_data"><strong>tm_1_x_get_data</strong></a>(packet)</dt><dd><tt>This&nbsp;function&nbsp;parses&nbsp;the&nbsp;st01&nbsp;packet&nbsp;data&nbsp;field&nbsp;to&nbsp;json<br>
+:param&nbsp;packet:&nbsp;The&nbsp;packet&nbsp;which&nbsp;data&nbsp;field&nbsp;we&nbsp;want&nbsp;to&nbsp;parse<br>
+:return:&nbsp;A&nbsp;JSON&nbsp;object&nbsp;with&nbsp;all&nbsp;the&nbsp;parsed&nbsp;information</tt></dd></dl>
+
+<dl><dt><a name="PacketTranslator-tm_3_25_get_data"><strong>tm_3_25_get_data</strong></a>(packet)</dt><dd><tt>This&nbsp;function&nbsp;parses&nbsp;the&nbsp;st03-25&nbsp;packet&nbsp;data&nbsp;field&nbsp;to&nbsp;json<br>
+:param&nbsp;packet:&nbsp;The&nbsp;packet&nbsp;which&nbsp;data&nbsp;field&nbsp;we&nbsp;want&nbsp;to&nbsp;parse<br>
+:return:&nbsp;A&nbsp;JSON&nbsp;object&nbsp;with&nbsp;all&nbsp;the&nbsp;parsed&nbsp;information</tt></dd></dl>
+
+<dl><dt><a name="PacketTranslator-tm_5_x_get_data"><strong>tm_5_x_get_data</strong></a>(packet)</dt><dd><tt>This&nbsp;function&nbsp;parses&nbsp;the&nbsp;st05&nbsp;packet&nbsp;data&nbsp;field&nbsp;to&nbsp;json<br>
+:param&nbsp;packet:&nbsp;The&nbsp;packet&nbsp;which&nbsp;data&nbsp;field&nbsp;we&nbsp;want&nbsp;to&nbsp;parse<br>
+:return:&nbsp;A&nbsp;JSON&nbsp;object&nbsp;with&nbsp;all&nbsp;the&nbsp;parsed&nbsp;information</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table>
+</body></html>

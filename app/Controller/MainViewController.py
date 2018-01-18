@@ -118,7 +118,7 @@ class MainViewController(object):
         pt = PacketTranslator()
         index = int(self.view.window.packagesTable.item(row, 0).text())
         details_view = DetailsView()
-        details_view.write_information(json.dumps(pt.packet2json(self.model.table[index][-2]), indent=8))
+        details_view.write_information(json.dumps(json.loads(self.model.table[index][-2]), indent=8))
         details_view.show()
 
     def open_savefile_window_callback(self):
@@ -127,7 +127,8 @@ class MainViewController(object):
         """
         file = QtGui.QFileDialog.getSaveFileName()
         d = Database(file[0])
-        packages = [tuple(e) for e in self.model.table]
+        packages = [tuple(e[1:-1]) for e in self.model.table]
+        print(packages)
 
         d.insert_db("INSERT INTO packages VALUES(?,?,?,?,?,?,?,?,?,?)", packages)
 
@@ -144,8 +145,8 @@ class MainViewController(object):
 
         elems = d.query_db("SELECT * FROM packages")
         self.model.table.clear()
-        for elem in elems:
-            self.model.table.append(list(elem))
+        for i, elem in enumerate(elems):
+            self.model.table.append([i]+list(elem)+[None]) # Revisar
 
         self.__is_not_used__()
 

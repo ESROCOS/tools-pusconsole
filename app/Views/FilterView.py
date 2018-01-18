@@ -12,6 +12,9 @@ class FilterView(object):
     resizeFlag = False
 
     def __init__(self):
+        """
+        This is the constructor of the class
+        """
         self.view = QtGui.QDialog()
         self.window = Ui_FilterView()
         self.window.setupUi(self.view)

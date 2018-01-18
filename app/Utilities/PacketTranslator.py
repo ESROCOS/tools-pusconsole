@@ -71,16 +71,24 @@ class PacketTranslator(object):
                 jsn["data"]["user_data"]["src_data"] = self.tc_9_1_get_data(pack)
             elif msg_type_id == 2:
                 pass
-        elif srvc_type_id == 12:
-            jsn["data"]["user_data"]["src_data"] = self.tc_12_x_get_data(pack, msg_type_id)
         elif srvc_type_id == 11:
             if msg_type_id == 4:
                 jsn["data"]["user_data"]["src_data"] = self.tc_11_4_get_data(pack)
+        elif srvc_type_id == 12:
+            jsn["data"]["user_data"]["src_data"] = self.tc_12_x_get_data(pack, msg_type_id)
         elif srvc_type_id == 19:
             if msg_type_id == 1:
                 jsn["data"]["user_data"]["src_data"] = self.tc_19_1_get_data(pack)
             else:
                 jsn["data"]["user_data"]["src_data"] = self.tc_19_2_4_5_get_data(pack)
+        elif srvc_type_id == 20:
+            if msg_type_id == 1:
+                jsn["data"]["user_data"]["src_data"] = self.tc_20_1_get_data(pack)
+            elif msg_type_id == 2:
+                jsn["data"]["user_data"]["src_data"] = self.tm_20_2_get_data(pack)
+            elif msg_type_id == 3:
+                jsn["data"]["user_data"]["src_data"] = self.tc_20_3_get_data(pack)
+
         return jsn
 
     def json2packet(self, jsn):
@@ -147,22 +155,31 @@ class PacketTranslator(object):
 
         data = jsn["data"]["user_data"]["src_data"]
         if srvc_type_id == 1:  # If it's a request verification packet
+            # REVISAR
             #  jsn["data"]["user_data"]["src_data"] = self.tm_1_x_set_data(pack)
             pass
         elif (srvc_type_id, msg_type_id) == (3, 25):
+            # REVISAR
             #  jsn["data"]["user_data"]["src_data"] = self.tm_3_25_set_data(pack)
             pass
-        elif (srvc_type_id, msg_type_id) == (9, 1):
-            self.tc_9_1_set_data(pack, data)
         elif (srvc_type_id, msg_type_id) == (8, 1):
             self.tc_8_1_set_data(pack, data)
+        elif (srvc_type_id, msg_type_id) == (9, 1):
+            self.tc_9_1_set_data(pack, data)
         elif srvc_type_id == 12:
             self.tc_12_x_set_data(pack, msg_type_id, data)
+        elif (srvc_type_id, msg_type_id) == (11, 4):
+            self.tc_11_4_set_data(pack, data)
         elif srvc_type_id == 19:
             if msg_type_id == 1:
                 self.tc_19_1_set_data(pack, data)
             else:
                 self.tc_19_2_4_5_set_data(pack, data)
+        elif srvc_type_id == 20:
+            if msg_type_id == 1:
+                self.tc_20_1_set_data(pack, data)
+            elif msg_type_id == 3:
+                self.tc_20_3_set_data(pack, data)
         return pack
 
     @staticmethod
@@ -181,6 +198,14 @@ class PacketTranslator(object):
             pb.pus_tc_8_1_createPerformFuctionRequest(packet, 0, 0, 0)
         elif (svc, msg) == (9, 1):
             pb.pus_tc_9_1_createSetTimeReportRate(packet, 0, 0, 0)
+        elif (svc, msg) == (11, 1):
+            pb.pus_tc_11_1_createEnableTimeBasedSchedule(packet, 0, 0, 0)
+        elif (svc, msg) == (11, 2):
+            pb.pus_tc_11_2_createDisableTimeBasedSchedule(packet, 0, 0, 0)
+        elif (svc, msg) == (11, 3):
+            pb.pus_tc_11_3_createResetTimeBasedSchedule(packet, 0, 0, 0)
+        elif (svc, msg) == (11, 4):
+            pb.pus_tc_11_4_createInsertActivityIntoSchedule(packet, 0, 0)
         elif (svc, msg) == (12, 1):
             pb.pus_tc_12_1_createEnableParameterMonitoringDefinitions(packet, 0, 0, 0)
         elif (svc, msg) == (12, 2):
@@ -199,9 +224,15 @@ class PacketTranslator(object):
             pb.pus_tc_19_4_createEnableEventActionDefinitions(packet, 0, 0, 0)
         elif (svc, msg) == (19, 5):
             pb.pus_tc_19_5_createDisableEventActionDefinitions(packet, 0, 0, 0)
+        elif (svc, msg) == (20, 1):
+            pb.pus_tc_20_1_createParameterValueRequest(packet, 0, 0, 0)
+        elif (svc, msg) == (20, 3):
+            pb.pus_tc_20_3_createSetParameterValueRequest(packet, 0, 0, 0, 0)
         else:
             pass
-
+        """
+            REVISAR Haria falta meter el 11 ??? y las telemetrias???
+        """
         return packet
 
     @staticmethod
@@ -315,14 +346,25 @@ class PacketTranslator(object):
         """
         data = dict()
         ncount = pb.pus_tc_11_4_getNCount(packet)
+        print(ncount)
         for i in range(ncount):
             data["activity"+str(i+1)] = dict()
             data_packet = pb.pusPacket_t()
             pb.pus_tc_11_4_get_request(i, packet, data_packet, 10)
             t = pb.pus_tc_11_4_get_release_time(i, packet, 10)
             data["activity"+str(i+1)]["packet"] = self.packet2json(data_packet)
-            data["activity" + str(i + 1)]["time"] = t # Revisar, tiempo
+            data["activity" + str(i + 1)]["time"] = t  # REVISAR, tiempo
         return data
+
+    def tc_11_4_set_data(self, packet, data: dict):
+        for k in sorted(data.keys()):
+            print(k)
+            time_ = pb.pusTime_t()
+            t = data[k]["time"]
+            pb.pus_posix2time(time_, t)
+            scndpacket = self.json2packet(data[k]["packet"])
+            pb.pus_tc_11_4_setActivity(packet, scndpacket, time_)
+        return packet
 
     @staticmethod
     def tc_12_x_get_data(packet, msg_id):
@@ -392,7 +434,7 @@ class PacketTranslator(object):
         """
         data = dict()
         event_id = int()
-        pb.pus_tc_19_X_getEventId(event_id, packet)
+        pb.pus_tc_19_X_getEventId(event_id, packet) # REVISAR POR SI DA PROBLEMA EL CAMBIO DE ESE ENTERO
         data["event_id"] = event_id
         return data
 
@@ -405,8 +447,66 @@ class PacketTranslator(object):
         :param data: A data dictionary with all the parameters
         """
         event_id = data["event_id"] # Shall be integer
-        print(pb.pus_tc_19_X_setEventId(packet, event_id))
-        event_id = int()
-        pb.pus_tc_19_X_getEventId(event_id, packet)
-        print(event_id)
+        pb.pus_tc_19_X_setEventId(packet, event_id)
+        return packet
+
+    @staticmethod
+    def tc_20_1_get_data(packet):
+        """
+        This function parses the st20_1 packet data field to json
+        :param packet: The packet which data field we want to parse
+        :return: A JSON object with all the parsed information
+        """
+        data = dict()
+        data["param_id"] = pb.pus_tc_20_X_getParamId(packet)
+        return data
+
+    @staticmethod
+    def tc_20_1_set_data(packet, data):
+        """
+        This function fills in a st20_1 packet data field with
+        a data dictionary passed as an argument
+        :param packet: The packet we want to fill in
+        :param data: A data dictionary with all the parameters
+        """
+        param_id = data["param_id"]
+        pb.pus_tc_20_X_setParamId(packet, param_id)
+        return packet
+
+    @staticmethod
+    def tm_20_2_get_data(packet):
+        """
+        This function parses the st20_2 packet data field to json
+        :param packet: The packet which data field we want to parse
+        :return: A JSON object with all the parsed information
+        """
+        data = dict()
+        data["param_id"] = pb.pus_tm_20_2_getParamId(packet)
+        data["value"] = pb.pus_tm_20_2_getParamValue(packet)
+        return data
+
+    @staticmethod
+    def tc_20_3_get_data(packet):
+        """
+        This function parses the st20_3 packet data field to json
+        :param packet: The packet which data field we want to parse
+        :return: A JSON object with all the parsed information
+        """
+        data = dict()
+        data["param_id"] = pb.pus_tc_20_X_getParamId(packet)
+        data["value"] = pb.pus_tc_20_3_getParamValue(packet)
+        return data
+
+    @staticmethod
+    def tc_20_3_set_data(packet, data):
+        """
+        This function fills in a st20_3 packet data field with
+        a data dictionary passed as an argument
+        :param packet: The packet we want to fill in
+        :param data: A data dictionary with all the parameters
+        """
+        param_id = data["param_id"]
+        value = data["value"]
+        pb.pus_tc_20_X_setParamId(packet, param_id)
+        pb.pus_tc_20_3_setParamValue(packet, value)
         return packet

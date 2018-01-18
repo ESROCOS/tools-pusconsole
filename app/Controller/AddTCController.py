@@ -21,7 +21,7 @@ class AddTCController(object):
         """
         self.model = model
         self.view = view
-        self.command = ""
+        self.command = dict()
 
         self.__add_telecommand()
         self.set_callbacks()
@@ -49,12 +49,13 @@ class AddTCController(object):
         id combobox depending on the service id selected.
         :param index: The new selected index
         """
+        excluded = (('19', '1'), ('11', '4'))
         svcComboBox = self.view.window.serviceComboBox
         svc = svcComboBox.itemText(index)
         self.view.window.msgComboBox.addItem("", None)
         self.view.clear_msg_type_combo_box()
         for msg in sorted(self.model.telecommand[svc], key=int):
-            if (svc, msg) != ('19', '1') and (svc, msg) != ('11', '4'):
+            if (svc, msg) not in excluded:
                 self.view.add_item_msg_type_combo_box(msg)
 
     def msg_combobox_changed_callback(self, index):
@@ -123,6 +124,11 @@ class AddTCController(object):
                 pb.pus_tc_19_4_createEnableEventActionDefinitions(packet, apid, seq, 0)
             elif msg == 5:
                 pb.pus_tc_19_5_createDisableEventActionDefinitions(packet, apid, seq, 0)
+        elif svc == 20:
+            if msg == 1:
+                pb.pus_tc_20_1_createParameterValueRequest(packet, apid, seq, 0)
+            elif msg == 3:
+                pb.pus_tc_20_3_createSetParameterValueRequest(packet, apid, seq, 0, 0)
         else:
             pass
         return packet_translator.packet2json(packet)

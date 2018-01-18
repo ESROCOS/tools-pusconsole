@@ -101,7 +101,7 @@ class CreateTCController(object):
         try:
             self.command["data"] = self.view.get_tc_text()
             vj.check(self.command)
-            self.model.add_to_table(self.command, pt.json2packet(self.command))
+            self.model.add_to_table(self.command, pt.json2packet(self.command))  # Packet is created from json
             self.view.window.addTcButton.hide()
             self.view.close()
         except Exception as err:
@@ -112,7 +112,7 @@ class CreateTCController(object):
 
     def add_tc_callback(self):
         """
-        This method is triggered when the user creates a st11_4 telecommand
+        This method is triggered when the user creates a sy19_1 or st11_4 telecommand
         and clicks the plus button to add an activity inside it. This method
         opens an addTcView window to create the telecommand to be embedded.
         """
@@ -121,7 +121,7 @@ class CreateTCController(object):
         if scndpacket is not None:
             now = pb.pusTime_t()
             pb.pus_now(now) # Revisar
-            pb.pus_tc_11_4_setActivity(self.command_packet, scndpacket, now)
+            pb.pus_tc_11_4_setActivity(self.command_packet, scndpacket, now) # Revisar
             self.command = packet_translator.packet2json(self.command_packet)
             self.view.set_tc_text(json.dumps(self.command["data"], indent=2))
 
@@ -137,7 +137,7 @@ class CreateTCController(object):
         packet_translator = PacketTranslator()
         apid_info = self.model.apid_info
         apid = pb.pus_getInfoApid(apid_info)
-        seq = pb.pus_getNextPacketCount(apid_info)
+        seq = pb.pus_getNextPacketCount(apid_info) # REVISAR parece que la secuencia no aumenta
 
         if (svc, msg) == (8, 1):
             pb.pus_tc_8_1_createPerformFuctionRequest(packet, apid, seq, 0)
@@ -163,20 +163,19 @@ class CreateTCController(object):
                 self.view.window.addTcButton.show()
                 pb.pus_tc_11_4_createInsertActivityIntoSchedule(packet, apid, seq)
                 scndpacket = self.open_add_tc_window()
+                print(packet_translator.packet2json(scndpacket))
                 if scndpacket is None:
                     self.view.window.msgComboBox.setCurrentIndex(0)
                     return None, None
                 else:
-                    now = pb.pusTime_t()
+                    now = pb.pusTime_t() # REVISAR: EL TIEMPO TIENE QUE SER ESPECIFICADO
                     pb.pus_now(now)
-                    pb.pus_tc_11_4_setActivity(packet, scndpacket, now)
-
+                    print(pb.pus_tc_11_4_setActivity(packet, scndpacket, now))
         elif (svc, msg) == (17, 1):
             pb.pus_tc_17_1_createConnectionTestRequest(packet, apid, seq)
         elif svc == 19:
             if msg == 1:
                 scndpacket = self.open_add_tc_window()
-
                 if scndpacket is None:
                     self.view.window.msgComboBox.setCurrentIndex(0)
                     return None, None
@@ -188,6 +187,11 @@ class CreateTCController(object):
                 pb.pus_tc_19_4_createEnableEventActionDefinitions(packet, apid, seq, 0)
             elif msg == 5:
                 pb.pus_tc_19_5_createDisableEventActionDefinitions(packet, apid, seq, 0)
+        elif svc == 20:
+            if msg == 1:
+                pb.pus_tc_20_1_createParameterValueRequest(packet, apid, seq, 0)
+            elif msg == 3:
+                pb.pus_tc_20_3_createSetParameterValueRequest(packet, apid, seq, 0, 0)
         else:
             pass
         return packet_translator.packet2json(packet), packet

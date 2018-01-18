@@ -36,7 +36,6 @@ class Database(object):
                         info text,
                         rest_of_data json
                     );"""
-
         self.cursor.execute(query)
 
     def open_db(self, db_name: str):
@@ -62,6 +61,9 @@ class Database(object):
         else:
             return self.cursor.execute(query, _list)
 
+    #REVISAR: SE ANADIERON DOS PARÁMETROS MAS A CADA ELEMENTO DE LA TABLA
+    #QUE NO TIENEN QUE SER INSERTADOS. ESTOS SON EL INDICE Y EL PAQUETE
+    #EN FORMA DE PAQUETE.
     def insert_db(self, query: str, _list: list = None):
         """
         This methods execute an insertion in the db
