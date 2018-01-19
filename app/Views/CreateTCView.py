@@ -117,10 +117,7 @@ class CreateTCView(object):
         the window textbox
         :return: json with the packet
         """
-        try:
-            return json.loads(self.window.commandTextEdit.toPlainText())
-        except json.JSONDecodeError:
-            raise
+        return self.window.commandTextEdit.toPlainText()
 
     def close(self):
         """

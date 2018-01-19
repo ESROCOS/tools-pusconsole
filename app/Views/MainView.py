@@ -51,12 +51,11 @@ class MainView:
         self.window.label.setText(
             QtGui.QApplication.translate("MainView", "<html><head/><body><p>"
                                                      "<img src=\"Views/Views_Ui/images/logo_gmv.svg\""
-                                                     "width=\"120\" height=\"67\"/></p></body></html>",
+                                                     "width=\"60\" height=\"35\"/></p></body></html>",
                                          None, QtGui.QApplication.UnicodeUTF8))
         header.sortIndicatorOrder()
         self.window.packagesTable.verticalHeader().setVisible(False)
         self.window.packagesTable.sortByColumn(0, QtCore.Qt.AscendingOrder)
-
 
     def resize_elements(self, event):
         """
@@ -76,9 +75,9 @@ class MainView:
         img_x = self.window.label.pos().x()
         img_y = self.window.label.pos().y()
 
-        self.window.packagesTable.resize(self.window.centralwidget.frameGeometry().width() - img_w - padding,
-                                         self.window.centralwidget.frameGeometry().height() - padding)
-        self.window.label.move(self.window.packagesTable.frameGeometry().width()+padding, img_y)
+        self.window.tabWidget.resize(self.window.centralwidget.frameGeometry().width() - 3*padding,
+                                     self.window.centralwidget.frameGeometry().height() - 2*padding)
+        self.window.label.move(self.window.centralwidget.frameGeometry().width() - img_w - 3*padding, img_y)
 
     def show(self):
         """

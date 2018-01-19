@@ -2,7 +2,7 @@ from PySide import QtGui
 from Model import CreateTCModel
 from Views import CreateTCView
 from Views import AddTCView
-from Utilities import PacketTranslator, ValidateJson
+from Utilities import PacketTranslator, ValidateJson, MakoTranslate
 from .AddTCController import AddTCController
 import os
 import sys
@@ -95,11 +95,15 @@ class CreateTCController(object):
         This method creates a packet from the json and validates that
         every field on that json is correct
         """
+        mt = MakoTranslate()
         pt = PacketTranslator()
         vj = ValidateJson()
 
+        data_section = self.view.get_tc_text()
+        print(data_section)
+        data_section = json.loads(mt.replace(data_section))
         try:
-            self.command["data"] = self.view.get_tc_text()
+            self.command["data"] = data_section
             vj.check(self.command)
             self.model.add_to_table(self.command, pt.json2packet(self.command))  # Packet is created from json
             self.view.window.addTcButton.hide()
