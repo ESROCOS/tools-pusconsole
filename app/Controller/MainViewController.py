@@ -40,6 +40,7 @@ class MainViewController(object):
         self.set_callbacks()
         self.thread = PusThread("test.json", self.model)
         self.thread.start()
+        print("size", sys.getsizeof(pb.pusPacket_t()))
 
     def set_callbacks(self):
         """

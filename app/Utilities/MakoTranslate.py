@@ -5,7 +5,7 @@ import json
 class MakoTranslate(object):
 
     def __init__(self):
-        self.version = {"pus_V0": 0, "pus_V1": 1, "pus_INVALID_VERSION": 15}
+        self.version = {"V0": 0, "V1": 1, "INVALID_VERSION": 15}
         self.template_values = ""
         self.__create_value_string__()
 
@@ -14,7 +14,6 @@ class MakoTranslate(object):
             self.template_values += "<%{} = {}%>".format(k, v)
 
     def replace(self, json_data):
-        print("Hola")
         if type(json_data) is dict:
             data = json.dumps(json_data)
         else:

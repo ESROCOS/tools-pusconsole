@@ -9,29 +9,35 @@ lib_path = os.path.join(dir_path, '../../pus/debug/pylib')
 sys.path.append(lib_path)
 import pusbinding as pb
 
-gui = QtGui.QApplication(sys.argv)
-app = App()
-view = MainView()
-controller = MainViewController(app, view)
 
-args = sys.argv
+def main():
+    gui = QtGui.QApplication(())
+    app = App()
+    view = MainView()
+    controller = MainViewController(app, view)
 
-pt = PacketTranslator()
+    #args = sys.argv
 
-if len(args) > 1:
-    #if args[1] == "-test":
+    pt = PacketTranslator()
+
+    #if len(args) > 1:
+        #if args[1] == "-test":
     controller.show()
     """
     test purpose below
     """
-    for i in range(12):
-        packet = pb.pusPacket_t()
-        pb.ret_packets(packet, i)
-        app.add(pt.packet2json(packet), packet)
+    # for i in range(12):
+    #     packet = pb.pusPacket_t()
+    #     pb.ret_packets(packet, i)
+    #     app.add(pt.packet2json(packet), packet)
         # packet0 = pb.pusPacket_t()
         # pb.pus_tc_17_1_createConnectionTestRequest(packet0, 0, 0)
         # packet = pb.pusPacket_t()
         # pb.pus_tm_1_1_createAcceptanceReportSuccess(packet, 0, 0, packet0)
         # app.add(pt.packet2json(packet), packet)
 
-sys.exit(gui.exec_())
+    sys.exit(gui.exec_())
+
+
+if __name__ == "__main__":
+    main()

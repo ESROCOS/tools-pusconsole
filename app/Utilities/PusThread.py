@@ -1,7 +1,11 @@
 from PySide.QtCore import QObject, Signal, Slot
 from PySide.QtCore import QThread
 from . import PacketTranslator
-import json
+import json, sys, os
+dir_path = os.path.dirname(os.path.realpath(__file__))
+lib_path = os.path.join(dir_path, '../../../pus/debug/pylib')
+sys.path.append(lib_path)
+import pusbinding as pb
 
 
 class MySignal(QObject):
@@ -54,20 +58,20 @@ class PusThread(QThread):
         seconds between packet and packet according
         to the interval defined in the json file.
         """
-        pt = PacketTranslator()
-        with open(self.file, "r") as json_data:
-            tcs = json.load(json_data)
-            for elem in tcs["telecommands"]:
-                self.sleep(elem["elapsed_time"])
-                self.signal.throw(elem["packet"])
+        while True:
+            print("Hola")
+            packet = pb.read_from_taste() # Comprobar si null
+            print(PacketTranslator().packet2json(packet))
+            print("Hola2")
+            self.signal.throw(packet)
 
-    @Slot(dict)
-    def add(self, elem):
+    @Slot(pb.pusPacket_t)
+    def add(self, packet):
         """
         This method adds an element to the table model
-        :param elem: The element to be added
+        :param packet: The element to be added
         :return:
         """
         pt = PacketTranslator()
-        packet = pt.json2packet(elem)
+        elem = pt.packet2json(packet)
         self.model.add(elem, packet)
