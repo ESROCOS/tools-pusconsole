@@ -58,10 +58,12 @@ class PusThread(QThread):
         seconds between packet and packet according
         to the interval defined in the json file.
         """
+        pack = pb.pusPacket_t()
         while True:
             print("Hola")
-            packet = pb.read_from_taste() # Comprobar si null
-            print(PacketTranslator().packet2json(packet))
+            packet = pb.read_from_taste(pack) # Comprobar si null
+            print(pack)
+            # print(PacketTranslator().packet2json(packet))
             print("Hola2")
             self.signal.throw(packet)
 
