@@ -3,6 +3,7 @@ from Model import App
 from Controller import MainViewController
 from Views import MainView
 from Utilities import PacketTranslator
+from Utilities import PusThread
 import os, sys
 dir_path = os.path.dirname(os.path.realpath(__file__))
 lib_path = os.path.join(dir_path, '../../pus/debug/pylib')
@@ -23,6 +24,9 @@ def main():
     #if len(args) > 1:
         #if args[1] == "-test":
     controller.show()
+    thread = PusThread("test.json", app)
+    thread.start()
+
     """
     test purpose below
     """

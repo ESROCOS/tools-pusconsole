@@ -59,12 +59,12 @@ class PusThread(QThread):
         to the interval defined in the json file.
         """
         pack = pb.pusPacket_t()
+        import time
         while True:
-            print("Hola")
             packet = pb.read_from_taste(pack) # Comprobar si null
-            print(pack)
-            # print(PacketTranslator().packet2json(packet))
-            print("Hola2")
+            # print("Hola")
+            # # print(pack)
+            # # print(PacketTranslator().packet2json(packet))
             self.signal.throw(packet)
 
     @Slot(pb.pusPacket_t)

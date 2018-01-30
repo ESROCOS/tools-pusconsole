@@ -31,18 +31,16 @@ pusError_t example_function3()
 void *myThreadFun(void *vargp)
 {
     pusPacket_t packet, *aux;
-    pusMutex_t mutex;
+    pusMutex_t *mutex = NULL;
     int i = 0;
-    while(i < 30)
+    while(i < 3)
     {
         sleep(2);
         pus_tm_17_2_createConnectionTestReport(&packet, 25, 25, 25); //CREAMOS PAQUETE 17
         pus_notify_setPacket(&packet); //PONEMOS EL PAQUETE EN LA VARIABLE GLOBAL
-        pus_notify_getPacket(aux);
-        printf("Paquete global: %p\n", aux);
         pus_notify_getMutex(&mutex); //OBTENEMOS EL MUTEX GLOBAL
-        pus_mutexUnlockOk(&mutex); //LO ABRIMOS
-        printf("Enviado\n");
+        printf("ENVIAMOS PAQUETE\n");
+        pus_mutexUnlockOk(mutex); //LO ABRIMOS
         i++;
     }
 }
@@ -50,15 +48,14 @@ void *myThreadFun(void *vargp)
 int main(int argc, char *argv[])
 {
     //INICIALIZAMOS MUTEX Y LO BLOQUEAMOS
-    pusMutex_t mutex;
+    pusMutex_t *mutex = NULL;
     pus_notify_getMutex(&mutex);
-    printf("Bool: %d\n", pus_mutexInitOk(&mutex));
-    printf("Bool 2: %d\n", pus_mutexLockOk(&mutex));
+    pus_mutexInitOk(mutex);
+    pus_mutexLockOk(mutex);
 
     // LANZAMOS HILO QUE ENVIA TELEMETRIAS 17
     pthread_t tid;
     pthread_create(&tid, NULL, myThreadFun, NULL);
-    sleep(5);
 
     // LANZAMOS APP
     Py_Initialize();

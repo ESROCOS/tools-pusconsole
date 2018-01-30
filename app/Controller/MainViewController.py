@@ -5,7 +5,6 @@ from Views.DetailsView import DetailsView
 from Views.FilterView import FilterView
 from Utilities.Database import Database
 from Utilities import PacketTranslator
-from Utilities import PusThread
 from Model.CreateTCModel import CreateTCModel
 from Model import App
 from Model.FilterModel import FilterModel
@@ -38,8 +37,7 @@ class MainViewController(object):
         self.model = model
         self.view = view
         self.set_callbacks()
-        self.thread = PusThread("test.json", self.model)
-        self.thread.start()
+
         print("size", sys.getsizeof(pb.pusPacket_t()))
 
     def set_callbacks(self):
