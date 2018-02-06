@@ -8,6 +8,14 @@ CMakeFiles
 cmake_install.cmake
 libs/*
 .idea/*
+app/libs*
+app/cplibs.sh
+app/createdoc.sh
+app/Makefile
+app/prueba*
+app/*.json
+!app/apid.json
+app/x86_partition
 
 __pycache__
 *.pyc
@@ -15,10 +23,8 @@ __pycache__
 jsonexample.json
 pythonscript.py
 pythonscript2.py
+hs_err_pid*
+prueba*
 
 # Exclude source files generated from the .ui but not the __init__.py, images directory or Ui_Files directory
-app/Views/Views_Ui/*
-!app/Views/Views_Ui/__init__.py
-!app/Views/Views_Ui/images/*
-!app/Views/Views_Ui/Ui_Files/*
 

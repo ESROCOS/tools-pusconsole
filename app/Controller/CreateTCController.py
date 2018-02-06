@@ -118,7 +118,7 @@ class CreateTCController(object):
 
     def add_tc_callback(self):
         """
-        This method is triggered when the user creates a sy19_1 or st11_4 telecommand
+        This method is triggered when the user creates a st19_1 or st11_4 telecommand
         and clicks the plus button to add an activity inside it. This method
         opens an addTcView window to create the telecommand to be embedded.
         """
@@ -160,7 +160,7 @@ class CreateTCController(object):
                 pb.pus_tc_12_16_createDisableParameterMonitoring(packet, apid, seq)
         elif svc == 11:
             if msg == 1:
-                pb.pus_tc_11_1_createEnableTimeBasedSchedule(packet, apid, seq)
+                print(pb.pus_tc_11_1_createEnableTimeBasedSchedule(packet, apid, seq))
             elif msg == 2:
                 pb.pus_tc_11_2_createDisableTimeBasedSchedule(packet, apid, seq)
             elif msg == 3:
@@ -188,7 +188,7 @@ class CreateTCController(object):
                 else:
                     pb.pus_tc_19_1_createAddEventActionDefinitionsRequest(packet, apid, seq, 0, scndpacket)
             elif msg == 2:
-                pb.pus_tc_19_2_createDeleteEventActionDefinitionsRequest(packet, apid, seq, 0)
+                print(pb.pus_tc_19_2_createDeleteEventActionDefinitionsRequest(packet, apid, seq, 0))
             elif msg == 4:
                 pb.pus_tc_19_4_createEnableEventActionDefinitions(packet, apid, seq, 0)
             elif msg == 5:
