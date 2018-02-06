@@ -20,11 +20,11 @@ class CreateTCModel(object):
                     else:
                         self.telecommand[line[0]].append(line[1])
 
-    def add_to_table(self, json_data, packet):
+    def add_to_table(self, packet):
         """
         This method adds a packet in json and packet format to the
         table model of the app
         :param json_data: The packet in json format
         :param packet: The packet
         """
-        self.app_model.add(json_data, packet)
+        self.app_model.add(packet)

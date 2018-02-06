@@ -5,13 +5,13 @@ from Views import MainView
 from Utilities import PacketTranslator
 from Utilities import PusThread
 import os, sys
-dir_path = os.path.dirname(os.path.realpath(__file__))
-lib_path = os.path.join(dir_path, '../../pus/debug/pylib')
+# dir_path = os.path.dirname(os.path.realpath(__file__))
+lib_path = os.path.join('/home/esrocos/esrocos-ws-pus/pus/debug/pylib')
 sys.path.append(lib_path)
 import pusbinding as pb
 
-
 def main():
+    os.chdir("/home/esrocos/esrocos-ws-pus/tools-pusconsole/app")
     gui = QtGui.QApplication(())
     app = App()
     view = MainView()

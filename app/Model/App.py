@@ -1,7 +1,8 @@
 from Utilities.MyTable import Table
+from Utilities import PacketTranslator
+from PySide.QtCore import Slot
 import os, json, sys
-dir_path = os.path.dirname(os.path.realpath(__file__))
-lib_path = os.path.join(dir_path, '../../../pus/debug/pylib')
+lib_path = os.path.join('/home/esrocos/esrocos-ws-pus/pus/debug/pylib')
 sys.path.append(lib_path)
 import pusbinding as pb
 
@@ -25,12 +26,15 @@ class App(object):
             apid_value = json.load(json_apid)['apid']
             pb.pus_initApidInfo_null(self.tc_apid, apid_value)
 
-    def add(self, elem, packet):
+    @Slot(pb.pusPacket_t)
+    def add(self, packet):
         """
         This method adds a packet in its packet representation and json representation
         to the app packet table
         :param elem: json of packet
         """
+        pt = PacketTranslator()
+        elem = pt.packet2json(packet)
         from datetime import datetime
         list_ = []
         type_ = int(elem["primary_header"]["pck_id"]["pck_type"])

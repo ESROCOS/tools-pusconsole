@@ -8,8 +8,8 @@ import os
 import sys
 import json
 
-dir_path = os.path.dirname(os.path.realpath(__file__))
-lib_path = os.path.join(dir_path, '../../../pus/debug/pylib')
+# dir_path = os.path.dirname(os.path.realpath(__file__))
+lib_path = os.path.join('/home/esrocos/esrocos-ws-pus/pus/debug/pylib')
 sys.path.append(lib_path)
 import pusbinding as pb
 
@@ -105,7 +105,9 @@ class CreateTCController(object):
         try:
             self.command["data"] = data_section
             vj.check(self.command)
-            self.model.add_to_table(self.command, pt.json2packet(self.command))  # Packet is created from json
+            packet = pt.json2packet(self.command)
+            pb.pus_notify_sendPacket(packet)
+            self.model.add_to_table(packet)  # Packet is created from json
             self.view.window.addTcButton.hide()
             self.view.close()
         except Exception as err:

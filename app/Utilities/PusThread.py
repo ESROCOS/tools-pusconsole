@@ -2,11 +2,9 @@ from PySide.QtCore import QObject, Signal, Slot
 from PySide.QtCore import QThread
 from . import PacketTranslator
 import json, sys, os
-dir_path = os.path.dirname(os.path.realpath(__file__))
-lib_path = os.path.join(dir_path, '../../../pus/debug/pylib')
+lib_path = os.path.join('/home/esrocos/esrocos-ws-pus/pus/debug/pylib')
 sys.path.append(lib_path)
 import pusbinding as pb
-
 
 class MySignal(QObject):
     """
@@ -49,7 +47,7 @@ class PusThread(QThread):
         self.file = file
         self.model = model
         self.signal = MySignal()
-        self.signal.signal.connect(self.add)
+        self.signal.signal.connect(self.model.add)
 
     def run(self):
         """
@@ -58,22 +56,22 @@ class PusThread(QThread):
         seconds between packet and packet according
         to the interval defined in the json file.
         """
-        pack = pb.pusPacket_t()
         import time
-        while True:
-            packet = pb.read_from_taste(pack) # Comprobar si null
-            # print("Hola")
-            # # print(pack)
-            # # print(PacketTranslator().packet2json(packet))
-            self.signal.throw(packet)
 
-    @Slot(pb.pusPacket_t)
-    def add(self, packet):
-        """
-        This method adds an element to the table model
-        :param packet: The element to be added
-        :return:
-        """
-        pt = PacketTranslator()
-        elem = pt.packet2json(packet)
-        self.model.add(elem, packet)
+        while True:
+            time.sleep(1)
+            for _ in range(3):
+                packet = pb.pusPacket_t()
+                if pb.pusError_t.PUS_NO_ERROR == pb.pus_notify_readTm(packet): # Comprobar si null
+                    self.signal.throw(packet)
+
+    # @Slot(pb.pusPacket_t)
+    # def add(self, packet):
+    #     """
+    #     This method adds an element to the table model
+    #     :param packet: The element to be added
+    #     :return:
+    #     """
+    #     pt = PacketTranslator()
+    #     elem = pt.packet2json(packet)
+    #     self.model.add(elem, packet)

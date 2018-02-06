@@ -3,8 +3,11 @@ from Model import CreateTCModel
 from Views.AddTCView import AddTCView
 from Utilities import PacketTranslator
 import os, sys, json
-dir_path = os.path.dirname(os.path.realpath(__file__))
-lib_path = os.path.join(dir_path, '../../../pus/debug/pylib')
+# dir_path = os.path.dirname(os.path.realpath(__file__))
+# lib_path = os.path.join(dir_path, '../../../pus/debug/pylib')
+# sys.path.append(lib_path)
+# import pusbinding as pb
+lib_path = os.path.join('/home/esrocos/esrocos-ws-pus/pus/debug/pylib')
 sys.path.append(lib_path)
 import pusbinding as pb
 
