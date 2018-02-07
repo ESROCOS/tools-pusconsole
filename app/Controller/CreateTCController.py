@@ -198,6 +198,11 @@ class CreateTCController(object):
                 pb.pus_tc_20_1_createParameterValueRequest(packet, apid, seq, 0)
             elif msg == 3:
                 pb.pus_tc_20_3_createSetParameterValueRequest(packet, apid, seq, 0, 0)
+        elif svc == 23:
+            if msg == 1:
+                pb.pus_tc_23_1_createCreateFileRequest(packet, apid, seq, " ", " ", 0)
+            elif msg == 2:
+                pb.pus_tc_23_1_createDeleteFileRequest(packet, apid, seq, " ", " ")
         else:
             pass
         return packet_translator.packet2json(packet), packet

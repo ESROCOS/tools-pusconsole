@@ -37,3 +37,5 @@
 20|1|Report parameter values|tc
 20|2|Parameter value report|
 20|3|Set parameter values|tc
+23|1|Create a file|tc
+23|2|Delete a file|tc

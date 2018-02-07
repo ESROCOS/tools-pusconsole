@@ -90,9 +90,9 @@ class PacketTranslator(object):
 
         elif srvc_type_id == 23:
             if msg_type_id == 1:
-                pass
+                jsn["data"]["user_data"]["src_data"] = self.tc_23_1_get_data(pack)
             elif msg_type_id == 2:
-                pass
+                jsn["data"]["user_data"]["src_data"] = self.tc_23_2_get_data(pack)
             elif msg_type_id == 3:
                 pass
             elif msg_type_id == 4:
@@ -191,6 +191,11 @@ class PacketTranslator(object):
                 self.tc_20_1_set_data(pack, data)
             elif msg_type_id == 3:
                 self.tc_20_3_set_data(pack, data)
+        elif srvc_type_id == 23:
+            if msg_type_id == 1:
+                self.tc_23_1_set_data(pack, data)
+            elif msg_type_id == 2:
+                self.tc_23_2_set_data(pack, data)
         return pack
 
     @staticmethod
@@ -239,6 +244,10 @@ class PacketTranslator(object):
             pb.pus_tc_20_1_createParameterValueRequest(packet, 0, 0, 0)
         elif (svc, msg) == (20, 3):
             pb.pus_tc_20_3_createSetParameterValueRequest(packet, 0, 0, 0, 0)
+        elif (svc, msg) == (23, 1):
+            pb.pus_tc_23_1_createCreateFileRequest(packet, 0, 0, " ", " ", 0)
+        elif (svc, msg) == (23, 2):
+            pb.pus_tc_23_1_createDeleteFileRequest(packet, 0, 0, " ", " ")
         else:
             pass
         """
@@ -524,40 +533,72 @@ class PacketTranslator(object):
 
     @staticmethod
     def tc_23_1_set_data(packet, data):
-        pass
+        repo_path = data["repo_path"]
+        filename = data["file_name"]
+        maxsize = data["max_size"]
+
+        pb.pus_tc_tm_23_X_setFileName(packet, filename)
+        pb.pus_tc_tm_23_X_setRepositoryPath(packet, repo_path)
+        pb.pus_tc_tm_23_1_4_setMaximumSize(packet, maxsize)
+        return packet
 
     @staticmethod
     def tc_23_1_get_data(packet):
-        pass
+        data = dict()
+        repo_path = str()
+        pb.pus_tc_tm_23_X_getRepositoryPath(repo_path, packet)
+        print("Repo path", repo_path)
+        data["repo_path"] = repo_path
+        filename = str()
+        pb.pus_tc_tm_23_X_getRepositoryPath(filename, packet)
+        data["file_name"] = filename
+        maxsize = pb.pus_tc_tm_23_1_4_getMaximumSize(packet)
+        data["max_size"] = maxsize
+        return data
 
     @staticmethod
     def tc_23_2_set_data(packet, data):
-        pass
+        repo_path = data["repo_path"]
+        filename = data["file_name"]
+
+        pb.pus_tc_tm_23_X_setFileName(packet, filename)
+        pb.pus_tc_tm_23_X_setRepositoryPath(packet, repo_path)
+        return packet
 
     @staticmethod
     def tc_23_2_get_data(packet):
-        pass
+        data = dict()
+        repo_path = str()
+        pb.pus_tc_tm_23_X_getRepositoryPath(repo_path, packet)
+        data["repo_path"] = repo_path
+        filename = str()
+        pb.pus_tc_tm_23_X_getRepositoryPath(filename, packet)
+        data["file_name"] = filename
+        return data
 
     @staticmethod
     def tc_23_3_set_data(packet, data):
-        pass
+        return packet
 
     @staticmethod
     def tc_23_3_get_data(packet):
-        pass
+        data = dict()
+        return data
 
     @staticmethod
     def tc_23_4_set_data(packet, data):
-        pass
+        return packet
 
     @staticmethod
     def tc_23_4_get_data(packet):
-        pass
+        data = dict()
+        return data
 
     @staticmethod
     def tc_23_14_set_data(packet, data):
-        pass
+        return packet
 
     @staticmethod
     def tc_23_14_get_data(packet):
-        pass
+        data = dict()
+        return data
