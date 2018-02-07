@@ -88,6 +88,18 @@ class PacketTranslator(object):
             elif msg_type_id == 3:
                 jsn["data"]["user_data"]["src_data"] = self.tc_20_3_get_data(pack)
 
+        elif srvc_type_id == 23:
+            if msg_type_id == 1:
+                pass
+            elif msg_type_id == 2:
+                pass
+            elif msg_type_id == 3:
+                pass
+            elif msg_type_id == 4:
+                pass
+            elif msg_type_id == 14:
+                pass
+
         return jsn
 
     def json2packet(self, jsn):
@@ -509,3 +521,43 @@ class PacketTranslator(object):
         pb.pus_tc_20_X_setParamId(packet, param_id)
         pb.pus_tc_20_3_setParamValue(packet, value)
         return packet
+
+    @staticmethod
+    def tc_23_1_set_data(packet, data):
+        pass
+
+    @staticmethod
+    def tc_23_1_get_data(packet):
+        pass
+
+    @staticmethod
+    def tc_23_2_set_data(packet, data):
+        pass
+
+    @staticmethod
+    def tc_23_2_get_data(packet):
+        pass
+
+    @staticmethod
+    def tc_23_3_set_data(packet, data):
+        pass
+
+    @staticmethod
+    def tc_23_3_get_data(packet):
+        pass
+
+    @staticmethod
+    def tc_23_4_set_data(packet, data):
+        pass
+
+    @staticmethod
+    def tc_23_4_get_data(packet):
+        pass
+
+    @staticmethod
+    def tc_23_14_set_data(packet, data):
+        pass
+
+    @staticmethod
+    def tc_23_14_get_data(packet):
+        pass
