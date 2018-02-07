@@ -1,5 +1,7 @@
 *~
 .*.swp
+__pycache__
+*.pyc
 
 build/*
 debug/*
@@ -16,10 +18,7 @@ app/prueba*
 app/*.json
 !app/apid.json
 app/x86_partition
-
-__pycache__
-*.pyc
-
+app/.idea/
 jsonexample.json
 pythonscript.py
 pythonscript2.py
@@ -27,4 +26,4 @@ hs_err_pid*
 prueba*
 
 # Exclude source files generated from the .ui but not the __init__.py, images directory or Ui_Files directory
-
+app/Views/*View.py
