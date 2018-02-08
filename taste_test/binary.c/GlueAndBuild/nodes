@@ -1,0 +1,13 @@
+--  This file was generated automatically: DO NOT MODIFY IT !
+
+--  This file contains the description of the system distribution.
+--  It is an input file for the TASTE ORCHESTRATOR
+
+* x86_partition PLATFORM_NATIVE
+console
+roberto
+x86_partition_taste_api
+vt_console_trigger
+vt_console_tm
+vt_roberto_tc
+vt_roberto_trigger

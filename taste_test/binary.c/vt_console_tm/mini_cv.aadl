@@ -1,0 +1,46 @@
+-- Automatically Generated - For use with AADL2GlueC only - Do NOT modify! --
+
+SUBPROGRAM artificial_tm
+FEATURES
+	packet:IN PARAMETER DataView::PusPacket {encoding=>NATIVE;};
+END artificial_tm;
+
+SUBPROGRAM IMPLEMENTATION artificial_tm.C
+PROPERTIES
+	FV_Name => "vt_console_tm";
+	Source_Language => C;
+END artificial_tm.C;
+
+SUBPROGRAM tm
+FEATURES
+	packet:OUT PARAMETER DataView::PusPacket {encoding=>NATIVE;};
+END tm;
+
+SUBPROGRAM IMPLEMENTATION tm.C
+PROPERTIES
+	FV_Name => "vt_console_tm";
+	Source_Language => C;
+END tm.C;
+
+SUBPROGRAM tc_vt
+FEATURES
+	packet:OUT PARAMETER DataView::PusPacket {encoding=>NATIVE;};
+END tc_vt;
+
+SUBPROGRAM IMPLEMENTATION tc_vt.C
+PROPERTIES
+	FV_Name => "vt_console_tm";
+	Source_Language => C;
+END tc_vt.C;
+
+SUBPROGRAM check_queue_vt
+FEATURES
+	res:IN PARAMETER DataView::T_Boolean {encoding=>NATIVE;};
+END check_queue_vt;
+
+SUBPROGRAM IMPLEMENTATION check_queue_vt.C
+PROPERTIES
+	FV_Name => "vt_console_tm";
+	Source_Language => C;
+END check_queue_vt.C;
+

@@ -1,0 +1,30 @@
+--  This file was generated automatically: DO NOT MODIFY IT !
+
+--  This file contains a part of the system CONCURRENCY VIEW.
+--  It is an input file for OCARINA.
+
+package vt_console_trigger_CV_Thread
+public
+	with Deployment;
+	with process_package;
+	with Dataview;
+
+THREAD vt_console_trigger_vt_console_trigger
+features
+	OUTPORT_tc_vt : OUT EVENT DATA PORT DataView::PusPacket_Buffer.impl;
+	console_protected : requires data access process_package::TASTE_Protected.Object;
+END vt_console_trigger_vt_console_trigger;
+
+THREAD IMPLEMENTATION vt_console_trigger_vt_console_trigger.others
+PROPERTIES
+	Initialize_Entrypoint_Source_Text => "init_console";
+	Compute_Entrypoint_Source_Text => "po_hi_c_vt_console_trigger_artificial_trigger";
+	Dispatch_Protocol => Periodic;
+	Period            => 2000 ms;
+	Dispatch_Offset   => 0 ms;
+	Compute_Execution_Time => 0 ms .. 10 ms;
+	Source_Stack_Size => 50 KByte;
+	Priority => 10;
+END vt_console_trigger_vt_console_trigger.others;
+
+end vt_console_trigger_CV_Thread;

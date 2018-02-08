@@ -1,0 +1,42 @@
+-- Automatically Generated - For use with AADL2GlueC only - Do NOT modify! --
+
+SUBPROGRAM artificial_trigger
+END artificial_trigger;
+
+SUBPROGRAM IMPLEMENTATION artificial_trigger.C
+PROPERTIES
+	FV_Name => "vt_console_trigger";
+	Source_Language => C;
+END artificial_trigger.C;
+
+SUBPROGRAM trigger
+END trigger;
+
+SUBPROGRAM IMPLEMENTATION trigger.C
+PROPERTIES
+	FV_Name => "vt_console_trigger";
+	Source_Language => C;
+END trigger.C;
+
+SUBPROGRAM tc_vt
+FEATURES
+	packet:OUT PARAMETER DataView::PusPacket {encoding=>NATIVE;};
+END tc_vt;
+
+SUBPROGRAM IMPLEMENTATION tc_vt.C
+PROPERTIES
+	FV_Name => "vt_console_trigger";
+	Source_Language => C;
+END tc_vt.C;
+
+SUBPROGRAM check_queue_vt
+FEATURES
+	res:IN PARAMETER DataView::T_Boolean {encoding=>NATIVE;};
+END check_queue_vt;
+
+SUBPROGRAM IMPLEMENTATION check_queue_vt.C
+PROPERTIES
+	FV_Name => "vt_console_trigger";
+	Source_Language => C;
+END check_queue_vt.C;
+
