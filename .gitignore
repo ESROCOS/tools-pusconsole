@@ -26,4 +26,4 @@ hs_err_pid*
 prueba*
 
 # Exclude source files generated from the .ui but not the __init__.py, images directory or Ui_Files directory
-app/Views/*View.py
+app/Views/Views_Ui/*View.py
