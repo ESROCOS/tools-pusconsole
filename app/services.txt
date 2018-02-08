@@ -39,3 +39,4 @@
 20|3|Set parameter values|tc
 23|1|Create a file|tc
 23|2|Delete a file|tc
+23|3|Report the attributes of a file|tc

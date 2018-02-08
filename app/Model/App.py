@@ -39,7 +39,6 @@ class App(object):
         list_ = []
         type_ = int(elem["primary_header"]["pck_id"]["pck_type"])
         svc_type_id = int(elem["data"]["pck_sec_head"]["msg_type_id"]["service_type_id"])
-        print(svc_type_id)
         msg_subtype_id = int(elem["data"]["pck_sec_head"]["msg_type_id"]["msg_subtype_id"])
         time_ = str(datetime.now().time().strftime("%H:%M:%S"))
         if type_ == 0:
@@ -149,7 +148,6 @@ class App(object):
             for k in sorted(src_data.keys()):
                 if k != "hk_param_report_id":
                     params.append(str(src_data[k]))
-            print(params)
             info += ', '.join(params)
         elif svc == 5:
             info = "Event id: {}. Data1: {}. Data2: {}".format(src_data["event_id"], src_data["auxdata"]["data1"],

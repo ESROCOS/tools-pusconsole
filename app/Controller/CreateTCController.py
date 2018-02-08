@@ -100,7 +100,6 @@ class CreateTCController(object):
         vj = ValidateJson()
 
         data_section = self.view.get_tc_text()
-        print(data_section)
         data_section = json.loads(mt.replace(data_section))
         try:
             self.command["data"] = data_section
@@ -169,7 +168,7 @@ class CreateTCController(object):
                 self.view.window.addTcButton.show()
                 pb.pus_tc_11_4_createInsertActivityIntoSchedule(packet, apid, seq)
                 scndpacket = self.open_add_tc_window()
-                print(packet_translator.packet2json(scndpacket))
+                packet_translator.packet2json(scndpacket)
                 if scndpacket is None:
                     self.view.window.msgComboBox.setCurrentIndex(0)
                     return None, None
