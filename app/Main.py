@@ -10,6 +10,7 @@ lib_path = os.path.join('/home/esrocos/esrocos-ws-pus/pus/debug/pylib')
 sys.path.append(lib_path)
 import pusbinding as pb
 
+
 def main():
     os.chdir("/home/esrocos/esrocos-ws-pus/tools-pusconsole/app")
     gui = QtGui.QApplication(())
@@ -34,11 +35,11 @@ def main():
     #     packet = pb.pusPacket_t()
     #     pb.ret_packets(packet, i)
     #     app.add(pt.packet2json(packet), packet)
-        # packet0 = pb.pusPacket_t()
-        # pb.pus_tc_17_1_createConnectionTestRequest(packet0, 0, 0)
-        # packet = pb.pusPacket_t()
-        # pb.pus_tm_1_1_createAcceptanceReportSuccess(packet, 0, 0, packet0)
-        # app.add(pt.packet2json(packet), packet)
+    #     packet0 = pb.pusPacket_t()
+    #     pb.pus_tc_17_1_createConnectionTestRequest(packet0, 0, 0)
+    #     packet = pb.pusPacket_t()
+    #     pb.pus_tm_1_1_createAcceptanceReportSuccess(packet, 0, 0, packet0)
+    #     app.add(pt.packet2json(packet), packet)
 
     sys.exit(gui.exec_())
 
