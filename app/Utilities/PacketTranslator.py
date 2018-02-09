@@ -87,16 +87,13 @@ class PacketTranslator(object):
                 jsn["data"]["user_data"]["src_data"] = self.tm_20_2_get_data(pack)
             elif msg_type_id == 3:
                 jsn["data"]["user_data"]["src_data"] = self.tc_20_3_get_data(pack)
-
         elif srvc_type_id == 23:
-            if msg_type_id == 1:
-                jsn["data"]["user_data"]["src_data"] = self.tc_23_1_get_data(pack)
+            if msg_type_id == 1 or msg_type_id == 4:
+                jsn["data"]["user_data"]["src_data"] = self.tc_tm_23_1_4_get_data(pack)
             elif msg_type_id == 2 or msg_type_id == 3:
                 jsn["data"]["user_data"]["src_data"] = self.tc_23_2_3_get_data(pack)
-            elif msg_type_id == 4:
-                pass
             elif msg_type_id == 14:
-                pass
+                jsn["data"]["user_data"]["src_data"] = self.tc_23_14_get_data(pack)
 
         return jsn
 
@@ -194,6 +191,8 @@ class PacketTranslator(object):
                 self.tc_23_1_set_data(pack, data)
             elif msg_type_id == 2 or msg_type_id == 3:
                 self.tc_23_2_3_set_data(pack, data)
+            elif msg_type_id == 14:
+                self.tc_23_14_set_data(pack, data)
         return pack
 
     @staticmethod
@@ -213,11 +212,11 @@ class PacketTranslator(object):
         elif (svc, msg) == (9, 1):
             pb.pus_tc_9_1_createSetTimeReportRate(packet, 0, 0, 0)
         elif (svc, msg) == (11, 1):
-            pb.pus_tc_11_1_createEnableTimeBasedSchedule(packet, 0, 0, 0)
+            pb.pus_tc_11_1_createEnableTimeBasedSchedule(packet, 0, 0)
         elif (svc, msg) == (11, 2):
-            pb.pus_tc_11_2_createDisableTimeBasedSchedule(packet, 0, 0, 0)
+            pb.pus_tc_11_2_createDisableTimeBasedSchedule(packet, 0, 0)
         elif (svc, msg) == (11, 3):
-            pb.pus_tc_11_3_createResetTimeBasedSchedule(packet, 0, 0, 0)
+            pb.pus_tc_11_3_createResetTimeBasedSchedule(packet, 0, 0)
         elif (svc, msg) == (11, 4):
             pb.pus_tc_11_4_createInsertActivityIntoSchedule(packet, 0, 0)
         elif (svc, msg) == (12, 1):
@@ -245,9 +244,11 @@ class PacketTranslator(object):
         elif (svc, msg) == (23, 1):
             pb.pus_tc_23_1_createCreateFileRequest(packet, 0, 0, "", "", 0)
         elif (svc, msg) == (23, 2):
-            pb.pus_tc_23_1_createDeleteFileRequest(packet, 0, 0, "", "")
+            pb.pus_tc_23_2_createDeleteFileRequest(packet, 0, 0, "", "")
         elif (svc, msg) == (23, 3):
-            print(pb.pus_tc_23_3_createReportFileAtributesRequest(packet, 0, 0, "", ""))
+            pb.pus_tc_23_3_createReportFileAtributesRequest(packet, 0, 0, "", "")
+        elif (svc, msg) == (23, 14):
+            pb.pus_tc_23_14_createCopyFileRequest(packet, 0, 0, "", "", "", "")
         else:
             pass
         """
@@ -543,7 +544,7 @@ class PacketTranslator(object):
         return packet
 
     @staticmethod
-    def tc_23_1_get_data(packet):
+    def tc_tm_23_1_4_get_data(packet):
         data = dict()
         data["repo_path"] = pb.pus_tc_tm_23_X_getRepositoryPath(str(), packet)
         data["file_name"] = pb.pus_tc_tm_23_X_getFileName(str(), packet)
@@ -587,9 +588,23 @@ class PacketTranslator(object):
 
     @staticmethod
     def tc_23_14_set_data(packet, data):
+        src_repo = data["source_repository"]
+        src_file = data["source_file"]
+        dst_repo = data["target_repositroy"]
+        dst_file = data["target_file"]
+
+        pb.pus_tc_23_14_setSourceFileName(packet, src_file)
+        pb.pus_tc_23_14_setTargetFileName(packet, dst_file)
+        pb.pus_tc_23_14_setSourceRepositoryPath(packet, src_repo)
+        pb.pus_tc_23_14_setTargetRepositoryPath(packet, dst_repo)
+
         return packet
 
     @staticmethod
     def tc_23_14_get_data(packet):
         data = dict()
+        data["source_repository"] = pb.pus_tc_23_14_getTargetRepositoryPath(packet)
+        data["source_file"] = pb.pus_tc_23_14_getSourceFileName(packet)
+        data["target_repositroy"] = pb.pus_tc_23_14_getTargetRepositoryPath(packet)
+        data["target_file"] = pb.pus_tc_23_14_getSourceRepositoryPath(packet)
         return data

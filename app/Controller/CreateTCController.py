@@ -198,10 +198,16 @@ class CreateTCController(object):
             elif msg == 3:
                 pb.pus_tc_20_3_createSetParameterValueRequest(packet, apid, seq, 0, 0)
         elif svc == 23:
+            print("mensaje", str(msg))
             if msg == 1:
-                pb.pus_tc_23_1_createCreateFileRequest(packet, apid, seq, " ", " ", 0)
+                pb.pus_tc_23_1_createCreateFileRequest(packet, apid, seq, "", "", 0)
             elif msg == 2:
-                pb.pus_tc_23_1_createDeleteFileRequest(packet, apid, seq, " ", " ")
+                pb.pus_tc_23_2_createDeleteFileRequest(packet, apid, seq, "", "")
+            elif msg == 3:
+                pb.pus_tc_23_3_createReportFileAtributesRequest(packet, apid, seq, "", "")
+            elif msg == 14:
+                pb.pus_tc_23_14_createCopyFileRequest(packet, apid, seq, "", "", "", "")
+
         else:
             pass
         return packet_translator.packet2json(packet), packet

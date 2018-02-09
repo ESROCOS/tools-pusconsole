@@ -25,6 +25,9 @@ def main():
     #if len(args) > 1:
         #if args[1] == "-test":
     controller.show()
+    # packet = pb.pusPacket_t()
+    # pb.ret_packets(packet, 12)
+    # app.add(packet)
     thread = PusThread("test.json", app)
     thread.start()
 

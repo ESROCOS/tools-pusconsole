@@ -40,3 +40,5 @@
 23|1|Create a file|tc
 23|2|Delete a file|tc
 23|3|Report the attributes of a file|tc
+23|4|File attribute report
+23|14|Copy a file|tc
