@@ -82,6 +82,12 @@ class CreateTCView(object):
         """
         self.window.msgComboBox.addItem(item, int(item))
 
+    def add_item_history_list(self, item):
+        self.window.historyList.addItem(item)
+
+    def clear_history_list(self):
+        self.window.historyList.clear()
+
     def clear_msg_type_combo_box(self):
         """
         This method clears the message combobox

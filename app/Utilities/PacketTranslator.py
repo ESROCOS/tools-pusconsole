@@ -22,39 +22,43 @@ class PacketTranslator(object):
         jsn["primary_header"]["pck_version"] = pb.pus_getPacketVersion(pack)
         jsn["primary_header"]["pck_id"] = collections.OrderedDict()
         type_ = jsn["primary_header"]["pck_id"]["pck_type"] = pb.pus_getPacketType(pack)
-        jsn["primary_header"]["pck_id"]["sec_head_flg"] = pb.pus_getSecondaryHeaderFlag(pack)
+        sec_head_flag = jsn["primary_header"]["pck_id"]["sec_head_flg"] = pb.pus_getSecondaryHeaderFlag(pack)
         jsn["primary_header"]["pck_id"]["apid"] = pb.pus_getApid(pack)
         jsn["primary_header"]["pck_seq_ctrl"] = collections.OrderedDict()
         jsn["primary_header"]["pck_seq_ctrl"]["pck_seq_flg"] = pb.pus_getSequenceFlags(pack)
         jsn["primary_header"]["pck_seq_ctrl"]["pck_seq"] = pb.pus_getSequenceCount(pack)
         jsn["primary_header"]["pck_data_len"] = pb.pus_getPacketDataLength(pack)
         jsn["data"] = collections.OrderedDict()
-        jsn["data"]["pck_sec_head"] = collections.OrderedDict()
-        jsn["data"]["user_data"] = collections.OrderedDict()
-        if type_ == 0:  # TM
-            jsn["data"]["pck_sec_head"]["tm_packet_pus_version_number"] = pb.pus_getTmPusVersion(pack)
-            jsn["data"]["pck_sec_head"]["spacecraft_time"] = pb.pus_getTmTimeReferenceStatus(pack)
-            srvc_type_id = pb.pus_getTmService(pack)
-            msg_type_id = pb.pus_getTmSubtype(pack)
-            jsn["data"]["pck_sec_head"]["msg_type_counter"] = pb.pus_getTmMessageTypeCounter(pack)
-            jsn["data"]["pck_sec_head"]["dst_id"] = pb.pus_getTmDestination(pack)
-            jsn["data"]["pck_sec_head"]["time"] = time.strftime("%H:%M:%S", time.gmtime(pb.pus_getTmPacketTime(pack)))
+        if sec_head_flag:
+            jsn["data"]["pck_sec_head"] = collections.OrderedDict()
+            if type_ == 0:  # TM
+                jsn["data"]["pck_sec_head"]["tm_packet_pus_version_number"] = pb.pus_getTmPusVersion(pack)
+                jsn["data"]["pck_sec_head"]["spacecraft_time"] = pb.pus_getTmTimeReferenceStatus(pack)
+                srvc_type_id = pb.pus_getTmService(pack)
+                msg_type_id = pb.pus_getTmSubtype(pack)
+                jsn["data"]["pck_sec_head"]["msg_type_counter"] = pb.pus_getTmMessageTypeCounter(pack)
+                jsn["data"]["pck_sec_head"]["dst_id"] = pb.pus_getTmDestination(pack)
+                jsn["data"]["pck_sec_head"]["time"] = time.strftime("%H:%M:%S", time.gmtime(pb.pus_getTmPacketTime(pack)))
+            else:
+                jsn["data"]["pck_sec_head"]["tc_packet_pus_version_number"] = pb.pus_getTcPusVersion(pack)
+                jsn["data"]["pck_sec_head"]["ack_flags"] = collections.OrderedDict()
+                jsn["data"]["pck_sec_head"]["ack_flags"]["ack_flag_acceptance"] = pb.pus_getTcAckFlagAcceptance(pack)
+                jsn["data"]["pck_sec_head"]["ack_flags"]["ack_flag_start"] = pb.pus_getTcAckFlagStart(pack)
+                jsn["data"]["pck_sec_head"]["ack_flags"]["ack_flag_progress"] = pb.pus_getTcAckFlagProgress(pack)
+                jsn["data"]["pck_sec_head"]["ack_flags"]["ack_flag_completion"] = pb.pus_getTcAckFlagCompletion(pack)
+                srvc_type_id = pb.pus_getTcService(pack)
+                msg_type_id = pb.pus_getTcSubtype(pack)
+                jsn["data"]["pck_sec_head"]["src_id"] = pb.pus_getTcSource(pack)
+
+            jsn["data"]["pck_sec_head"]["msg_type_id"] = collections.OrderedDict()
+            jsn["data"]["pck_sec_head"]["msg_type_id"]["service_type_id"] = srvc_type_id
+            jsn["data"]["pck_sec_head"]["msg_type_id"]["msg_subtype_id"] = msg_type_id
+            jsn["data"]["pck_sec_head"]["spare"] = 0
         else:
-            jsn["data"]["pck_sec_head"]["tc_packet_pus_version_number"] = pb.pus_getTcPusVersion(pack)
-            jsn["data"]["pck_sec_head"]["ack_flags"] = collections.OrderedDict()
-            jsn["data"]["pck_sec_head"]["ack_flags"]["ack_flag_acceptance"] = pb.pus_getTcAckFlagAcceptance(pack)
-            jsn["data"]["pck_sec_head"]["ack_flags"]["ack_flag_start"] = pb.pus_getTcAckFlagStart(pack)
-            jsn["data"]["pck_sec_head"]["ack_flags"]["ack_flag_progress"] = pb.pus_getTcAckFlagProgress(pack)
-            jsn["data"]["pck_sec_head"]["ack_flags"]["ack_flag_completion"] = pb.pus_getTcAckFlagCompletion(pack)
-            srvc_type_id = pb.pus_getTcService(pack)
-            msg_type_id = pb.pus_getTcSubtype(pack)
-            jsn["data"]["pck_sec_head"]["src_id"] = pb.pus_getTcSource(pack)
+            srvc_type_id = 9
+            msg_type_id = 2
 
-        jsn["data"]["pck_sec_head"]["msg_type_id"] = collections.OrderedDict()
-        jsn["data"]["pck_sec_head"]["msg_type_id"]["service_type_id"] = srvc_type_id
-        jsn["data"]["pck_sec_head"]["msg_type_id"]["msg_subtype_id"] = msg_type_id
-        jsn["data"]["pck_sec_head"]["spare"] = 0
-
+        jsn["data"]["user_data"] = collections.OrderedDict()
         jsn["data"]["user_data"] = {"src_data": {}, "spare": 0, "pack_error_ctrl": 0}
 
         if srvc_type_id == 1:  # If it's a request verification packet
@@ -69,7 +73,7 @@ class PacketTranslator(object):
             if msg_type_id == 1:
                 jsn["data"]["user_data"]["src_data"] = self.tc_9_1_get_data(pack)
             elif msg_type_id == 2:
-                pass
+                jsn["data"]["user_data"]["src_data"] = self.tm_9_2_get_data(pack)
         elif srvc_type_id == 11:
             if msg_type_id == 4:
                 jsn["data"]["user_data"]["src_data"] = self.tc_11_4_get_data(pack)
@@ -358,6 +362,17 @@ class PacketTranslator(object):
         """
         exp_rate = data["exp_rate"]
         pb.pus_tc_9_1_setExponentialRate(packet, exp_rate)
+
+    @staticmethod
+    def tm_9_2_get_data(packet):
+        data = dict()
+        ptime = pb.pusTime_t()
+        exp_rate = pb.pus_tm_9_2_getDataField(packet, ptime)
+        data["exp_rate"] = exp_rate
+        time_ = int()
+        pb.pus_posix2time(ptime, time_)
+        data["time"] = time_
+        return data
 
     def tc_11_4_get_data(self, packet):
         """

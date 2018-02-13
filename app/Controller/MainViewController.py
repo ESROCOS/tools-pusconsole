@@ -125,8 +125,8 @@ class MainViewController(object):
         """
         file = QtGui.QFileDialog.getSaveFileName()
         d = Database(file[0])
+        d.create_dump_table()
         packages = [tuple(e[1:-1]) for e in self.model.table]
-        print(packages)
 
         d.insert_db("INSERT INTO packages VALUES(?,?,?,?,?,?,?,?,?,?)", packages)
 
@@ -140,6 +140,7 @@ class MainViewController(object):
         """
         file = QtGui.QFileDialog.getOpenFileName()
         d = Database(file[0])
+        d.create_dump_table()
 
         elems = d.query_db("SELECT * FROM packages")
         self.model.table.clear()

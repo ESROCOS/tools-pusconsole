@@ -2,8 +2,9 @@ from PySide import QtGui
 from Model import CreateTCModel
 from Views import CreateTCView
 from Views import AddTCView
-from Utilities import PacketTranslator, ValidateJson, MakoTranslate
+from Utilities import PacketTranslator, ValidateJson, MakoTranslate, Database
 from .AddTCController import AddTCController
+from jsonschema.exceptions import ValidationError
 import os
 import sys
 import json
@@ -29,9 +30,12 @@ class CreateTCController(object):
         self.command = ""
         self.command_packet = None
 
+        self.HISTORY_DB = ".tc_history"
+
         self.__add_telecommand()
         self.set_callbacks()
         self.svc_combobox_changed_callback(self.view.window.serviceComboBox.currentIndex())
+        self.show_history()
 
     def set_callbacks(self):
         """
@@ -42,6 +46,7 @@ class CreateTCController(object):
         self.view.window.msgComboBox.currentIndexChanged.connect(lambda i: self.msg_combobox_changed_callback(i))
         self.view.window.sendButton.clicked.connect(self.send_callback)
         self.view.window.addTcButton.clicked.connect(self.add_tc_callback)
+        self.view.window.historyList.itemClicked.connect(self.history_click_callback)
 
     def __add_telecommand(self):
         """
@@ -89,6 +94,15 @@ class CreateTCController(object):
         else:
             self.view.set_tc_text("")
 
+    def history_click_callback(self, index):
+        # text = self.view.window.historyList.currentIndex().text()
+        # d = Database(self.HISTORY_DB)
+        # d.create_history_table() # Create if not exists
+        # rowid = text[3]
+        # query = "SELECT * from history where rowid = ?"
+        # tc = d.query_db(query, rowid)
+        # print(tc)
+
     def send_callback(self):
         """
         This method is triggered when the user hits the send button.
@@ -98,6 +112,8 @@ class CreateTCController(object):
         mt = MakoTranslate()
         pt = PacketTranslator()
         vj = ValidateJson()
+        d = Database(self.HISTORY_DB)
+        d.create_history_table()
 
         data_section = self.view.get_tc_text()
         data_section = json.loads(mt.replace(data_section))
@@ -107,9 +123,11 @@ class CreateTCController(object):
             packet = pt.json2packet(self.command)
             pb.pus_notify_sendPacket(packet)
             self.model.add_to_table(packet)  # Packet is created from json
+            d.insert_db("INSERT INTO history VALUES(?)", [[json.dumps(self.command)]])
+            self.show_history()
             self.view.window.addTcButton.hide()
             self.view.close()
-        except Exception as err:
+        except ValidationError as err:
             msg_box = QtGui.QMessageBox()
             msg_box.setText('Some fields may be incorrect {}'.format(err))
             msg_box.setStandardButtons(QtGui.QMessageBox.Ok | QtGui.QMessageBox.Cancel)
@@ -129,6 +147,20 @@ class CreateTCController(object):
             pb.pus_tc_11_4_setActivity(self.command_packet, scndpacket, now) # Revisar
             self.command = packet_translator.packet2json(self.command_packet)
             self.view.set_tc_text(json.dumps(self.command["data"], indent=2))
+
+    def show_history(self):
+        self.view.clear_history_list()
+        d = Database(self.HISTORY_DB)
+        d.create_history_table()
+        query = "SELECT rowid, * FROM history"
+        packets_list = d.query_db(query)
+        for p in packets_list:
+            dic = json.loads(p[1])
+            print(dic)
+            svc = str(dic["data"]["pck_sec_head"]["msg_type_id"]["service_type_id"])
+            msg = str(dic["data"]["pck_sec_head"]["msg_type_id"]["msg_subtype_id"])
+            tc = "TC "+str(p[0])+". Type:"+svc+"_"+msg
+            self.view.add_item_history_list(tc)
 
     def show_packet_json(self, svc, msg):
         """
@@ -198,7 +230,6 @@ class CreateTCController(object):
             elif msg == 3:
                 pb.pus_tc_20_3_createSetParameterValueRequest(packet, apid, seq, 0, 0)
         elif svc == 23:
-            print("mensaje", str(msg))
             if msg == 1:
                 pb.pus_tc_23_1_createCreateFileRequest(packet, apid, seq, "", "", 0)
             elif msg == 2:

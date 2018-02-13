@@ -15,9 +15,8 @@ class Database(object):
         self.db = None
         self.cursor = None
         self.open_db(dbname)
-        self.create_table()
 
-    def create_table(self, table_name: str = "packages"):
+    def create_dump_table(self, table_name: str = "packages"):
         """
         This method creates a table in the database with the
         name passed as argument
@@ -35,6 +34,18 @@ class Database(object):
                         status text,
                         info text,
                         rest_of_data json
+                    );"""
+        self.cursor.execute(query)
+
+    def create_history_table(self, table_name: str = "history"):
+        """
+        This method creates a table in the database with the
+        name passed as argument
+        :param table_name: The name of the table
+        """
+        query = """CREATE TABLE
+                    IF NOT EXISTS """ + table_name + """(
+                        packets json
                     );"""
         self.cursor.execute(query)
 
@@ -64,11 +75,11 @@ class Database(object):
     #REVISAR: SE ANADIERON DOS PARÁMETROS MAS A CADA ELEMENTO DE LA TABLA
     #QUE NO TIENEN QUE SER INSERTADOS. ESTOS SON EL INDICE Y EL PAQUETE
     #EN FORMA DE PAQUETE.
-    def insert_db(self, query: str, _list: list = None):
+    def insert_db(self, query: str, elem):
         """
         This methods execute an insertion in the db
         :param query: Query using prepared statement
-        :param _list: Parameters of the prepared statement
+        :param elem: Parameters of the prepared statement
         """
-        self.cursor.executemany(query, _list)
+        self.cursor.executemany(query, elem)
         self.db.commit()

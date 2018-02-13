@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'CreateTCView.ui'
 #
-# Created: Thu Feb  8 12:49:46 2018
+# Created: Tue Feb 13 12:34:25 2018
 #      by: pyside-uic 0.2.15 running on PySide 1.2.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -22,10 +22,6 @@ class Ui_CreateTCView(object):
         self.historyList = QtGui.QListWidget(CreateTCView)
         self.historyList.setGeometry(QtCore.QRect(10, 30, 401, 101))
         self.historyList.setObjectName("historyList")
-        QtGui.QListWidgetItem(self.historyList)
-        QtGui.QListWidgetItem(self.historyList)
-        QtGui.QListWidgetItem(self.historyList)
-        QtGui.QListWidgetItem(self.historyList)
         self.label = QtGui.QLabel(CreateTCView)
         self.label.setGeometry(QtCore.QRect(10, 10, 111, 17))
         self.label.setObjectName("label")
@@ -47,20 +43,12 @@ class Ui_CreateTCView(object):
         self.addTcButton = QtGui.QPushButton(CreateTCView)
         self.addTcButton.setGeometry(QtCore.QRect(320, 185, 31, 27))
         self.addTcButton.setObjectName("addTcButton")
-
         self.retranslateUi(CreateTCView)
         QtCore.QMetaObject.connectSlotsByName(CreateTCView)
 
     def retranslateUi(self, CreateTCView):
         CreateTCView.setWindowTitle(QtGui.QApplication.translate("CreateTCView", "Create TC", None, QtGui.QApplication.UnicodeUTF8))
         self.createTCLabel.setText(QtGui.QApplication.translate("CreateTCView", "Create Telecommand", None, QtGui.QApplication.UnicodeUTF8))
-        __sortingEnabled = self.historyList.isSortingEnabled()
-        self.historyList.setSortingEnabled(False)
-        self.historyList.item(0).setText(QtGui.QApplication.translate("CreateTCView", "1 ....", None, QtGui.QApplication.UnicodeUTF8))
-        self.historyList.item(1).setText(QtGui.QApplication.translate("CreateTCView", "2 ....", None, QtGui.QApplication.UnicodeUTF8))
-        self.historyList.item(2).setText(QtGui.QApplication.translate("CreateTCView", "3 ....", None, QtGui.QApplication.UnicodeUTF8))
-        self.historyList.item(3).setText(QtGui.QApplication.translate("CreateTCView", "4 ....", None, QtGui.QApplication.UnicodeUTF8))
-        self.historyList.setSortingEnabled(__sortingEnabled)
         self.label.setText(QtGui.QApplication.translate("CreateTCView", "History", None, QtGui.QApplication.UnicodeUTF8))
         self.label_2.setText(QtGui.QApplication.translate("CreateTCView", "Service type", None, QtGui.QApplication.UnicodeUTF8))
         self.label_3.setText(QtGui.QApplication.translate("CreateTCView", "Message subtype", None, QtGui.QApplication.UnicodeUTF8))

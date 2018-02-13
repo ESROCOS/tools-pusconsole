@@ -38,15 +38,22 @@ class App(object):
         from datetime import datetime
         list_ = []
         type_ = int(elem["primary_header"]["pck_id"]["pck_type"])
-        svc_type_id = int(elem["data"]["pck_sec_head"]["msg_type_id"]["service_type_id"])
-        msg_subtype_id = int(elem["data"]["pck_sec_head"]["msg_type_id"]["msg_subtype_id"])
-        time_ = str(datetime.now().time().strftime("%H:%M:%S"))
-        if type_ == 0:
-            src = None
-            dst = int(elem["data"]["pck_sec_head"]["dst_id"])
+        if elem["primary_header"]["pck_id"]["sec_head_flg"]:
+            svc_type_id = int(elem["data"]["pck_sec_head"]["msg_type_id"]["service_type_id"])
+            msg_subtype_id = int(elem["data"]["pck_sec_head"]["msg_type_id"]["msg_subtype_id"])
+            if type_ == 0:
+                src = None
+                dst = int(elem["data"]["pck_sec_head"]["dst_id"])
+            else:
+                src = int(elem["data"]["pck_sec_head"]["src_id"])
+                dst = None
         else:
-            src = int(elem["data"]["pck_sec_head"]["src_id"])
+            svc_type_id = 9
+            msg_subtype_id = 2
+            src = None
             dst = None
+        time_ = str(datetime.now().time().strftime("%H:%M:%S"))
+
         pck_seq_ctrl = int(elem["primary_header"]["pck_seq_ctrl"]["pck_seq"])
         status = "OK" # Mirar
         information = self.__create_info_string__(elem)
@@ -123,8 +130,12 @@ class App(object):
         :return: The information string
         """
         info = ""
-        svc = elem["data"]["pck_sec_head"]["msg_type_id"]["service_type_id"]
-        msg = elem["data"]["pck_sec_head"]["msg_type_id"]["msg_subtype_id"]
+        if elem["primary_header"]["pck_id"]["sec_head_flg"]:
+            svc = elem["data"]["pck_sec_head"]["msg_type_id"]["service_type_id"]
+            msg = elem["data"]["pck_sec_head"]["msg_type_id"]["msg_subtype_id"]
+        else:
+            svc = 9
+            msg = 2
         data = elem["data"]
         src_data = data["user_data"]["src_data"]
         # ack_flags = data["pck_sec_head"]["ack_flags"]

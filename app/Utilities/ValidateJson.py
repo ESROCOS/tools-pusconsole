@@ -1,4 +1,5 @@
 import jsonschema
+from jsonschema.exceptions import ValidationError
 import json
 
 
@@ -38,7 +39,7 @@ class ValidateJson(object):
                     self.__validate__(packet, dir + "st20_1_schema.json")
                 elif msg == 3:
                     self.__validate__(packet, dir + "st20_3_schema.json")
-        except Exception:
+        except ValidationError:
             raise
 
     @staticmethod
@@ -55,5 +56,5 @@ class ValidateJson(object):
             schema = json.load(sch_file)
         try:
             jsonschema.validate(packet, schema)
-        except Exception:
+        except ValidationError:
             raise
