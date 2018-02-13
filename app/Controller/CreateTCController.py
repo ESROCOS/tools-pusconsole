@@ -94,7 +94,7 @@ class CreateTCController(object):
         else:
             self.view.set_tc_text("")
 
-    def history_click_callback(self, index):
+    #def history_click_callback(self, index):
         # text = self.view.window.historyList.currentIndex().text()
         # d = Database(self.HISTORY_DB)
         # d.create_history_table() # Create if not exists
