@@ -95,13 +95,13 @@ class CreateTCController(object):
             self.view.set_tc_text("")
 
     def history_click_callback(self, index):
-        # text = self.view.window.historyList.currentIndex().text()
-        # d = Database(self.HISTORY_DB)
-        # d.create_history_table() # Create if not exists
-        # rowid = text[3]
-        # query = "SELECT * from history where rowid = ?"
-        # tc = d.query_db(query, rowid)
-        # print(tc)
+        text = self.view.window.historyList.currentIndex().text()
+        d = Database(self.HISTORY_DB)
+        d.create_history_table() # Create if not exists
+        rowid = text[3]
+        query = "SELECT * from history where rowid = ?"
+        tc = d.query_db(query, rowid)
+        print(tc)
 
     def send_callback(self):
         """

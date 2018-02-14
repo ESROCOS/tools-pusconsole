@@ -369,9 +369,7 @@ class PacketTranslator(object):
         ptime = pb.pusTime_t()
         exp_rate = pb.pus_tm_9_2_getDataField(packet, ptime)
         data["exp_rate"] = exp_rate
-        time_ = int()
-        pb.pus_posix2time(ptime, time_)
-        data["time"] = time_
+        data["time"] = pb.pus_posix2time(ptime)
         return data
 
     def tc_11_4_get_data(self, packet):
