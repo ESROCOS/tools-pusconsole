@@ -46,7 +46,7 @@ class CreateTCController(object):
         self.view.window.msgComboBox.currentIndexChanged.connect(lambda i: self.msg_combobox_changed_callback(i))
         self.view.window.sendButton.clicked.connect(self.send_callback)
         self.view.window.addTcButton.clicked.connect(self.add_tc_callback)
-        self.view.window.historyList.itemClicked.connect(self.history_click_callback)
+        self.view.window.historyList.currentItemChanged.connect(self.history_click_callback)
 
     def __add_telecommand(self):
         """
@@ -94,10 +94,10 @@ class CreateTCController(object):
         else:
             self.view.set_tc_text("")
 
-    def history_click_callback(self, index):
-        text = self.view.window.historyList.currentIndex().text()
+    def history_click_callback(self, current, previous):
+        text = current.text()
         d = Database(self.HISTORY_DB)
-        d.create_history_table() # Create if not exists
+        d.create_history_table()  # Create if not exists
         rowid = text[3]
         query = "SELECT * from history where rowid = ?"
         tc = d.query_db(query, rowid)
