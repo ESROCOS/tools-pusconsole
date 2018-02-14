@@ -37,8 +37,6 @@ class MainViewController(object):
         self.view = view
         self.set_callbacks()
 
-        print("size", sys.getsizeof(pb.pusPacket_t()))
-
     def set_callbacks(self):
         """
         This method connects all the callbacks defined in this class with

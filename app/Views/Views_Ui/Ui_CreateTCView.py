@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'CreateTCView.ui'
 #
-# Created: Tue Feb 13 12:34:25 2018
+# Created: Wed Feb 14 10:56:34 2018
 #      by: pyside-uic 0.2.15 running on PySide 1.2.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -12,7 +12,7 @@ from PySide import QtCore, QtGui
 class Ui_CreateTCView(object):
     def setupUi(self, CreateTCView):
         CreateTCView.setObjectName("CreateTCView")
-        CreateTCView.resize(422, 739)
+        CreateTCView.resize(420, 736)
         self.commandTextEdit = QtGui.QPlainTextEdit(CreateTCView)
         self.commandTextEdit.setGeometry(QtCore.QRect(10, 220, 401, 511))
         self.commandTextEdit.setObjectName("commandTextEdit")
@@ -20,22 +20,22 @@ class Ui_CreateTCView(object):
         self.createTCLabel.setGeometry(QtCore.QRect(10, 190, 151, 17))
         self.createTCLabel.setObjectName("createTCLabel")
         self.historyList = QtGui.QListWidget(CreateTCView)
-        self.historyList.setGeometry(QtCore.QRect(10, 30, 401, 101))
+        self.historyList.setGeometry(QtCore.QRect(10, 40, 401, 101))
         self.historyList.setObjectName("historyList")
         self.label = QtGui.QLabel(CreateTCView)
         self.label.setGeometry(QtCore.QRect(10, 10, 111, 17))
         self.label.setObjectName("label")
         self.label_2 = QtGui.QLabel(CreateTCView)
-        self.label_2.setGeometry(QtCore.QRect(10, 140, 121, 17))
+        self.label_2.setGeometry(QtCore.QRect(10, 150, 121, 17))
         self.label_2.setObjectName("label_2")
         self.label_3 = QtGui.QLabel(CreateTCView)
-        self.label_3.setGeometry(QtCore.QRect(200, 140, 121, 17))
+        self.label_3.setGeometry(QtCore.QRect(200, 150, 121, 17))
         self.label_3.setObjectName("label_3")
         self.serviceComboBox = QtGui.QComboBox(CreateTCView)
-        self.serviceComboBox.setGeometry(QtCore.QRect(100, 140, 85, 27))
+        self.serviceComboBox.setGeometry(QtCore.QRect(100, 150, 81, 27))
         self.serviceComboBox.setObjectName("serviceComboBox")
         self.msgComboBox = QtGui.QComboBox(CreateTCView)
-        self.msgComboBox.setGeometry(QtCore.QRect(330, 140, 85, 27))
+        self.msgComboBox.setGeometry(QtCore.QRect(330, 150, 81, 27))
         self.msgComboBox.setObjectName("msgComboBox")
         self.sendButton = QtGui.QPushButton(CreateTCView)
         self.sendButton.setGeometry(QtCore.QRect(360, 185, 51, 27))
@@ -43,6 +43,10 @@ class Ui_CreateTCView(object):
         self.addTcButton = QtGui.QPushButton(CreateTCView)
         self.addTcButton.setGeometry(QtCore.QRect(320, 185, 31, 27))
         self.addTcButton.setObjectName("addTcButton")
+        self.saveTcButton = QtGui.QPushButton(CreateTCView)
+        self.saveTcButton.setGeometry(QtCore.QRect(340, 10, 71, 27))
+        self.saveTcButton.setObjectName("saveTcButton")
+
         self.retranslateUi(CreateTCView)
         QtCore.QMetaObject.connectSlotsByName(CreateTCView)
 
@@ -54,4 +58,5 @@ class Ui_CreateTCView(object):
         self.label_3.setText(QtGui.QApplication.translate("CreateTCView", "Message subtype", None, QtGui.QApplication.UnicodeUTF8))
         self.sendButton.setText(QtGui.QApplication.translate("CreateTCView", "Send", None, QtGui.QApplication.UnicodeUTF8))
         self.addTcButton.setText(QtGui.QApplication.translate("CreateTCView", "+", None, QtGui.QApplication.UnicodeUTF8))
+        self.saveTcButton.setText(QtGui.QApplication.translate("CreateTCView", "Save TC", None, QtGui.QApplication.UnicodeUTF8))
 

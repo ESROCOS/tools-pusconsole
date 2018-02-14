@@ -45,6 +45,7 @@ class Database(object):
         """
         query = """CREATE TABLE
                     IF NOT EXISTS """ + table_name + """(
+                        name text,
                         packets json
                     );"""
         self.cursor.execute(query)

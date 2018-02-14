@@ -380,7 +380,6 @@ class PacketTranslator(object):
         """
         data = dict()
         ncount = pb.pus_tc_11_4_getNCount(packet)
-        print(ncount)
         for i in range(ncount):
             data["activity"+str(i+1)] = dict()
             data_packet = pb.pusPacket_t()
@@ -392,7 +391,6 @@ class PacketTranslator(object):
 
     def tc_11_4_set_data(self, packet, data: dict):
         for k in sorted(data.keys()):
-            print(k)
             time_ = pb.pusTime_t()
             t = data[k]["time"]
             pb.pus_posix2time(time_, t)

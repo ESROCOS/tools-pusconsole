@@ -20,5 +20,4 @@ class MakoTranslate(object):
             data = json_data
 
         res = Template(self.template_values+data).render()
-        print(res)
         return res

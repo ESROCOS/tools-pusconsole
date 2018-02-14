@@ -2,6 +2,10 @@
 .*.swp
 __pycache__
 *.pyc
+.project
+.pydevproject
+app/.tc_history
+app/cplibs.sh
 
 build/*
 debug/*

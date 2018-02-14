@@ -1,4 +1,5 @@
 from PySide import QtGui
+from PySide.QtGui import QInputDialog
 from Model import CreateTCModel
 from Views import CreateTCView
 from Views import AddTCView
@@ -43,10 +44,11 @@ class CreateTCController(object):
         user triggers
         """
         self.view.window.serviceComboBox.currentIndexChanged.connect(lambda i: self.svc_combobox_changed_callback(i))
-        self.view.window.msgComboBox.currentIndexChanged.connect(lambda i: self.msg_combobox_changed_callback(i))
+        self.view.window.msgComboBox.activated.connect(lambda i: self.msg_combobox_changed_callback(i))
         self.view.window.sendButton.clicked.connect(self.send_callback)
         self.view.window.addTcButton.clicked.connect(self.add_tc_callback)
         self.view.window.historyList.currentItemChanged.connect(self.history_click_callback)
+        self.view.window.saveTcButton.clicked.connect(self.save_tc_history_callback)
 
     def __add_telecommand(self):
         """
@@ -94,14 +96,27 @@ class CreateTCController(object):
         else:
             self.view.set_tc_text("")
 
-    def history_click_callback(self, current, previous):
+    def history_click_callback(self, current, _):
         text = current.text()
         d = Database(self.HISTORY_DB)
         d.create_history_table()  # Create if not exists
         rowid = text[3]
-        query = "SELECT * from history where rowid = ?"
-        tc = d.query_db(query, rowid)
-        print(tc)
+        name = text.split(":")[1]
+        query = "SELECT packets from history where rowid = ? and name = ?"
+        tcs = d.query_db(query, (rowid, name))
+        for tc in tcs:
+            self.command = json.loads(tc[0])
+            svc = self.command["data"]["pck_sec_head"]["msg_type_id"]["service_type_id"]
+            msg = self.command["data"]["pck_sec_head"]["msg_type_id"]["msg_subtype_id"]
+            svc_cbox = self.view.window.serviceComboBox
+            msg_cbox = self.view.window.msgComboBox
+            svc_index = svc_cbox.findData(svc)
+            svc_cbox.setCurrentIndex(svc_index)
+            #svc_combobox_changed_callback(svc_index)
+            msg_index = msg_cbox.findData(msg)
+            msg_cbox.setCurrentIndex(msg_index)
+            self.view.set_tc_text(json.dumps(self.command["data"], indent=2))
+            break
 
     def send_callback(self):
         """
@@ -112,8 +127,6 @@ class CreateTCController(object):
         mt = MakoTranslate()
         pt = PacketTranslator()
         vj = ValidateJson()
-        d = Database(self.HISTORY_DB)
-        d.create_history_table()
 
         data_section = self.view.get_tc_text()
         data_section = json.loads(mt.replace(data_section))
@@ -123,8 +136,6 @@ class CreateTCController(object):
             packet = pt.json2packet(self.command)
             pb.pus_notify_sendPacket(packet)
             self.model.add_to_table(packet)  # Packet is created from json
-            d.insert_db("INSERT INTO history VALUES(?)", [[json.dumps(self.command)]])
-            self.show_history()
             self.view.window.addTcButton.hide()
             self.view.close()
         except ValidationError as err:
@@ -148,6 +159,23 @@ class CreateTCController(object):
             self.command = packet_translator.packet2json(self.command_packet)
             self.view.set_tc_text(json.dumps(self.command["data"], indent=2))
 
+    def save_tc_history_callback(self):
+        mt = MakoTranslate()
+
+        d = Database(self.HISTORY_DB)
+        d.create_history_table()
+
+        widget_gui = QInputDialog()
+        save_name, ok = QInputDialog.getText(widget_gui, "Save TC", "Name of TC to be saved:")
+
+        if not ok:
+            return
+
+        data_section = json.loads(mt.replace(self.view.get_tc_text()))
+        self.command["data"] = data_section
+        d.insert_db("INSERT INTO history VALUES(?, ?)", [[save_name, json.dumps(self.command)]])
+        self.show_history()
+
     def show_history(self):
         self.view.clear_history_list()
         d = Database(self.HISTORY_DB)
@@ -155,11 +183,15 @@ class CreateTCController(object):
         query = "SELECT rowid, * FROM history"
         packets_list = d.query_db(query)
         for p in packets_list:
-            dic = json.loads(p[1])
-            print(dic)
+            name = p[1]
+            dic = json.loads(p[2])
             svc = str(dic["data"]["pck_sec_head"]["msg_type_id"]["service_type_id"])
             msg = str(dic["data"]["pck_sec_head"]["msg_type_id"]["msg_subtype_id"])
-            tc = "TC "+str(p[0])+". Type:"+svc+"_"+msg
+            tc = "TC "+str(p[0])+":"
+            if name is None:
+                tc += "Type->"+svc+"_"+msg
+            else:
+                tc += name
             self.view.add_item_history_list(tc)
 
     def show_packet_json(self, svc, msg):
