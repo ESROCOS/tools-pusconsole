@@ -45,7 +45,9 @@ class DetailsView:
         """
         padding = 20
         if self.resizeFlag:
-            pass
+            cte_y = self.window.informationValueLabel.pos().y()
+            self.window.informationValueLabel.resize(self.view.frameGeometry().width() - 2 * padding,
+                                                     self.view.frameGeometry().height() - 3 * padding + 4 - cte_y)
         else:
             self.resizeFlag = True
 

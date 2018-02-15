@@ -2,7 +2,7 @@ from Utilities.MyTable import Table
 from Utilities import PacketTranslator
 from PySide.QtCore import Slot
 import os, json, sys
-lib_path = os.path.join('/home/esrocos/esrocos-ws-pus/pus/debug/pylib')
+lib_path = os.path.join('/home/esrocos/esrocos-ws-pus/tools-libpus/debug/pylib')
 sys.path.append(lib_path)
 import pusbinding as pb
 
@@ -167,6 +167,8 @@ class App(object):
             info = "Function id = {}.".format(src_data["function_id"])
         elif (svc, msg) == (9, 1):
             info = "Rate = 2^{}".format(src_data["exp_rate"])
+        elif (svc, msg) == (9, 2):
+            info = "Rate = 2^{}. Time = {}".format(src_data["exp_rate"], src_data["time"])
         elif (svc, msg) == (11, 4):
             info = ""
             for i, k in enumerate(sorted(src_data.keys())):
@@ -179,6 +181,10 @@ class App(object):
         elif svc == 12:
             if msg == 1 or msg == 2:
                 info = "Param monitoring id = {}".format(src_data["pmon_id"])
+        elif (svc, msg) == (17, 1):
+            info = "Are you alive?"
+        elif (svc, msg) == (17, 2):
+            info = "Yes. I am alive."
         elif svc == 19:
             info = "Event id = {}. ".format(src_data["event_id"])
             if msg == 1:
@@ -190,6 +196,32 @@ class App(object):
             info = "Param id = {}".format(src_data["param_id"])
             if msg == 2 or msg == 3:
                 info += " Value = {}".format(src_data["value"])
+        elif svc == 23:
+            if msg == 14:
+                print(src_data)
+                src_repo = src_data["source_repository"]
+                print(src_repo)
+                src_file = src_data["source_file"]
+                print(src_file)
+                tgt_repo = src_data["target_repository"]
+                print(tgt_repo)
+                tgt_file = src_data["target_file"]
+                print(tgt_file)
+                if len(src_repo) > 0:
+                    slash1 = "/" if src_repo[-1] != "/" else ""
+                if len(tgt_repo) > 0:
+                    slash2 = "/" if tgt_repo[-1] != "/" else ""
+
+                info = "Source  file: {}{}{}. Target file: {}{}{}.".format(src_repo, slash1, src_file, tgt_repo, slash2,
+                                                                           tgt_file)
+            else:
+                repo = src_data["repo_path"]
+                if len(repo) > 0:
+                    slash = "/" if repo[-1] != "/" else ""
+                info = "File: {}{}{}. ".format(src_data["repo_path"], slash, src_data["file_name"])
+                if msg == 1:
+                    info += " Max size: {}".format(src_data["max_size"])
+
 
         # ANADIR INFOSTRING 12
 

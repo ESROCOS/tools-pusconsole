@@ -16,7 +16,7 @@ import os
 import sys
 import json
 import collections
-lib_path = os.path.join('/home/esrocos/esrocos-ws-pus/pus/debug/pylib')
+lib_path = os.path.join('/home/esrocos/esrocos-ws-pus/tools-libpus/debug/pylib')
 sys.path.append(lib_path)
 import pusbinding as pb
 

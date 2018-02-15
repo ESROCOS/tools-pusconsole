@@ -6,7 +6,7 @@ from Utilities import PacketTranslator
 from Utilities import PusThread
 import os, sys
 # dir_path = os.path.dirname(os.path.realpath(__file__))
-lib_path = os.path.join('/home/esrocos/esrocos-ws-pus/pus/debug/pylib')
+lib_path = os.path.join('/home/esrocos/esrocos-ws-pus/tools-libpus/debug/pylib')
 sys.path.append(lib_path)
 import pusbinding as pb
 
@@ -20,15 +20,15 @@ def main():
 
     #args = sys.argv
 
-    pt = PacketTranslator()
+    # pt = PacketTranslator()
 
     #if len(args) > 1:
         #if args[1] == "-test":
     controller.show()
-    packet = pb.pusPacket_t()
-    pb.ret_packets(packet, 13)
-    app.add(packet)
-    thread = PusThread("test.json", app)
+    # packet = pb.pusPacket_t()
+    # pb.ret_packets(packet, 13)
+    # app.add(packet)
+    thread = PusThread(app)
     thread.start()
 
     """

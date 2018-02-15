@@ -22,6 +22,11 @@ class ValidateJson(object):
                 self.__validate__(packet, dir + "st08_1_schema.json")
             elif (svc, msg) == (9, 1):
                 self.__validate__(packet, dir + "st09_1_schema.json")
+            elif svc == 11:
+                if msg == 4:
+                    pass
+                else:
+                    self.__validate__(packet, dir + "st11_1_2_3_schema.json")
             elif svc == 12:
                 if msg == 1 or msg == 2:
                     self.__validate__(packet, dir + "st12_1_2_schema.json")
@@ -39,6 +44,13 @@ class ValidateJson(object):
                     self.__validate__(packet, dir + "st20_1_schema.json")
                 elif msg == 3:
                     self.__validate__(packet, dir + "st20_3_schema.json")
+            elif svc == 23:
+                if msg == 1:
+                    self.__validate__(packet, dir + "st23_1_schema.json")
+                elif msg == 2 or msg == 3:
+                    self.__validate__(packet, dir + "st23_2_3_schema.json")
+                else:
+                    self.__validate__(packet, dir + "st23_14_schema.json")
         except ValidationError:
             raise
 

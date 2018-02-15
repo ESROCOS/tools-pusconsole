@@ -1,5 +1,5 @@
 import os, sys, collections, time, datetime, glob
-lib_path = os.path.join('/home/esrocos/esrocos-ws-pus/pus/debug/pylib')
+lib_path = os.path.join('/home/esrocos/esrocos-ws-pus/tools-libpus/debug/pylib')
 sys.path.append(lib_path)
 import pusbinding as pb
 import json
@@ -601,7 +601,7 @@ class PacketTranslator(object):
     def tc_23_14_set_data(packet, data):
         src_repo = data["source_repository"]
         src_file = data["source_file"]
-        dst_repo = data["target_repositroy"]
+        dst_repo = data["target_repository"]
         dst_file = data["target_file"]
 
         pb.pus_tc_23_14_setSourceFileName(packet, src_file)
@@ -614,8 +614,8 @@ class PacketTranslator(object):
     @staticmethod
     def tc_23_14_get_data(packet):
         data = dict()
-        data["source_repository"] = pb.pus_tc_23_14_getTargetRepositoryPath(packet)
+        data["source_repository"] = pb.pus_tc_23_14_getSourceRepositoryPath(packet)
         data["source_file"] = pb.pus_tc_23_14_getSourceFileName(packet)
-        data["target_repositroy"] = pb.pus_tc_23_14_getTargetRepositoryPath(packet)
-        data["target_file"] = pb.pus_tc_23_14_getSourceRepositoryPath(packet)
+        data["target_repository"] = pb.pus_tc_23_14_getTargetRepositoryPath(packet)
+        data["target_file"] = pb.pus_tc_23_14_getTargetFileName(packet)
         return data

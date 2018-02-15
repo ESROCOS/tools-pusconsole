@@ -9,9 +9,10 @@ from jsonschema.exceptions import ValidationError
 import os
 import sys
 import json
+from json.decoder import JSONDecodeError
 
 # dir_path = os.path.dirname(os.path.realpath(__file__))
-lib_path = os.path.join('/home/esrocos/esrocos-ws-pus/pus/debug/pylib')
+lib_path = os.path.join('/home/esrocos/esrocos-ws-pus/tools-libpus/debug/pylib')
 sys.path.append(lib_path)
 import pusbinding as pb
 
@@ -128,17 +129,20 @@ class CreateTCController(object):
         pt = PacketTranslator()
         vj = ValidateJson()
 
-        data_section = self.view.get_tc_text()
-        data_section = json.loads(mt.replace(data_section))
         try:
+            data_section = self.view.get_tc_text()
+            data_section = json.loads(mt.replace(data_section))
+
             self.command["data"] = data_section
             vj.check(self.command)
+
             packet = pt.json2packet(self.command)
             pb.pus_notify_sendPacket(packet)
+
             self.model.add_to_table(packet)  # Packet is created from json
             self.view.window.addTcButton.hide()
             self.view.close()
-        except ValidationError as err:
+        except (ValidationError, JSONDecodeError) as err:
             msg_box = QtGui.QMessageBox()
             msg_box.setText('Some fields may be incorrect {}'.format(err))
             msg_box.setStandardButtons(QtGui.QMessageBox.Ok | QtGui.QMessageBox.Cancel)

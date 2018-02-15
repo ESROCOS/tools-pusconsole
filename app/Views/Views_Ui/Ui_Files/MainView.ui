@@ -102,8 +102,6 @@
        </widget>
       </item>
      </layout>
-     <zorder>packagesTable</zorder>
-     <zorder>packagesTable</zorder>
     </widget>
     <widget class="QWidget" name="statusTab">
      <attribute name="title">
@@ -130,12 +128,6 @@
     <addaction name="separator"/>
     <addaction name="actionCreate_TC"/>
    </widget>
-   <widget class="QMenu" name="menuConnections">
-    <property name="title">
-     <string>Connections</string>
-    </property>
-    <addaction name="actionNew_connection"/>
-   </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
      <string>Help</string>
@@ -150,7 +142,6 @@
     <addaction name="actionDelete_filter"/>
    </widget>
    <addaction name="menuFile"/>
-   <addaction name="menuConnections"/>
    <addaction name="menuFilter"/>
    <addaction name="menuHelp"/>
   </widget>

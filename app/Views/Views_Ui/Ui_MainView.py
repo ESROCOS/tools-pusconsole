@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'MainView.ui'
 #
-# Created: Wed Feb 14 10:56:35 2018
+# Created: Thu Feb 15 13:00:36 2018
 #      by: pyside-uic 0.2.15 running on PySide 1.2.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -61,8 +61,6 @@ class Ui_MainView(object):
         self.menubar.setObjectName("menubar")
         self.menuFile = QtGui.QMenu(self.menubar)
         self.menuFile.setObjectName("menuFile")
-        self.menuConnections = QtGui.QMenu(self.menubar)
-        self.menuConnections.setObjectName("menuConnections")
         self.menuHelp = QtGui.QMenu(self.menubar)
         self.menuHelp.setObjectName("menuHelp")
         self.menuFilter = QtGui.QMenu(self.menubar)
@@ -89,12 +87,10 @@ class Ui_MainView(object):
         self.menuFile.addAction(self.actionLoad)
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionCreate_TC)
-        self.menuConnections.addAction(self.actionNew_connection)
         self.menuHelp.addAction(self.actionAbout_GMV)
         self.menuFilter.addAction(self.actionCreate_filter)
         self.menuFilter.addAction(self.actionDelete_filter)
         self.menubar.addAction(self.menuFile.menuAction())
-        self.menubar.addAction(self.menuConnections.menuAction())
         self.menubar.addAction(self.menuFilter.menuAction())
         self.menubar.addAction(self.menuHelp.menuAction())
 
@@ -117,7 +113,6 @@ class Ui_MainView(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.packetTab), QtGui.QApplication.translate("MainView", "Packets", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.statusTab), QtGui.QApplication.translate("MainView", "System status", None, QtGui.QApplication.UnicodeUTF8))
         self.menuFile.setTitle(QtGui.QApplication.translate("MainView", "File", None, QtGui.QApplication.UnicodeUTF8))
-        self.menuConnections.setTitle(QtGui.QApplication.translate("MainView", "Connections", None, QtGui.QApplication.UnicodeUTF8))
         self.menuHelp.setTitle(QtGui.QApplication.translate("MainView", "Help", None, QtGui.QApplication.UnicodeUTF8))
         self.menuFilter.setTitle(QtGui.QApplication.translate("MainView", "Filter", None, QtGui.QApplication.UnicodeUTF8))
         self.actionNew_connection.setText(QtGui.QApplication.translate("MainView", "New connection", None, QtGui.QApplication.UnicodeUTF8))

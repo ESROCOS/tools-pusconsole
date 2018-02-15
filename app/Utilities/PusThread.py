@@ -2,7 +2,7 @@ from PySide.QtCore import QObject, Signal, Slot
 from PySide.QtCore import QThread
 from . import PacketTranslator
 import json, sys, os
-lib_path = os.path.join('/home/esrocos/esrocos-ws-pus/pus/debug/pylib')
+lib_path = os.path.join('/home/esrocos/esrocos-ws-pus/tools-libpus/debug/pylib')
 sys.path.append(lib_path)
 import pusbinding as pb
 
@@ -37,14 +37,13 @@ class PusThread(QThread):
     packets from a json file.
 
     """
-    def __init__(self, file, model):
+    def __init__(self, model):
         """
         This is the constructor of the class
         :param file: The json file where the packets are defined
         :param model: The model of the application
         """
         QThread.__init__(self)
-        self.file = file
         self.model = model
         self.signal = MySignal()
         self.signal.signal.connect(self.model.add)
