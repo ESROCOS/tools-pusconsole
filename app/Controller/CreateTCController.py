@@ -92,6 +92,7 @@ class CreateTCController(object):
             return
 
         self.command, self.command_packet = self.show_packet_json(svc_type, msg_type)
+        print(self.command)
         if self.command is not None:
             self.view.set_tc_text(json.dumps(self.command["data"], indent=2))
         else:
@@ -216,15 +217,6 @@ class CreateTCController(object):
             pb.pus_tc_8_1_createPerformFuctionRequest(packet, apid, seq, 0)
         elif (svc, msg) == (9, 1):
             pb.pus_tc_9_1_createSetTimeReportRate(packet, apid, seq, 0)
-        elif svc == 12:
-            if msg == 1:
-                pb.pus_tc_12_1_createEnableParameterMonitoringDefinitions(packet, apid, seq, 0)
-            elif msg == 2:
-                pb.pus_tc_12_2_createDisableParameterMonitoringDefinitions(packet, apid, seq, 0)
-            elif msg == 15:
-                pb.pus_tc_12_15_createEnableParameterMonitoring(packet, apid, seq)
-            elif msg == 16:
-                pb.pus_tc_12_16_createDisableParameterMonitoring(packet, apid, seq)
         elif svc == 11:
             if msg == 1:
                 print(pb.pus_tc_11_1_createEnableTimeBasedSchedule(packet, apid, seq))
@@ -244,8 +236,19 @@ class CreateTCController(object):
                     now = pb.pusTime_t() # REVISAR: EL TIEMPO TIENE QUE SER ESPECIFICADO
                     pb.pus_now(now)
                     print(pb.pus_tc_11_4_setActivity(packet, scndpacket, now))
+        elif svc == 12:
+            if msg == 1:
+                pb.pus_tc_12_1_createEnableParameterMonitoringDefinitions(packet, apid, seq, 0)
+            elif msg == 2:
+                pb.pus_tc_12_2_createDisableParameterMonitoringDefinitions(packet, apid, seq, 0)
+            elif msg == 15:
+                pb.pus_tc_12_15_createEnableParameterMonitoring(packet, apid, seq)
+            elif msg == 16:
+                pb.pus_tc_12_16_createDisableParameterMonitoring(packet, apid, seq)
         elif (svc, msg) == (17, 1):
             pb.pus_tc_17_1_createConnectionTestRequest(packet, apid, seq)
+        elif (svc, msg) == (18, 1):
+            print(pb.pus_tc_18_1_createLoadObcpDirectRequest(packet, apid, seq, "", ""))
         elif svc == 19:
             if msg == 1:
                 scndpacket = self.open_add_tc_window()

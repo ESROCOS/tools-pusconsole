@@ -30,6 +30,7 @@
 17|2|Are-you-alive connection test report|
 17|3|Perform an on-board connection test|
 17|4|On-board connection test report|
+18|1|Direct-load OBCP|tc
 19|1|Create add event action definitions request|tc
 19|2|Create delete event action definitions request|tc
 19|4|Create enable event action definitions|tc

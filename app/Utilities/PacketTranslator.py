@@ -79,6 +79,9 @@ class PacketTranslator(object):
                 jsn["data"]["user_data"]["src_data"] = self.tc_11_4_get_data(pack)
         elif srvc_type_id == 12:
             jsn["data"]["user_data"]["src_data"] = self.tc_12_x_get_data(pack, msg_type_id)
+        elif srvc_type_id == 18:
+            if msg_type_id == 1:
+                jsn["data"]["user_data"]["src_data"] = self.tc_18_1_get_data(pack)
         elif srvc_type_id == 19:
             if msg_type_id == 1:
                 jsn["data"]["user_data"]["src_data"] = self.tc_19_1_get_data(pack)
@@ -176,10 +179,13 @@ class PacketTranslator(object):
             self.tc_8_1_set_data(pack, data)
         elif (srvc_type_id, msg_type_id) == (9, 1):
             self.tc_9_1_set_data(pack, data)
-        elif srvc_type_id == 12:
-            self.tc_12_x_set_data(pack, msg_type_id, data)
         elif (srvc_type_id, msg_type_id) == (11, 4):
             self.tc_11_4_set_data(pack, data)
+        elif srvc_type_id == 12:
+            self.tc_12_x_set_data(pack, msg_type_id, data)
+        elif srvc_type_id == 18:
+            if msg_type_id == 1:
+                self.tc_18_1_set_data(pack, data)
         elif srvc_type_id == 19:
             if msg_type_id == 1:
                 self.tc_19_1_set_data(pack, data)
@@ -233,6 +239,8 @@ class PacketTranslator(object):
             pb.pus_tc_12_16_createDisableParameterMonitoring(packet, 0, 0)
         elif (svc, msg) == (17, 1):
             pb.pus_tc_17_1_createConnectionTestRequest(packet, 0, 0)
+        elif (svc, msg) == (18, 1):
+            pb.pus_tc_18_1_createLoadObcpDirectRequest(packet, 0, 0, "", "", 0)
         elif (svc, msg) == (19, 1):
             pb.pus_tc_19_1_createAddEventActionDefinitionsRequest(packet, 0, 0, 0, pb.pusPacket_t())
         elif (svc, msg) == (19, 2):
@@ -423,6 +431,23 @@ class PacketTranslator(object):
         if msg_id == 1 or msg_id == 2:
             pmon_id = data["pmon_id"]  # Shall be integer
             pb.pus_tc_12_1_2_setPmonId(packet, pmon_id)
+        return packet
+
+    @staticmethod
+    def tc_18_1_get_data(packet):
+        data = dict()
+        obcpid = str()
+        pb.pus_tc_18_X_getObcpId(obcpid, packet)
+        data["obcpid"] = obcpid
+        obcpcode = str()
+        pb.pus_tc_18_1_getObcpCode(obcpcode, packet)
+        data["obcpcode"] = obcpcode
+        return data
+
+    @staticmethod
+    def tc_18_1_set_data(packet, data):
+        pb.pus_tc_18_X_setObcpId(packet, data["obcpid"])
+        pb.pus_tc_18_1_setObcpCode(packet, data["obcpcode"])
         return packet
 
     def tc_19_1_get_data(self, packet):
