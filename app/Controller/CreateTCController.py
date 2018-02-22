@@ -92,7 +92,6 @@ class CreateTCController(object):
             return
 
         self.command, self.command_packet = self.show_packet_json(svc_type, msg_type)
-        print(self.command)
         if self.command is not None:
             self.view.set_tc_text(json.dumps(self.command["data"], indent=2))
         else:
@@ -248,7 +247,17 @@ class CreateTCController(object):
         elif (svc, msg) == (17, 1):
             pb.pus_tc_17_1_createConnectionTestRequest(packet, apid, seq)
         elif (svc, msg) == (18, 1):
-            print(pb.pus_tc_18_1_createLoadObcpDirectRequest(packet, apid, seq, "", ""))
+            pb.pus_tc_18_1_createLoadObcpDirectRequest(packet, apid, seq, "", "")
+        elif (svc, msg) == (18, 2):
+            pb.pus_tc_18_2_createUnloadObcpRequest(packet, apid, seq, "")
+        elif (svc, msg) == (18, 3):
+            pb.pus_tc_18_3_createActivateObcpRequest(packet, apid, seq, "", 0)
+        elif (svc, msg) == (18, 4):
+            pb.pus_tc_18_4_createStopObcpRequest(packet, apid, seq, "", 0)
+        elif (svc, msg) == (18, 5):
+            pb.pus_tc_18_5_createSuspendObcpRequest(packet, apid, seq, "", 0)
+        elif (svc, msg) == (18, 6):
+            pb.pus_tc_18_6_createResumeObcpRequest(packet, apid, seq, "")
         elif svc == 19:
             if msg == 1:
                 scndpacket = self.open_add_tc_window()

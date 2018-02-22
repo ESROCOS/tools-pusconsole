@@ -31,6 +31,11 @@
 17|3|Perform an on-board connection test|
 17|4|On-board connection test report|
 18|1|Direct-load OBCP|tc
+18|2|Unload an OBCP|tc
+18|3|Activate an OBCP|tc
+18|4|stop an OBCP|tc
+18|5|suspend an OBCP|tc
+18|6|resume an OBCP|tc
 19|1|Create add event action definitions request|tc
 19|2|Create delete event action definitions request|tc
 19|4|Create enable event action definitions|tc
