@@ -36,6 +36,10 @@
 18|4|stop an OBCP|tc
 18|5|suspend an OBCP|tc
 18|6|resume an OBCP|tc
+18|12|abort an OBCP|tc
+18|13|load an OBCP by reference|tc
+18|21|start the OBCP engine|tc
+18|22|stop the OBCP engine|tc
 19|1|Create add event action definitions request|tc
 19|2|Create delete event action definitions request|tc
 19|4|Create enable event action definitions|tc

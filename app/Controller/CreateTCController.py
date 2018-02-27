@@ -258,6 +258,14 @@ class CreateTCController(object):
             pb.pus_tc_18_5_createSuspendObcpRequest(packet, apid, seq, "", 0)
         elif (svc, msg) == (18, 6):
             pb.pus_tc_18_6_createResumeObcpRequest(packet, apid, seq, "")
+        elif (svc, msg) == (18, 12):
+            pb.pus_tc_18_12_createAbortObcpRequest(packet, apid, seq, "")
+        elif (svc, msg) == (18, 13):
+            pb.pus_tc_18_13_createLoadObcpReferenceRequest(packet, apid, seq, "", "", "")
+        elif (svc, msg) == (18, 21):
+            pb.pus_tc_18_21_createStartObcpEngineRequest(packet, apid, seq,)
+        elif (svc, msg) == (18, 22):
+            pb.pus_tc_18_22_createStopObcpEngineRequest(packet, apid, seq)
         elif svc == 19:
             if msg == 1:
                 scndpacket = self.open_add_tc_window()

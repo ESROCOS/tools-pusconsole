@@ -85,12 +85,14 @@ class PacketTranslator(object):
         elif srvc_type_id == 18:
             if msg_type_id == 1:
                 jsn["data"]["user_data"]["src_data"] = self.tc_18_1_get_data(pack)
-            elif msg_type_id == 2 or msg_type_id == 6:
-                jsn["data"]["user_data"]["src_data"] = self.tc_18_2_6_get_data(pack)
+            elif msg_type_id == 2 or msg_type_id == 6 or msg_type_id == 12:
+                jsn["data"]["user_data"]["src_data"] = self.tc_18_2_6_12_get_data(pack)
             elif msg_type_id == 3:
                 jsn["data"]["user_data"]["src_data"] = self.tc_18_3_get_data(pack)
             elif msg_type_id == 4 or msg_type_id == 5:
                 jsn["data"]["user_data"]["src_data"] = self.tc_18_4_5_get_data(pack)
+            elif msg_type_id == 13:
+                jsn["data"]["user_data"]["src_data"] = self.tc_18_13_get_data(pack)
         elif srvc_type_id == 19:
             if msg_type_id == 1:
                 jsn["data"]["user_data"]["src_data"] = self.tc_19_1_get_data(pack)
@@ -195,12 +197,14 @@ class PacketTranslator(object):
         elif srvc_type_id == 18:
             if msg_type_id == 1:
                 self.tc_18_1_set_data(pack, data)
-            elif msg_type_id == 2 or msg_type_id == 6:
-                self.tc_18_2_6_set_data(pack, data)
+            elif msg_type_id == 2 or msg_type_id == 6 or msg_type_id == 12:
+                self.tc_18_2_6_12_set_data(pack, data)
             elif msg_type_id == 3:
                 self.tc_18_3_set_data(pack, data)
             elif msg_type_id == 4 or msg_type_id == 5:
                 self.tc_18_4_5_set_data(pack, data)
+            elif msg_type_id == 13:
+                self.tc_18_13_set_data(pack, data)
         elif srvc_type_id == 19:
             if msg_type_id == 1:
                 self.tc_19_1_set_data(pack, data)
@@ -266,6 +270,14 @@ class PacketTranslator(object):
             pb.pus_tc_18_5_createSuspendObcpRequest(packet, 0, 0, "", 0)
         elif (svc, msg) == (18, 6):
             pb.pus_tc_18_6_createResumeObcpRequest(packet, 0, 0, "")
+        elif (svc, msg) == (18, 12):
+            pb.pus_tc_18_12_createAbortObcpRequest(packet, 0, 0, "")
+        elif (svc, msg) == (18, 13):
+            pb.pus_tc_18_13_createLoadObcpReferenceRequest(packet, 0, 0, "", "", "")
+        elif (svc, msg) == (18, 21):
+            pb.pus_tc_18_21_createStartObcpEngineRequest(packet, 0, 0)
+        elif (svc, msg) == (18, 22):
+            pb.pus_tc_18_22_createStopObcpEngineRequest(packet, 0, 0)
         elif (svc, msg) == (19, 1):
             pb.pus_tc_19_1_createAddEventActionDefinitionsRequest(packet, 0, 0, 0, pb.pusPacket_t())
         elif (svc, msg) == (19, 2):
@@ -462,29 +474,29 @@ class PacketTranslator(object):
     def tc_18_1_get_data(packet):
         data = dict()
         obcpid = str()
-        data["obcpid"] = pb.pus_tc_18_X_getObcpId(obcpid, packet)
+        data["obcp_id"] = pb.pus_tc_18_X_getObcpId(obcpid, packet)
         obcpcode = str()
         data["obcpcode"] = pb.pus_tc_18_1_getObcpCode(obcpcode, packet)
         return data
 
     @staticmethod
     def tc_18_1_set_data(packet, data):
-        id = data["obcpid"]
-
+        id = data["obcp_id"]
+        code = data["obcpcode"]
         pb.pus_tc_18_X_setObcpId(packet, id)
         pb.pus_tc_18_1_setObcpCode(packet, code)
         return packet
 
     @staticmethod
-    def tc_18_2_6_get_data(packet):
+    def tc_18_2_6_12_get_data(packet):
         data = dict()
         obcpid = str()
-        data["obcpid"] = pb.pus_tc_18_X_getObcpId(obcpid, packet)
+        data["obcp_id"] = pb.pus_tc_18_X_getObcpId(obcpid, packet)
         return data
 
     @staticmethod
-    def tc_18_2_6_set_data(packet, data):
-        id = data["obcpid"]
+    def tc_18_2_6_12_set_data(packet, data):
+        id = data["obcp_id"]
         pb.pus_tc_18_X_setObcpId(packet, id)
         return packet
 
@@ -492,13 +504,13 @@ class PacketTranslator(object):
     def tc_18_3_get_data(packet):
         data = dict()
         obcpid = str()
-        data["obcpid"] = pb.pus_tc_18_X_getObcpId(obcpid, packet)
+        data["obcp_id"] = pb.pus_tc_18_X_getObcpId(obcpid, packet)
         data["observability"] = pb.pus_tc_18_3_getObservabilityLevel(packet)
         return data
 
     @staticmethod
     def tc_18_3_set_data(packet, data):
-        id = data["obcpid"]
+        id = data["obcp_id"]
         obs = data["observability"]
         pb.pus_tc_18_X_setObcpId(packet, id)
         pb.pus_tc_18_3_setObservabilityLevel(packet, obs)
@@ -508,16 +520,38 @@ class PacketTranslator(object):
     def tc_18_4_5_get_data(packet):
         data = dict()
         obcpid = str()
-        data["obcpid"] = pb.pus_tc_18_X_getObcpId(obcpid, packet)
-        data["step"] = pb.pus_tc_18_4_5_getObcpStepId(packet)
+        data["obcp_id"] = pb.pus_tc_18_X_getObcpId(obcpid, packet)
+        data["step_id"] = pb.pus_tc_18_4_5_getObcpStepId(packet)
         return data
 
     @staticmethod
     def tc_18_4_5_set_data(packet, data):
-        id = data["obcpid"]
+        id = data["obcp_id"]
         pb.pus_tc_18_X_setObcpId(packet, id)
-        step = data["step"]
+        step = data["step_id"]
         pb.pus_tc_18_4_5_setObcpStepId(packet, step)
+        return packet
+
+    @staticmethod
+    def tc_18_13_get_data(packet):
+        data = dict()
+        obcpid = str()
+        repo = str()
+        file_ = str()
+        data["obcp_id"] = pb.pus_tc_18_X_getObcpId(obcpid, packet)
+        data["repository_path"] = pb.pus_tc_18_13_getRepositoryPath(repo, packet)
+        data["file_name"] = pb.pus_tc_18_13_getFileName(file_, packet)
+
+        return data
+
+    @staticmethod
+    def tc_18_13_set_data(packet, data):
+        id = data["obcp_id"]
+        pb.pus_tc_18_X_setObcpId(packet, id)
+        repo = data["repository_path"]
+        pb.pus_tc_18_13_setRepositoryPath(packet, repo)
+        filename = data["file_name"]
+        pb.pus_tc_18_13_setFileName(packet, filename)
         return packet
 
     def tc_19_1_get_data(self, packet):

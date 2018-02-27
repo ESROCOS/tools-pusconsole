@@ -18,6 +18,7 @@ class App(object):
         Constructor of the class
         """
         self.table = Table()
+        self.parameters_report = {"spacecraftTime": "Waiting for update"}
         self.tc_apid = pb.pusApidInfo_t()
         self.currentFilter = None
         self.elem_count = 0
@@ -185,6 +186,19 @@ class App(object):
             info = "Are you alive?"
         elif (svc, msg) == (17, 2):
             info = "Yes. I am alive."
+        elif svc == 18:
+            info = ""
+            if msg != 21 and msg != 22:
+                info += "Obcp id: {} ".format(src_data["obcp_id"])
+            else:
+                info = "-"
+            if msg == 4 or msg == 5:
+                info += "Step id: {} ".format(src_data["step_id"])
+            if msg == 3:
+                info += "Observability: {} ".format(src_data["observability"])
+            if msg == 13:
+                slash = "" if src_data["repository_path"][-1] == "/" else "/"
+                info += "File: {}{}{}".format(src_data["repository_path"], slash, src_data["file_name"])
         elif svc == 19:
             info = "Event id = {}. ".format(src_data["event_id"])
             if msg == 1:
