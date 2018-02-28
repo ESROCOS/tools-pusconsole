@@ -1,6 +1,7 @@
 from PySide import QtGui, QtCore
 
 from Views.Views_Ui.Ui_MainView import Ui_MainView
+from Utilities import DigitalClock
 
 
 class MainView:
@@ -17,8 +18,11 @@ class MainView:
         self.view = QtGui.QMainWindow()
         self.window = Ui_MainView()
         self.window.setupUi(self.view)
+        self.spacecraftTimeValue = DigitalClock(0)
+        self.params = dict()
         self.extra_customization()
         self.window.centralwidget.resizeEvent = self.resize_elements
+
 
     def get_window(self):
         """
@@ -54,6 +58,7 @@ class MainView:
                                                      "width=\"60\" height=\"35\"/></p></body></html>",
                                          None, QtGui.QApplication.UnicodeUTF8))
         header.sortIndicatorOrder()
+        self.window.formLayout.setWidget(0, QtGui.QFormLayout.FieldRole, self.spacecraftTimeValue)
         self.window.packagesTable.verticalHeader().setVisible(False)
         self.window.packagesTable.sortByColumn(0, QtCore.Qt.AscendingOrder)
 
@@ -75,9 +80,23 @@ class MainView:
         img_x = self.window.label.pos().x()
         img_y = self.window.label.pos().y()
 
-        self.window.tabWidget.resize(self.window.centralwidget.frameGeometry().width() - 3*padding,
+        self.window.tabWidget.resize(self.window.centralwidget.frameGeometry().width() - 2*padding,
                                      self.window.centralwidget.frameGeometry().height() - 2*padding)
         self.window.label.move(self.window.centralwidget.frameGeometry().width() - img_w - 3*padding, img_y)
+
+    def add_pair(self, name: str, obj: QtGui.QLabel = QtGui.QLabel()):
+        obj.setVisible(False)
+        labelName = QtGui.QLabel()
+        labelName.setText(name)
+        self.window.formLayout.setWidget(len(self.params), QtGui.QFormLayout.FieldRole, labelName)
+        self.window.formLayout.setWidget(len(self.params), QtGui.QFormLayout.FieldRole, obj)
+        self.params["name"] = obj
+
+    def update_param(self, idx: str, val):
+        if val is not None:
+            self.params[idx].setVisible(True)
+            self.params[idx].setText(val)
+
 
     def show(self):
         """

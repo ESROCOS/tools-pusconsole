@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'MainView.ui'
 #
-# Created: Tue Feb 27 14:03:08 2018
+# Created: Wed Feb 28 11:26:35 2018
 #      by: pyside-uic 0.2.15 running on PySide 1.2.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -12,7 +12,7 @@ from PySide import QtCore, QtGui
 class Ui_MainView(object):
     def setupUi(self, MainView):
         MainView.setObjectName("MainView")
-        MainView.resize(1201, 596)
+        MainView.resize(1198, 596)
         self.centralwidget = QtGui.QWidget(MainView)
         self.centralwidget.setObjectName("centralwidget")
         self.label = QtGui.QLabel(self.centralwidget)
@@ -59,14 +59,10 @@ class Ui_MainView(object):
         self.spacecraftTimeLbl = QtGui.QLabel(self.statusTab)
         self.spacecraftTimeLbl.setObjectName("spacecraftTimeLbl")
         self.formLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.spacecraftTimeLbl)
-        self.spacecraftTimeValue = QtGui.QLabel(self.statusTab)
-        self.spacecraftTimeValue.setLayoutDirection(QtCore.Qt.LeftToRight)
-        self.spacecraftTimeValue.setObjectName("spacecraftTimeValue")
-        self.formLayout.setWidget(0, QtGui.QFormLayout.FieldRole, self.spacecraftTimeValue)
         self.tabWidget.addTab(self.statusTab, "")
         MainView.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainView)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1201, 25))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1198, 25))
         self.menubar.setObjectName("menubar")
         self.menuFile = QtGui.QMenu(self.menubar)
         self.menuFile.setObjectName("menuFile")
@@ -121,7 +117,6 @@ class Ui_MainView(object):
         self.packagesTable.horizontalHeaderItem(9).setText(QtGui.QApplication.translate("MainView", "Information", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.packetTab), QtGui.QApplication.translate("MainView", "Packets", None, QtGui.QApplication.UnicodeUTF8))
         self.spacecraftTimeLbl.setText(QtGui.QApplication.translate("MainView", "Spacecraft time:", None, QtGui.QApplication.UnicodeUTF8))
-        self.spacecraftTimeValue.setText(QtGui.QApplication.translate("MainView", "Waiting for update", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.statusTab), QtGui.QApplication.translate("MainView", "System status", None, QtGui.QApplication.UnicodeUTF8))
         self.menuFile.setTitle(QtGui.QApplication.translate("MainView", "File", None, QtGui.QApplication.UnicodeUTF8))
         self.menuHelp.setTitle(QtGui.QApplication.translate("MainView", "Help", None, QtGui.QApplication.UnicodeUTF8))

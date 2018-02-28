@@ -16,6 +16,7 @@ import os
 import sys
 import json
 import collections
+import time
 lib_path = os.path.join('/home/esrocos/esrocos-ws-pus/tools-libpus/debug/pylib')
 sys.path.append(lib_path)
 import pusbinding as pb
@@ -185,10 +186,18 @@ class MainViewController(object):
             self.view.window.packagesTable.setItem(row, i, itm)
 
             if i != len(elem[:-2])-1:
-                self.view.window.packagesTable.item(row, i).setTextAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
+                self.view.window.packagesTable.item(row, i).setTextAlignment(QtCore.Qt.AlignCenter |
+                                                                             QtCore.Qt.AlignVCenter)
         self.view.window.packagesTable.setSortingEnabled(True)
         if not self.model.check_filter(elem):
             self.view.window.packagesTable.setRowHidden(row, True)
+
+        self.update_params()  # tuple (svc, msg)
+
+    def update_params(self):
+        params = self.model.parameters_report
+        for k, v in params.items():
+            self.view.update_param(k, v)
 
     def clear_qtable_callback(self):
         """

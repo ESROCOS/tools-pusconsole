@@ -1,7 +1,7 @@
 from Utilities.MyTable import Table
 from Utilities import PacketTranslator
 from PySide.QtCore import Slot
-import os, json, sys
+import os, json, sys, time
 lib_path = os.path.join('/home/esrocos/esrocos-ws-pus/tools-libpus/debug/pylib')
 sys.path.append(lib_path)
 import pusbinding as pb
@@ -18,7 +18,8 @@ class App(object):
         Constructor of the class
         """
         self.table = Table()
-        self.parameters_report = {"spacecraftTime": "Waiting for update"}
+        self.parameters_report_values = {"spacecraftTime": None}
+        self.st3_param_numbers = list()
         self.tc_apid = pb.pusApidInfo_t()
         self.currentFilter = None
         self.elem_count = 0
@@ -36,6 +37,7 @@ class App(object):
         """
         pt = PacketTranslator()
         elem = pt.packet2json(packet)
+        self.update_params(elem)
         from datetime import datetime
         list_ = []
         type_ = int(elem["primary_header"]["pck_id"]["pck_type"])
@@ -73,6 +75,29 @@ class App(object):
         list_.append(json.dumps(elem))
         list_.append(packet)
         self.table.append(list_)
+
+        if packet["primary_header"]["pck_id"]["sec_head_flg"]:
+            svc = int(packet["primary_header"]["pck_id"]["pck_type"])
+            msg = int(packet["data"]["pck_sec_head"]["msg_type_id"]["msg_subtype_id"])
+        else:
+            svc = 9
+            msg = 2
+
+        if (svc, msg) == (9, 2):
+            time_ = int(packet["data"]["user_data"]["src_data"]["time"])
+            self.parameters_report_values["spacecraftTime"] = time_
+        elif svc == 3:
+            report = packet["data"]["user_data"]["src_data"]["hk_param_report_id"]
+            for k, v in report.items():
+                param_id = int(k[len("param"):])
+                self.parameters_report_values[self.st3_param_numbers[param_id]] = v
+
+    def load_param_names(self):
+        st3_st12_params_data = open(os.path.join("../../tools-libpus/mission/test_01", "st03_st12_config.json"))
+        st3_st12_params_json = json.load(st3_st12_params_data)
+        for i, e in enumerate(st3_st12_params_json["parameters"]):
+            self.st3_param_numbers.append(e["label"])
+            self.parameters_report_values[e["label"]] = None
 
     def set_filter(self, filter_: dict):
         """
@@ -169,7 +194,8 @@ class App(object):
         elif (svc, msg) == (9, 1):
             info = "Rate = 2^{}".format(src_data["exp_rate"])
         elif (svc, msg) == (9, 2):
-            info = "Rate = 2^{}. Time = {}".format(src_data["exp_rate"], src_data["time"])
+            time_ = time.strftime('%H:%M:%S', time.localtime(src_data["time"]))
+            info = "Rate = 2^{}. Time = {}".format(src_data["exp_rate"], time_)
         elif (svc, msg) == (11, 4):
             info = ""
             for i, k in enumerate(sorted(src_data.keys())):
@@ -212,15 +238,10 @@ class App(object):
                 info += " Value = {}".format(src_data["value"])
         elif svc == 23:
             if msg == 14:
-                print(src_data)
                 src_repo = src_data["source_repository"]
-                print(src_repo)
                 src_file = src_data["source_file"]
-                print(src_file)
                 tgt_repo = src_data["target_repository"]
-                print(tgt_repo)
                 tgt_file = src_data["target_file"]
-                print(tgt_file)
                 if len(src_repo) > 0:
                     slash1 = "/" if src_repo[-1] != "/" else ""
                 if len(tgt_repo) > 0:
@@ -236,41 +257,5 @@ class App(object):
                 if msg == 1:
                     info += " Max size: {}".format(src_data["max_size"])
 
-
-        # ANADIR INFOSTRING 12
-
-
-        # ack_str = " acks: none"
-        # for k, v in ack_flags.items():
-        #     if v:
-        #         if ack_str == "acks: none":
-        #             ack_str = "acks: "
-        #         ack_str += k.split('_')[-1] + ", "
+        # add st12 infostring
         return info
-
-    # @staticmethod
-    # def __create_info_string__(elem):
-    #     """
-    #     This method format a packet represented in json to a string
-    #     (This method is not used currently because we found a similar
-    #      functionality in json.dumps method)
-    #     :param elem: A packet represented in json
-    #     :return: The json formatted in an string
-    #     """
-    #     services = {}
-    #     with open("services.txt", "r") as serv:
-    #         for line in serv:
-    #             line = line.strip('\n').split("|")
-    #             if line[0] not in services:
-    #                 services[line[0]] = {}
-    #             if line[1] not in services[line[0]]:
-    #                 services[line[0]][line[1]] = line[2]
-    #     type_ = elem["primary_header"]["pck_id"]["pck_type"]
-    #     svc_type_id = str(elem["data"]["pck_sec_head"]["msg_type_id"]["service_type_id"])
-    #     msg_subtype_id = str(elem["data"]["pck_sec_head"]["msg_type_id"]["msg_subtype_id"])
-    #
-    #     info = "Telemetry " if type_ == "TM" else "Telecommand " + "package."
-    #     info += " " + services[svc_type_id][msg_subtype_id] + " ."
-    #
-    #     return info
-
