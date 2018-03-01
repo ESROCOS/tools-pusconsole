@@ -1,6 +1,7 @@
 from PySide import QtCore, QtGui
 import time
 
+
 class DigitalClock(QtGui.QLabel):
     def __init__(self, tim, parent=None):
         super().__init__(parent)
@@ -16,9 +17,6 @@ class DigitalClock(QtGui.QLabel):
         ltime = time.localtime(self.tim)
         t = QtCore.QTime(ltime.tm_hour, ltime.tm_min, s=ltime.tm_sec)
         text = t.toString('hh:mm:ss')
-        # if (t.second() % 2) == 0:
-        #     text = text[:2] + ' ' + text[3:5] + ' ' + text[6:]
-
         self.setText(text)
 
     def setText(self, tim):

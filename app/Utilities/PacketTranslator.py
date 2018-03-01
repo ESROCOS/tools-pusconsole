@@ -340,11 +340,37 @@ class PacketTranslator(object):
         :return: A JSON object with all the parsed information
         """
         data = dict()
-        data["hk_param_report_id"] = pb.pus_tm_3_25_getReportId(packet)
+        report_id = pb.pus_tm_3_25_getReportId(packet)
+        data["hk_param_report_id"] = report_id
         num_param = pb.pus_tm_3_25_getNumParameters(packet)
         for i in range(num_param):
             param = pb.pus_tm_3_25_getParameterValue(packet, i)
-            data["param"+str(i+1)] = param
+            param_name = str()
+            param_name = pb.pus_st03_getHkReportInfoName(report_id, i, param_name)
+            param_type = pb.pus_st03_getHkReportInfoType(report_id, i)
+            casted_param = "Error"
+            if pb.getError() == pb.pusError_t.PUS_NO_ERROR:
+                if param_type == pb.pusParamType_t.PUS_INT32:
+                    casted_param = int()
+                    error = pb.pus_paramToInt32(casted_param, param)
+                elif param_type == pb.pusParamType_t.PUS_UINT32:
+                    casted_param = int()
+                    error = pb.pus_paramToUint32(casted_param, param)
+                elif param_type == pb.pusParamType_t.PUS_REAL64:
+                    casted_param = float()
+                    error = pb.pus_paramToReal64(casted_param, param)
+                elif param_type == pb.pusParamType_t.PUS_BYTE:
+                    casted_param = int()
+                    error = pb.pus_paramToByte(casted_param, param)
+                elif param_type == pb.pusParamType_t.PUS_BOOL:
+                    casted_param = bool()
+                    error = pb.pus_paramToBool(casted_param, param)
+                else:
+                    error = pb.pusError_t.PUS_ERROR_INVALID_TYPE
+                if error != pb.pusError_t.PUS_NO_ERROR:
+                    casted_param = "Error"
+
+            data[param_name] = casted_param
         return data
 
     @staticmethod

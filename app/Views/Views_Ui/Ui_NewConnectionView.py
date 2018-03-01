@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'NewConnectionView.ui'
 #
-# Created: Wed Feb 28 11:26:35 2018
+# Created: Thu Mar  1 11:11:43 2018
 #      by: pyside-uic 0.2.15 running on PySide 1.2.4
 #
 # WARNING! All changes made in this file will be lost!

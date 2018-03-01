@@ -29,14 +29,15 @@ class App(object):
             pb.pus_initApidInfo_null(self.tc_apid, apid_value)
 
     @Slot(pb.pusPacket_t)
-    def add(self, packet):
+    def add(self, packet: pb.pusPacket_t):
         """
         This method adds a packet in its packet representation and json representation
         to the app packet table
-        :param elem: json of packet
+        :param packet: packet
         """
         pt = PacketTranslator()
         elem = pt.packet2json(packet)
+        # print(elem)
         self.update_params(elem)
         from datetime import datetime
         list_ = []
@@ -55,6 +56,7 @@ class App(object):
             msg_subtype_id = 2
             src = None
             dst = None
+
         time_ = str(datetime.now().time().strftime("%H:%M:%S"))
 
         pck_seq_ctrl = int(elem["primary_header"]["pck_seq_ctrl"]["pck_seq"])
@@ -74,8 +76,19 @@ class App(object):
         list_.append(information)
         list_.append(json.dumps(elem))
         list_.append(packet)
-        self.table.append(list_)
+        self.table.append(list_)  # QtTable is updated here
 
+    def load_param_names(self):
+        st3_st12_params_data = open(os.path.join("../../tools-libpus/mission/test_01", "st03_st12_config.json"))
+        st3_st12_params_json = json.load(st3_st12_params_data)
+        for i, e in enumerate(st3_st12_params_json["parameters"]):
+            self.st3_param_numbers.append(e["label"])
+            self.parameters_report_values[e["label"]] = None
+
+    def get_params(self):
+        return self.parameters_report_values
+
+    def update_params(self, packet):
         if packet["primary_header"]["pck_id"]["sec_head_flg"]:
             svc = int(packet["primary_header"]["pck_id"]["pck_type"])
             msg = int(packet["data"]["pck_sec_head"]["msg_type_id"]["msg_subtype_id"])
@@ -91,13 +104,6 @@ class App(object):
             for k, v in report.items():
                 param_id = int(k[len("param"):])
                 self.parameters_report_values[self.st3_param_numbers[param_id]] = v
-
-    def load_param_names(self):
-        st3_st12_params_data = open(os.path.join("../../tools-libpus/mission/test_01", "st03_st12_config.json"))
-        st3_st12_params_json = json.load(st3_st12_params_data)
-        for i, e in enumerate(st3_st12_params_json["parameters"]):
-            self.st3_param_numbers.append(e["label"])
-            self.parameters_report_values[e["label"]] = None
 
     def set_filter(self, filter_: dict):
         """
