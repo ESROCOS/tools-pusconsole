@@ -351,20 +351,20 @@ class PacketTranslator(object):
             casted_param = "Error"
             if pb.getError() == pb.pusError_t.PUS_NO_ERROR:
                 if param_type == pb.pusParamType_t.PUS_INT32:
-                    casted_param = int()
-                    error = pb.pus_paramToInt32(casted_param, param)
+                    casted_param = pb.pus_paramToInt32(param)
+                    error = pb.getError()
                 elif param_type == pb.pusParamType_t.PUS_UINT32:
-                    casted_param = int()
-                    error = pb.pus_paramToUint32(casted_param, param)
+                    casted_param = pb.pus_paramToUint32(param)
+                    error = pb.getError()
                 elif param_type == pb.pusParamType_t.PUS_REAL64:
-                    casted_param = float()
-                    error = pb.pus_paramToReal64(casted_param, param)
+                    casted_param = pb.pus_paramToReal64(param)
+                    error = pb.getError()
                 elif param_type == pb.pusParamType_t.PUS_BYTE:
-                    casted_param = int()
-                    error = pb.pus_paramToByte(casted_param, param)
+                    casted_param = pb.pus_paramToByte(param)
+                    error = pb.getError()
                 elif param_type == pb.pusParamType_t.PUS_BOOL:
-                    casted_param = bool()
-                    error = pb.pus_paramToBool(casted_param, param)
+                    casted_param = pb.pus_paramToBool(param)
+                    error = pb.getError()
                 else:
                     error = pb.pusError_t.PUS_ERROR_INVALID_TYPE
                 if error != pb.pusError_t.PUS_NO_ERROR:
