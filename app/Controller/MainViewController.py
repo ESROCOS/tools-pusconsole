@@ -36,7 +36,6 @@ class MainViewController(object):
         """
         self.model = model
         self.view = view
-        self.set_params()
         self.set_callbacks()
 
     def set_callbacks(self):
@@ -193,21 +192,16 @@ class MainViewController(object):
         if not self.model.check_filter(elem):
             self.view.window.packagesTable.setRowHidden(row, True)
 
-        self.update_params()  # at this point system_params have already been updated from model
+        self.update_params(elem[2])  # at this point system_params have already been updated from model
 
-    def update_params(self):
+    def update_params(self, svc):
         params = self.model.get_params()
         for k, v in params.items():
-            if k == "spacecraftTime":
+            if k == "spacecraftTime" and svc == 9:
+                time_ = time.strftime('%H:%M:%S', time.localtime(v))
                 self.view.update_space_time(v)
-            else:
+            elif k != "spacecraftTime" and svc == 3:
                 self.view.update_system_params(k, v)
-
-    def set_params(self):
-        params = self.model.get_params()
-        for k, v in params.items():
-            if k != "spacecraftTime":
-                self.view.add_system_params(k)
 
     def clear_qtable_callback(self):
         """

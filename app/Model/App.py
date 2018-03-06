@@ -78,32 +78,23 @@ class App(object):
         list_.append(packet)
         self.table.append(list_)  # QtTable is updated here
 
-    def load_param_names(self):
-        st3_st12_params_data = open(os.path.join("../../tools-libpus/mission/test_01", "st03_st12_config.json"))
-        st3_st12_params_json = json.load(st3_st12_params_data)
-        for i, e in enumerate(st3_st12_params_json["parameters"]):
-            self.st3_param_numbers.append(e["label"])
-            self.parameters_report_values[e["label"]] = None
-
     def get_params(self):
         return self.parameters_report_values
 
     def update_params(self, packet):
         if packet["primary_header"]["pck_id"]["sec_head_flg"]:
-            svc = int(packet["primary_header"]["pck_id"]["pck_type"])
+            svc = int(packet["data"]["pck_sec_head"]["msg_type_id"]["service_type_id"])
             msg = int(packet["data"]["pck_sec_head"]["msg_type_id"]["msg_subtype_id"])
         else:
             svc = 9
             msg = 2
-
         if (svc, msg) == (9, 2):
             time_ = int(packet["data"]["user_data"]["src_data"]["time"])
             self.parameters_report_values["spacecraftTime"] = time_
         elif svc == 3:
-            report = packet["data"]["user_data"]["src_data"]["hk_param_report_id"]
+            report = packet["data"]["user_data"]["src_data"]["hk_param_report"]["params"]
             for k, v in report.items():
-                param_id = int(k[len("param"):])
-                self.parameters_report_values[self.st3_param_numbers[param_id]] = v
+                self.parameters_report_values[k] = v
 
     def set_filter(self, filter_: dict):
         """
@@ -186,11 +177,10 @@ class App(object):
                 #                                                                      failure["info"]["data"],
                 #                                                                      failure["info"]["subcode"])
         elif (svc, msg) == (3, 25):
-            info = "Report id: {}. Params: ".format(src_data["hk_param_report_id"])
+            info = "Report id: {}. Params: ".format(src_data["hk_param_report"]["report_id"])
             params = []
-            for k in sorted(src_data.keys()):
-                if k != "hk_param_report_id":
-                    params.append(str(src_data[k]))
+            for k in sorted(src_data["hk_param_report"]["params"].keys()):
+                params.append(str(src_data["hk_param_report"]["params"][k]))
             info += ', '.join(params)
         elif svc == 5:
             info = "Event id: {}. Data1: {}. Data2: {}".format(src_data["event_id"], src_data["auxdata"]["data1"],

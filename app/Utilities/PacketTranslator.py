@@ -341,7 +341,9 @@ class PacketTranslator(object):
         """
         data = dict()
         report_id = pb.pus_tm_3_25_getReportId(packet)
-        data["hk_param_report_id"] = report_id
+        data["hk_param_report"] = dict()
+        data["hk_param_report"]["report_id"] = report_id
+        data["hk_param_report"]["params"] = dict()
         num_param = pb.pus_tm_3_25_getNumParameters(packet)
         for i in range(num_param):
             param = pb.pus_tm_3_25_getParameterValue(packet, i)
@@ -360,7 +362,7 @@ class PacketTranslator(object):
                     casted_param = pb.pus_paramToReal64(param)
                     error = pb.getError()
                 elif param_type == pb.pusParamType_t.PUS_BYTE:
-                    casted_param = pb.pus_paramToByte(param)
+                    casted_param = "0x"+pb.pus_paramToByte(param)
                     error = pb.getError()
                 elif param_type == pb.pusParamType_t.PUS_BOOL:
                     casted_param = pb.pus_paramToBool(param)
@@ -369,8 +371,7 @@ class PacketTranslator(object):
                     error = pb.pusError_t.PUS_ERROR_INVALID_TYPE
                 if error != pb.pusError_t.PUS_NO_ERROR:
                     casted_param = "Error"
-
-            data[param_name] = casted_param
+            data["hk_param_report"]["params"][param_name] = casted_param
         return data
 
     @staticmethod

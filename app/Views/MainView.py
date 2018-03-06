@@ -89,10 +89,12 @@ class MainView:
                                      self.window.centralwidget.frameGeometry().height() - 2*padding)
         self.window.label.move(self.window.centralwidget.frameGeometry().width() - img_w - 3*padding, img_y)
 
-    def add_system_params(self, name: str, obj: QtGui.QListWidgetItem = QtGui.QListWidgetItem()):
-        obj.setHidden(True)
-        self.window.paramsList.addItem(obj)
-        self.system_params[name] = obj
+    def __add_system_params__(self, name: str):
+        if name not in self.system_params:
+            obj = QtGui.QListWidgetItem()
+            obj.setHidden(True)
+            self.window.paramsList.addItem(obj)
+            self.system_params[name] = obj
 
     def update_space_time(self, val):
         if val is not None:
@@ -100,9 +102,10 @@ class MainView:
             self.spacecraftTimeValue.setText(val)
 
     def update_system_params(self, idx: str, val):
+        self.__add_system_params__(idx)  # The param is added if it is not already
         if val is not None:
             self.system_params[idx].setHidden(False)
-            self.system_params[idx].setText(idx + ": " + val)
+            self.system_params[idx].setText("{}: {}".format(idx, val))
 
     def show(self):
         """

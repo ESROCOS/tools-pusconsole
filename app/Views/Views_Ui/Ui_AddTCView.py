@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'AddTCView.ui'
 #
-# Created: Thu Mar  1 11:11:43 2018
+# Created: Tue Mar  6 14:04:59 2018
 #      by: pyside-uic 0.2.15 running on PySide 1.2.4
 #
 # WARNING! All changes made in this file will be lost!

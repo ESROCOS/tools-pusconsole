@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'MainView.ui'
 #
-# Created: Thu Mar  1 11:11:43 2018
+# Created: Tue Mar  6 14:05:00 2018
 #      by: pyside-uic 0.2.15 running on PySide 1.2.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -104,7 +104,7 @@ class Ui_MainView(object):
         self.menubar.addAction(self.menuHelp.menuAction())
 
         self.retranslateUi(MainView)
-        self.tabWidget.setCurrentIndex(1)
+        self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainView)
 
     def retranslateUi(self, MainView):
@@ -133,3 +133,4 @@ class Ui_MainView(object):
         self.actionCreate_TC.setText(QtGui.QApplication.translate("MainView", "Create TC", None, QtGui.QApplication.UnicodeUTF8))
         self.actionCreate_filter.setText(QtGui.QApplication.translate("MainView", "Create filter", None, QtGui.QApplication.UnicodeUTF8))
         self.actionDelete_filter.setText(QtGui.QApplication.translate("MainView", "Delete filter", None, QtGui.QApplication.UnicodeUTF8))
+
