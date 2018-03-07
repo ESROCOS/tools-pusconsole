@@ -159,3 +159,6 @@ class AddTCController(object):
             return packet
         else:
             return None
+
+    def destroy(self):
+        self.view.destroy()

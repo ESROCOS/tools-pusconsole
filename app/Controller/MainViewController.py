@@ -1,6 +1,5 @@
 from Views.MainView import MainView
 from Views.CreateTCView import CreateTCView
-from Views.NewConnectionView import NewConnectionView
 from Views.DetailsView import DetailsView
 from Views.FilterView import FilterView
 from Utilities.Database import Database
@@ -12,6 +11,7 @@ from Controller.CreateTCController import CreateTCController
 from Controller.FilterController import FilterController
 from PySide import QtGui, QtCore
 from PySide.QtCore import Slot
+from Utilities import PusThread
 import os
 import sys
 import json
@@ -36,6 +36,9 @@ class MainViewController(object):
         """
         self.model = model
         self.view = view
+        self.thread = PusThread(self.model)
+        self.thread.start()
+        self.opened_windows = []
         self.set_callbacks()
 
     def set_callbacks(self):
@@ -45,12 +48,12 @@ class MainViewController(object):
         """
         self.view.window.actionCreate_TC.triggered.connect(self.open_create_tc_callback)
         self.view.window.actionAbout_GMV.triggered.connect(self.open_about_callback)
-        self.view.window.actionNew_connection.triggered.connect(self.open_new_connection_callback)
         self.view.window.packagesTable.clicked.connect(self.open_more_details_window_callback)
         self.view.window.actionCreate_filter.triggered.connect(self.open_filter_callback)
         self.view.window.actionDelete_filter.triggered.connect(self.deactivate_filter_callback)
         self.view.window.actionSave_as.triggered.connect(self.open_savefile_window_callback)
         self.view.window.actionLoad.triggered.connect(self.open_openfile_window_callback)
+        self.view.set_close_event(self.close_event_callback)
         self.model.table.onClear = self.clear_qtable_callback
         self.model.table.onChange = self.add_elem
 
@@ -62,7 +65,7 @@ class MainViewController(object):
         create_tc_view = CreateTCView()
         create_tc_model = CreateTCModel(self.model)
         create_tc_controller = CreateTCController(create_tc_model, create_tc_view)
-
+        self.opened_windows.append(create_tc_controller)
         create_tc_controller.show()
 
     def open_filter_callback(self):
@@ -98,14 +101,6 @@ class MainViewController(object):
         self.__is_not_used__()
         webbrowser.open("https://www.gmv.com/en/Company/AboutGMV/")
 
-    def open_new_connection_callback(self):
-        """
-        This method opens the connection definition window
-        """
-        self.__is_not_used__()
-        new_connection_view = NewConnectionView()
-        new_connection_view.show()
-
     def open_more_details_window_callback(self, clicked_index):
         """
         This method opens and writes all the information
@@ -116,6 +111,7 @@ class MainViewController(object):
         index = int(self.view.window.packagesTable.item(row, 0).text())
         details_view = DetailsView()
         details_view.write_information(json.dumps(json.loads(self.model.table[index][-2]), indent=8))
+        self.opened_windows.append(details_view)
         details_view.show()
 
     def open_savefile_window_callback(self):
@@ -148,6 +144,16 @@ class MainViewController(object):
 
         self.__is_not_used__()
 
+    def close_event_callback(self, event):
+        try:
+            for window in self.opened_windows:
+                window.destroy()
+        except Exception as e:
+            pass
+
+        self.thread.quit()
+        event.accept()
+
     def __convert_dict(self, elem: collections.OrderedDict, tab_count: int = 0):
         """
         Private method to convert a dictionary to str
@@ -155,7 +161,7 @@ class MainViewController(object):
         :param tab_count: Number of tab for indenting elements of dict
         :return: A string representing the dict
         """
-        result = """"""
+        result = ""
         boolean = True if tab_count == 0 else False
         for k in sorted(elem.keys(), reverse=boolean):
             result += "\t" * tab_count + str(k) + ": "
@@ -195,6 +201,10 @@ class MainViewController(object):
         self.update_params(elem[2])  # at this point system_params have already been updated from model
 
     def update_params(self, svc):
+        """
+        This method update parameters of system status tab
+        :param svc: The service of the packet arrived
+        """
         params = self.model.get_params()
         for k, v in params.items():
             if k == "spacecraftTime" and svc == 9:
@@ -239,9 +249,9 @@ class IntegerTableWidgetItem(QtGui.QTableWidgetItem):
 
 class TimeTableWidgetItem(QtGui.QTableWidgetItem):
     """
-        This class inherits QTableWidgetItem to be able to
-        sort the table by time
-        """
+    This class inherits QTableWidgetItem to be able to
+    sort the table by time
+    """
     def __lt__(self, other):
         if isinstance(other, QtGui.QTableWidgetItem):
             import datetime

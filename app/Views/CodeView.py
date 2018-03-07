@@ -2,10 +2,10 @@ from PySide import QtGui, QtCore
 from Views.Views_Ui.Ui_CodeView import Ui_CodeView
 
 
-class DetailsView:
+class CodeView:
     """
     This class represents a window. It references the class
-    Ui_DetailsView, that class is where the graphics
+    Ui_CodeView, that class is where the graphics
     are created
     """
     resizeFlag = False
@@ -14,7 +14,7 @@ class DetailsView:
         """
         This is the constructor of the class
         """
-        self.view = QtGui.QWidget()
+        self.view = QtGui.QDialog()
         self.window = Ui_CodeView()
         self.window.setupUi(self.view)
         self.extra_customization()
@@ -49,8 +49,11 @@ class DetailsView:
         else:
             self.resizeFlag = True
 
-    def getCode(self):
-        return self.window.plainTextEdit.toPlainText()
+    def get_code(self):
+        return self.window.obcpCodeTextEdit.toPlainText()
+
+    def get_id(self):
+        return self.window.obcpIdValue.text()
 
     def show(self):
         """
@@ -58,3 +61,6 @@ class DetailsView:
         by this class
         """
         return self.view.exec_()
+
+    def destroy(self):
+        self.view.destroy()

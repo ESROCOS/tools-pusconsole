@@ -7,19 +7,19 @@
     <x>0</x>
     <y>0</y>
     <width>420</width>
-    <height>736</height>
+    <height>671</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Create TC</string>
   </property>
-  <widget class="QPlainTextEdit" name="commandTextEdit">
+  <widget class="QPlainTextEdit" name="pckSecHeaderTextEdit">
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>220</y>
+     <y>240</y>
      <width>401</width>
-     <height>511</height>
+     <height>261</height>
     </rect>
    </property>
   </widget>
@@ -142,6 +142,42 @@
    </property>
    <property name="text">
     <string>Save TC</string>
+   </property>
+  </widget>
+  <widget class="QPlainTextEdit" name="srcDataTextEdit">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>530</y>
+     <width>401</width>
+     <height>131</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="pckSecHeaderLbl">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>220</y>
+     <width>171</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Packet secondary header</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="srcDataLbl">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>510</y>
+     <width>171</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Source data</string>
    </property>
   </widget>
  </widget>

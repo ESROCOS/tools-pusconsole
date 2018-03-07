@@ -67,3 +67,6 @@ class DetailsView:
         #string = self.__convert_dict__(elem)
         self.window.informationValueLabel.setText(elem)
 
+    def destroy(self):
+        self.view.destroy()
+

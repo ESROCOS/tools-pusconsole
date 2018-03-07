@@ -113,3 +113,6 @@ class AddTCView(object):
         :return: json with the packet
         """
         return json.loads(self.window.commandTextEdit.toPlainText())
+
+    def destroy(self):
+        self.view.destroy()

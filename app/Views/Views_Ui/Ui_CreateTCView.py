@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'CreateTCView.ui'
 #
-# Created: Tue Mar  6 14:05:00 2018
+# Created: Wed Mar  7 14:03:43 2018
 #      by: pyside-uic 0.2.15 running on PySide 1.2.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -12,10 +12,10 @@ from PySide import QtCore, QtGui
 class Ui_CreateTCView(object):
     def setupUi(self, CreateTCView):
         CreateTCView.setObjectName("CreateTCView")
-        CreateTCView.resize(420, 736)
-        self.commandTextEdit = QtGui.QPlainTextEdit(CreateTCView)
-        self.commandTextEdit.setGeometry(QtCore.QRect(10, 220, 401, 511))
-        self.commandTextEdit.setObjectName("commandTextEdit")
+        CreateTCView.resize(420, 671)
+        self.pckSecHeaderTextEdit = QtGui.QPlainTextEdit(CreateTCView)
+        self.pckSecHeaderTextEdit.setGeometry(QtCore.QRect(10, 240, 401, 261))
+        self.pckSecHeaderTextEdit.setObjectName("pckSecHeaderTextEdit")
         self.createTCLabel = QtGui.QLabel(CreateTCView)
         self.createTCLabel.setGeometry(QtCore.QRect(10, 190, 151, 17))
         self.createTCLabel.setObjectName("createTCLabel")
@@ -46,6 +46,15 @@ class Ui_CreateTCView(object):
         self.saveTcButton = QtGui.QPushButton(CreateTCView)
         self.saveTcButton.setGeometry(QtCore.QRect(340, 10, 71, 27))
         self.saveTcButton.setObjectName("saveTcButton")
+        self.srcDataTextEdit = QtGui.QPlainTextEdit(CreateTCView)
+        self.srcDataTextEdit.setGeometry(QtCore.QRect(10, 530, 401, 131))
+        self.srcDataTextEdit.setObjectName("srcDataTextEdit")
+        self.pckSecHeaderLbl = QtGui.QLabel(CreateTCView)
+        self.pckSecHeaderLbl.setGeometry(QtCore.QRect(10, 220, 171, 17))
+        self.pckSecHeaderLbl.setObjectName("pckSecHeaderLbl")
+        self.srcDataLbl = QtGui.QLabel(CreateTCView)
+        self.srcDataLbl.setGeometry(QtCore.QRect(10, 510, 171, 17))
+        self.srcDataLbl.setObjectName("srcDataLbl")
 
         self.retranslateUi(CreateTCView)
         QtCore.QMetaObject.connectSlotsByName(CreateTCView)
@@ -59,4 +68,6 @@ class Ui_CreateTCView(object):
         self.sendButton.setText(QtGui.QApplication.translate("CreateTCView", "Send", None, QtGui.QApplication.UnicodeUTF8))
         self.addTcButton.setText(QtGui.QApplication.translate("CreateTCView", "+", None, QtGui.QApplication.UnicodeUTF8))
         self.saveTcButton.setText(QtGui.QApplication.translate("CreateTCView", "Save TC", None, QtGui.QApplication.UnicodeUTF8))
+        self.pckSecHeaderLbl.setText(QtGui.QApplication.translate("CreateTCView", "Packet secondary header", None, QtGui.QApplication.UnicodeUTF8))
+        self.srcDataLbl.setText(QtGui.QApplication.translate("CreateTCView", "Source data", None, QtGui.QApplication.UnicodeUTF8))
 

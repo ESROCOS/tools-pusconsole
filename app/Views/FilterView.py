@@ -63,3 +63,6 @@ class FilterView(object):
         an answer is given.
         """
         return self.view.exec_()
+
+    def destroy(self):
+        self.view.destroy()

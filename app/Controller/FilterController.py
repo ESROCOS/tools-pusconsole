@@ -72,3 +72,6 @@ class FilterController(object):
             return self.model.get_filter_options()
         else:
             return None
+
+    def destroy(self):
+        self.view.destroy()

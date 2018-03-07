@@ -93,7 +93,7 @@ class MainView:
         if name not in self.system_params:
             obj = QtGui.QListWidgetItem()
             obj.setHidden(True)
-            self.window.paramsList.addItem(obj)
+            self.window.hkParamList.addItem(obj)
             self.system_params[name] = obj
 
     def update_space_time(self, val):
@@ -106,6 +106,9 @@ class MainView:
         if val is not None:
             self.system_params[idx].setHidden(False)
             self.system_params[idx].setText("{}: {}".format(idx, val))
+
+    def set_close_event(self, func):
+        self.view.closeEvent = func
 
     def show(self):
         """

@@ -1,14 +1,12 @@
 from PySide import QtGui
 from PySide.QtGui import QInputDialog
 from Model import CreateTCModel
-from Views import CreateTCView
-from Views import AddTCView
+from Views import CreateTCView, AddTCView, CodeView
 from Utilities import PacketTranslator, ValidateJson, MakoTranslate, Database
 from .AddTCController import AddTCController
+from .CodeController import CodeController
 from jsonschema.exceptions import ValidationError
-import os
-import sys
-import json
+import os, sys, json
 from json.decoder import JSONDecodeError
 
 # dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -31,6 +29,7 @@ class CreateTCController(object):
         self.view = view
         self.command = ""
         self.command_packet = None
+        self.opened_windows = []
 
         self.HISTORY_DB = ".tc_history"
 
@@ -50,6 +49,7 @@ class CreateTCController(object):
         self.view.window.addTcButton.clicked.connect(self.add_tc_callback)
         self.view.window.historyList.currentItemChanged.connect(self.history_click_callback)
         self.view.window.saveTcButton.clicked.connect(self.save_tc_history_callback)
+        self.view.set_close_event(self.close_event_callback)
 
     def __add_telecommand(self):
         """
@@ -93,9 +93,11 @@ class CreateTCController(object):
 
         self.command, self.command_packet = self.show_packet_json(svc_type, msg_type)
         if self.command is not None:
-            self.view.set_tc_text(json.dumps(self.command["data"], indent=2))
+            pck_sec_head = json.dumps(self.command["data"]["pck_sec_head"], indent=2)
+            source_data = json.dumps(self.command["data"]["user_data"]["src_data"], indent=2)
+            self.view.set_tc_text(pck_sec_head, source_data)
         else:
-            self.view.set_tc_text("")
+            self.view.set_tc_text()
 
     def history_click_callback(self, current, _):
         text = current.text()
@@ -130,10 +132,13 @@ class CreateTCController(object):
         vj = ValidateJson()
 
         try:
-            data_section = self.view.get_tc_text()
-            data_section = json.loads(mt.replace(data_section))
+            pck_sec_header, src_data = self.view.get_tc_text()
+            pck_sec_header = json.loads(mt.replace(pck_sec_header))
+            src_data = json.loads(mt.replace(src_data))
 
-            self.command["data"] = data_section
+            self.command["data"]["pck_sec_head"] = pck_sec_header
+            self.command["data"]["user_data"]["src_data"] = src_data
+
             vj.check(self.command)
 
             packet = pt.json2packet(self.command)
@@ -247,7 +252,8 @@ class CreateTCController(object):
         elif (svc, msg) == (17, 1):
             pb.pus_tc_17_1_createConnectionTestRequest(packet, apid, seq)
         elif (svc, msg) == (18, 1):
-            pb.pus_tc_18_1_createLoadObcpDirectRequest(packet, apid, seq, "", "")
+            obcpid, obcpcode = self.open_obcp_add_code_window()
+            pb.pus_tc_18_1_createLoadObcpDirectRequest(packet, apid, seq, obcpid, obcpcode)
         elif (svc, msg) == (18, 2):
             pb.pus_tc_18_2_createUnloadObcpRequest(packet, apid, seq, "")
         elif (svc, msg) == (18, 3):
@@ -294,7 +300,6 @@ class CreateTCController(object):
                 pb.pus_tc_23_3_createReportFileAtributesRequest(packet, apid, seq, "", "")
             elif msg == 14:
                 pb.pus_tc_23_14_createCopyFileRequest(packet, apid, seq, "", "", "", "")
-
         else:
             pass
         return packet_translator.packet2json(packet), packet
@@ -313,4 +318,33 @@ class CreateTCController(object):
         """
         view = AddTCView()
         controller = AddTCController(self.model, view)
+        self.opened_windows.append(controller)
         return controller.show()
+
+    def open_obcp_add_code_window(self):
+        """
+        This method opens a window to write python script that a st18_1 packet
+        will carry
+        :return: A tuple with (obcpid, obcpcode)
+        """
+        view = CodeView()
+        controller = CodeController(None, view)
+        self.opened_windows.append(controller)
+        obcpid, obcpcode = controller.show()
+        if obcpid is None:
+            obcpid = ""
+        if obcpcode is None:
+            obcpcode = ""
+
+        return obcpid, obcpcode
+
+    def destroy(self):
+        self.view.destroy()
+
+    def close_event_callback(self, event):
+        try:
+            for window in self.opened_windows:
+                window.close()
+        except Exception as e:
+            pass
+        event.accept()

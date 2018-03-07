@@ -3,7 +3,6 @@ from Model import App
 from Controller import MainViewController
 from Views import MainView
 from Utilities import PacketTranslator
-from Utilities import PusThread
 import os, sys
 # dir_path = os.path.dirname(os.path.realpath(__file__))
 lib_path = os.path.join('/home/esrocos/esrocos-ws-pus/tools-libpus/debug/pylib')
@@ -28,8 +27,6 @@ def main():
     # packet = pb.pusPacket_t()
     # pb.ret_packets(packet, 13)
     # app.add(packet)
-    thread = PusThread(app)
-    thread.start()
 
     """
     test purpose below
@@ -44,7 +41,8 @@ def main():
     #     pb.pus_tm_1_1_createAcceptanceReportSuccess(packet, 0, 0, packet0)
     #     app.add(pt.packet2json(packet), packet)
 
-    sys.exit(gui.exec_())
+    code = gui.exec_()
+    sys.exit(code)
 
 
 if __name__ == "__main__":

@@ -43,10 +43,15 @@ class CreateTCView(object):
         :param event: The event that triggers this method
         """
         padding = 20
-        cte_w = self.window.commandTextEdit.frameGeometry().width()
-        cte_h = self.window.commandTextEdit.frameGeometry().height()
-        cte_x = self.window.commandTextEdit.pos().x()
-        cte_y = self.window.commandTextEdit.pos().y()
+        pshte_w = self.window.pckSecHeaderTextEdit.frameGeometry().width()
+        pshte_h = self.window.pckSecHeaderTextEdit.frameGeometry().height()
+        pshte_x = self.window.pckSecHeaderTextEdit.pos().x()
+        pshte_y = self.window.pckSecHeaderTextEdit.pos().y()
+
+        sdte_w = self.window.srcDataTextEdit.frameGeometry().width()
+        sdte_h = self.window.srcDataTextEdit.frameGeometry().height()
+        sdte_x = self.window.srcDataTextEdit.pos().x()
+        sdte_y = self.window.srcDataTextEdit.pos().y()
 
         hl_w = self.window.historyList.frameGeometry().width()
         hl_h = self.window.historyList.frameGeometry().height()
@@ -59,8 +64,10 @@ class CreateTCView(object):
         ctl_y = self.window.createTCLabel.pos().y()
 
         if self.resizeFlag:
-            self.window.commandTextEdit.resize(self.view.frameGeometry().width() - 2 * padding,
-                                               self.view.frameGeometry().height() - 3 * padding + 4 - cte_y)
+            self.window.pckSecHeaderTextEdit.resize(self.view.frameGeometry().width() - 2 * padding, pshte_h)
+
+            self.window.srcDataTextEdit.resize(self.view.frameGeometry().width() - 2 * padding,
+                                               self.view.frameGeometry().height() - 3 * padding + 4 - sdte_y)
 
             self.window.historyList.resize(self.view.frameGeometry().width() - 2 * padding, hl_h)
         else:
@@ -101,12 +108,12 @@ class CreateTCView(object):
         """
         self.view.show()
 
-    def set_tc_text(self, json):
+    def set_tc_text(self, pck_sec_head="", source_data=""):
         """
         This method prints in the text box a json template
         making the creation of telecommands easier
-
-        :param json: String in json format with the TC template
+        :param pck_sec_head: Data field of the packet secondary header
+        :param source_data: Data field of the source_data
         """
         font = QtGui.QFont()
         font.setFamily("Courier")
@@ -114,8 +121,10 @@ class CreateTCView(object):
         font.setFixedPitch(True)
         font.setPointSize(10)
         metrics = QtGui.QFontMetrics(font)
-        self.window.commandTextEdit.setTabStopWidth(metrics.width(' '))
-        self.window.commandTextEdit.setPlainText(json)
+        self.window.pckSecHeaderTextEdit.setTabStopWidth(metrics.width(' '))
+        self.window.pckSecHeaderTextEdit.setPlainText(pck_sec_head)
+        self.window.srcDataTextEdit.setTabStopWidth(metrics.width(' '))
+        self.window.srcDataTextEdit.setPlainText(source_data)
 
     def get_tc_text(self):
         """
@@ -123,10 +132,16 @@ class CreateTCView(object):
         the window textbox
         :return: json with the packet
         """
-        return self.window.commandTextEdit.toPlainText()
+        return self.window.pckSecHeaderTextEdit.toPlainText(), self.window.srcDataTextEdit.toPlainText()
 
     def close(self):
         """
         This method closes the view
         """
         self.view.close()
+
+    def set_close_event(self, fun):
+        self.view.closeEvent = fun
+
+    def destroy(self):
+        self.view.destroy()
