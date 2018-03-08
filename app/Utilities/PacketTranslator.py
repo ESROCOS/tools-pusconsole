@@ -381,12 +381,43 @@ class PacketTranslator(object):
         :return: A JSON object with all the parsed information
         """
         data = dict()
+
         event_id = pb.pus_tm_get_5_X_event_id(packet)
-        data["event_id"] = event_id
+        event_name = pb.pus_st05_getEventName(event_id)
+        data["event_id"] = event_name
+        data_type1 = pb.pus_st05_getDataType1(event_id)
+        casted_param = "Error"
         aux1 = pb.pus_tm_get_5_X_event_auxdata1(packet)
+        if data_type1 == pb.pusParamType_t.PUS_INT32:
+            casted_param = pb.pus_paramToInt32(aux1)
+        elif data_type1 == pb.pusParamType_t.PUS_UINT32:
+            casted_param = pb.pus_paramToUint32(aux1)
+
+        elif data_type1 == pb.pusParamType_t.PUS_REAL64:
+            casted_param = pb.pus_paramToReal64(aux1)
+        elif data_type1 == pb.pusParamType_t.PUS_BYTE:
+            casted_param = "0x" + pb.pus_paramToByte(aux1)
+        elif data_type1 == pb.pusParamType_t.PUS_BOOL:
+            casted_param = pb.pus_paramToBool(aux1)
+        aux1 = casted_param
+
+        data_type2 = pb.pus_st05_getDataType2(event_id)
+        casted_param = "Error"
         aux2 = pb.pus_tm_get_5_X_event_auxdata2(packet)
+        if data_type2 == pb.pusParamType_t.PUS_INT32:
+            casted_param = pb.pus_paramToInt32(aux2)
+        elif data_type2 == pb.pusParamType_t.PUS_UINT32:
+            casted_param = pb.pus_paramToUint32(aux2)
+        elif data_type2 == pb.pusParamType_t.PUS_REAL64:
+            casted_param = pb.pus_paramToReal64(aux2)
+        elif data_type2 == pb.pusParamType_t.PUS_BYTE:
+            casted_param = "0x" + pb.pus_paramToByte(aux2)
+        elif data_type2 == pb.pusParamType_t.PUS_BOOL:
+            casted_param = pb.pus_paramToBool(aux2)
+
+        aux2 = casted_param
+
         data["auxdata"] = {"data1": aux1, "data2": aux2}
-        return data
 
     @staticmethod
     def tc_8_1_get_data(packet):
