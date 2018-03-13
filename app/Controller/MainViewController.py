@@ -194,11 +194,15 @@ class MainViewController(object):
             if i != len(elem[:-2])-1:
                 self.view.window.packagesTable.item(row, i).setTextAlignment(QtCore.Qt.AlignCenter |
                                                                              QtCore.Qt.AlignVCenter)
-        self.view.window.packagesTable.setSortingEnabled(True)
-        if not self.model.check_filter(elem):
-            self.view.window.packagesTable.setRowHidden(row, True)
 
+        if self.model.active_filter():
+            pass
+
+        if not self.model.check_filter(elem):
+            row_count = self.view.window.packagesTable.rowCount()
+            self.view.window.packagesTable.setRowHidden(row, True)
         self.update_params(elem[2])  # at this point system_params have already been updated from model
+        self.view.window.packagesTable.setSortingEnabled(True)
 
     def update_params(self, svc):
         """

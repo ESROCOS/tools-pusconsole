@@ -144,6 +144,9 @@ class App(object):
             return aux is not None
         return True
 
+    def active_filter(self):
+        return self.currentFilter is not None
+
     @staticmethod
     def __create_info_string__(elem):
         """

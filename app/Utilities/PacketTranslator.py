@@ -384,7 +384,7 @@ class PacketTranslator(object):
 
         event_id = pb.pus_tm_get_5_X_event_id(packet)
         event_name = pb.pus_st05_getEventName(event_id)
-        data["event_id"] = event_name
+        data["event_id"] = event_name if event_name is not None else "Error"
         data_type1 = pb.pus_st05_getDataType1(event_id)
         casted_param = "Error"
         aux1 = pb.pus_tm_get_5_X_event_auxdata1(packet)
@@ -418,6 +418,8 @@ class PacketTranslator(object):
         aux2 = casted_param
 
         data["auxdata"] = {"data1": aux1, "data2": aux2}
+
+        return data
 
     @staticmethod
     def tc_8_1_get_data(packet):
