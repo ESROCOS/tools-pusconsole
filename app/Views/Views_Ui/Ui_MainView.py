@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'MainView.ui'
 #
-# Created: Wed Mar  7 14:03:44 2018
+# Created: Tue Mar 13 13:22:15 2018
 #      by: pyside-uic 0.2.15 running on PySide 1.2.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -61,14 +61,14 @@ class Ui_MainView(object):
         self.spacecraftTimeLbl.setGeometry(QtCore.QRect(10, 10, 121, 17))
         self.spacecraftTimeLbl.setObjectName("spacecraftTimeLbl")
         self.hkParamsLbl = QtGui.QLabel(self.statusTab)
-        self.hkParamsLbl.setGeometry(QtCore.QRect(10, 40, 141, 17))
+        self.hkParamsLbl.setGeometry(QtCore.QRect(10, 40, 191, 17))
         self.hkParamsLbl.setObjectName("hkParamsLbl")
-        self.label_5 = QtGui.QLabel(self.statusTab)
-        self.label_5.setGeometry(QtCore.QRect(380, 40, 141, 17))
-        self.label_5.setObjectName("label_5")
-        self.paramsList_2 = QtGui.QListWidget(self.statusTab)
-        self.paramsList_2.setGeometry(QtCore.QRect(390, 60, 361, 431))
-        self.paramsList_2.setObjectName("paramsList_2")
+        self.sysParamsLabel = QtGui.QLabel(self.statusTab)
+        self.sysParamsLabel.setGeometry(QtCore.QRect(390, 40, 141, 17))
+        self.sysParamsLabel.setObjectName("sysParamsLabel")
+        self.sysParamsList = QtGui.QListWidget(self.statusTab)
+        self.sysParamsList.setGeometry(QtCore.QRect(390, 60, 361, 431))
+        self.sysParamsList.setObjectName("sysParamsList")
         self.tabWidget.addTab(self.statusTab, "")
         MainView.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainView)
@@ -110,7 +110,7 @@ class Ui_MainView(object):
         self.menubar.addAction(self.menuHelp.menuAction())
 
         self.retranslateUi(MainView)
-        self.tabWidget.setCurrentIndex(1)
+        self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainView)
 
     def retranslateUi(self, MainView):
@@ -127,8 +127,8 @@ class Ui_MainView(object):
         self.packagesTable.horizontalHeaderItem(9).setText(QtGui.QApplication.translate("MainView", "Information", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.packetTab), QtGui.QApplication.translate("MainView", "Packets", None, QtGui.QApplication.UnicodeUTF8))
         self.spacecraftTimeLbl.setText(QtGui.QApplication.translate("MainView", "SpacecraftTime:", None, QtGui.QApplication.UnicodeUTF8))
-        self.hkParamsLbl.setText(QtGui.QApplication.translate("MainView", "System parameters", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_5.setText(QtGui.QApplication.translate("MainView", "System parameters", None, QtGui.QApplication.UnicodeUTF8))
+        self.hkParamsLbl.setText(QtGui.QApplication.translate("MainView", "Housekeeping parameters", None, QtGui.QApplication.UnicodeUTF8))
+        self.sysParamsLabel.setText(QtGui.QApplication.translate("MainView", "System parameters", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.statusTab), QtGui.QApplication.translate("MainView", "System status", None, QtGui.QApplication.UnicodeUTF8))
         self.menuFile.setTitle(QtGui.QApplication.translate("MainView", "File", None, QtGui.QApplication.UnicodeUTF8))
         self.menuHelp.setTitle(QtGui.QApplication.translate("MainView", "Help", None, QtGui.QApplication.UnicodeUTF8))
@@ -140,4 +140,3 @@ class Ui_MainView(object):
         self.actionCreate_TC.setText(QtGui.QApplication.translate("MainView", "Create TC", None, QtGui.QApplication.UnicodeUTF8))
         self.actionCreate_filter.setText(QtGui.QApplication.translate("MainView", "Create filter", None, QtGui.QApplication.UnicodeUTF8))
         self.actionDelete_filter.setText(QtGui.QApplication.translate("MainView", "Delete filter", None, QtGui.QApplication.UnicodeUTF8))
-

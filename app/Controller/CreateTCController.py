@@ -88,7 +88,7 @@ class CreateTCController(object):
         msg_type = msgComboBox.itemData(index)
 
         if msg_type is None:
-            self.view.set_tc_text("")
+            self.view.set_tc_text()
             return
 
         self.command, self.command_packet = self.show_packet_json(svc_type, msg_type)
@@ -118,7 +118,10 @@ class CreateTCController(object):
             #svc_combobox_changed_callback(svc_index)
             msg_index = msg_cbox.findData(msg)
             msg_cbox.setCurrentIndex(msg_index)
-            self.view.set_tc_text(json.dumps(self.command["data"], indent=2))
+
+            pck_sec_head = json.dumps(self.command["data"]["pck_sec_head"], indent=2)
+            source_data = json.dumps(self.command["data"]["user_data"]["src_data"], indent=2)
+            self.view.set_tc_text(pck_sec_head, source_data)
             break
 
     def send_callback(self):
@@ -160,13 +163,18 @@ class CreateTCController(object):
         opens an addTcView window to create the telecommand to be embedded.
         """
         packet_translator = PacketTranslator()
-        scndpacket = self.open_add_tc_window()
+        scndpacket, schedule = self.open_add_tc_window(True)
         if scndpacket is not None:
-            now = pb.pusTime_t()
-            pb.pus_now(now) # Revisar
-            pb.pus_tc_11_4_setActivity(self.command_packet, scndpacket, now) # Revisar
+            if schedule is None:
+                time_ = pb.pusTime_t()
+                pb.pus_now(time_)
+            else:
+                time_ = pb.pus_posix2time(schedule)
+            pb.pus_tc_11_4_setActivity(self.command_packet, scndpacket, time_)
             self.command = packet_translator.packet2json(self.command_packet)
-            self.view.set_tc_text(json.dumps(self.command["data"], indent=2))
+            pck_sec_head = json.dumps(self.command["data"]["pck_sec_head"], indent=2)
+            source_data = json.dumps(self.command["data"]["user_data"]["src_data"], indent=2)
+            self.view.set_tc_text(pck_sec_head, source_data)
 
     def save_tc_history_callback(self):
         mt = MakoTranslate()
@@ -231,15 +239,18 @@ class CreateTCController(object):
             elif msg == 4:
                 self.view.window.addTcButton.show()
                 pb.pus_tc_11_4_createInsertActivityIntoSchedule(packet, apid, seq)
-                scndpacket = self.open_add_tc_window()
+
+                scndpacket, schedule = self.open_add_tc_window(True)
                 packet_translator.packet2json(scndpacket)
                 if scndpacket is None:
                     self.view.window.msgComboBox.setCurrentIndex(0)
                     return None, None
+                elif schedule is None:
+                    time_ = pb.pusTime_t()
+                    pb.pus_now(time_)
                 else:
-                    now = pb.pusTime_t() # REVISAR: EL TIEMPO TIENE QUE SER ESPECIFICADO
-                    pb.pus_now(now)
-                    print(pb.pus_tc_11_4_setActivity(packet, scndpacket, now))
+                    time_ = pb.pus_posix2time(schedule)
+                    pb.pus_tc_11_4_setActivity(packet, scndpacket, time_)
         elif svc == 12:
             if msg == 1:
                 pb.pus_tc_12_1_createEnableParameterMonitoringDefinitions(packet, apid, seq, 0)
@@ -274,7 +285,7 @@ class CreateTCController(object):
             pb.pus_tc_18_22_createStopObcpEngineRequest(packet, apid, seq)
         elif svc == 19:
             if msg == 1:
-                scndpacket = self.open_add_tc_window()
+                scndpacket = self.open_add_tc_window(False)
                 if scndpacket is None:
                     self.view.window.msgComboBox.setCurrentIndex(0)
                     return None, None
@@ -310,13 +321,13 @@ class CreateTCController(object):
         """
         self.view.show()
 
-    def open_add_tc_window(self):
+    def open_add_tc_window(self, show_time):
         """
         This method opens a new window to create a telecommand that
         will be embedded in st11 or st19 telecommands
         :return: The inner telecommand
         """
-        view = AddTCView()
+        view = AddTCView(show_time)
         controller = AddTCController(self.model, view)
         self.opened_windows.append(controller)
         return controller.show()

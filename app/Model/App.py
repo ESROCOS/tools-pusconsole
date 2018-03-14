@@ -180,13 +180,10 @@ class App(object):
                 #                                                                      failure["info"]["data"],
                 #                                                                      failure["info"]["subcode"])
         elif (svc, msg) == (3, 25):
-            info = "Report id: {}. Params: ".format(src_data["hk_param_report"]["report_id"])
+            info = "Report id: {}".format(src_data["hk_param_report"]["report_id"])
             params = []
-            for k in sorted(src_data["hk_param_report"]["params"].keys()):
-                params.append(str(src_data["hk_param_report"]["params"][k]))
-            info += ', '.join(params)
         elif svc == 5:
-            info = "Event id: {}. Data1: {}. Data2: {}".format(src_data["event_id"], src_data["auxdata"]["data1"],
+            info = "Event id: {}. ({}, {})".format(src_data["event_id"], src_data["auxdata"]["data1"],
                                                                src_data["auxdata"]["data2"])
         elif (svc, msg) == (8, 1):
             info = "Function id = {}.".format(src_data["function_id"])
@@ -206,7 +203,7 @@ class App(object):
 
         elif svc == 12:
             if msg == 1 or msg == 2:
-                info = "Param monitoring id = {}".format(src_data["pmon_id"])
+                info = "Pmon id = {}".format(src_data["pmon_id"])
         elif (svc, msg) == (17, 1):
             info = "Are you alive?"
         elif (svc, msg) == (17, 2):
@@ -241,6 +238,8 @@ class App(object):
                 src_file = src_data["source_file"]
                 tgt_repo = src_data["target_repository"]
                 tgt_file = src_data["target_file"]
+                slash1 = ""
+                slash2 = ""
                 if len(src_repo) > 0:
                     slash1 = "/" if src_repo[-1] != "/" else ""
                 if len(tgt_repo) > 0:
@@ -250,6 +249,7 @@ class App(object):
                                                                            tgt_file)
             else:
                 repo = src_data["repo_path"]
+                slash = ""
                 if len(repo) > 0:
                     slash = "/" if repo[-1] != "/" else ""
                 info = "File: {}{}{}. ".format(src_data["repo_path"], slash, src_data["file_name"])

@@ -495,9 +495,8 @@ class PacketTranslator(object):
 
     def tc_11_4_set_data(self, packet, data: dict):
         for k in sorted(data.keys()):
-            time_ = pb.pusTime_t()
             t = data[k]["time"]
-            pb.pus_posix2time(time_, t)
+            time_ = pb.pus_posix2time(t)
             scndpacket = self.json2packet(data[k]["packet"])
             pb.pus_tc_11_4_setActivity(packet, scndpacket, time_)
         return packet

@@ -2,11 +2,14 @@ from PySide import QtCore
 from Model import CreateTCModel
 from Views.AddTCView import AddTCView
 from Utilities import PacketTranslator
+from Utilities import MakoTranslate
 import os, sys, json
 # dir_path = os.path.dirname(os.path.realpath(__file__))
 # lib_path = os.path.join(dir_path, '../../../pus/debug/pylib')
 # sys.path.append(lib_path)
 # import pusbinding as pb
+
+
 lib_path = os.path.join('/home/esrocos/esrocos-ws-pus/tools-libpus/debug/pylib')
 sys.path.append(lib_path)
 import pusbinding as pb
@@ -81,7 +84,10 @@ class AddTCController(object):
 
         self.command = self.show_packet_json(svc_type, msg_type)
         self.view.current_json = json.dumps(self.command)
-        self.view.set_tc_text(json.dumps(self.command["data"], indent=2))
+
+        pck_sec_head = json.dumps(self.command["data"]["pck_sec_head"], indent=2)
+        source_data = json.dumps(self.command["data"]["user_data"]["src_data"], indent=2)
+        self.view.set_tc_text(pck_sec_head, source_data)
 
     def show_packet_json(self, svc, msg):
         """
@@ -153,12 +159,23 @@ class AddTCController(object):
         """
         code = self.view.show()
         packet_translator = PacketTranslator()
-        self.command["data"] = self.view.get_tc_text()
+        makoTranslate = MakoTranslate()
+
+        pck_sec_header, src_data = self.view.get_tc_text()
+        pck_sec_header = json.loads(makoTranslate.replace(pck_sec_header))
+        src_data = json.loads(makoTranslate.replace(src_data))
+        print("----------- aqui ----------------------")
+        print(self.command)
+        print("----------- ----------------------")
+        self.command["data"]["pck_sec_head"] = pck_sec_header
+        self.command["data"]["user_data"]["src_data"] = src_data
         if code == 1:
             packet = packet_translator.json2packet(self.command)
-            return packet
+            print("Devuelvo 1")
+            return packet, self.view.get_date_time()
         else:
-            return None
+            print("Devuelvo 2")
+            return None, None
 
     def destroy(self):
         self.view.destroy()
