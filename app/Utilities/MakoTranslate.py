@@ -1,23 +1,32 @@
 from mako.template import Template
-import json
-import os
+import json, os, sys
+lib_path = os.path.join('/home/esrocos/esrocos-ws-pus/tools-libpus/debug/pylib')
+sys.path.append(lib_path)
+import pusbinding as pb
 
 
 class MakoTranslate(object):
     def __init__(self):
         self.version = {"V0": 0, "V1": 1, "INVALID_VERSION": 15}
-
-        st3_st12_params_data = open(os.path.join("../../tools-libpus/mission/test_01", "st03_st12_config.json"))
-        st3_st12_params_json = json.load(st3_st12_params_data)
         self.st3_12_params = dict()
-        for i, e in enumerate(st3_st12_params_json["parameters"]):
-            self.st3_12_params[e["label"]] = i
-
-        st20_params_data = open(os.path.join("../../tools-libpus/mission/test_01", "st20_config.json"))
-        st20_params_json = json.load(st20_params_data)
         self.st20_params = dict()
-        for i, e in enumerate(st20_params_json["parameters"]):
-            self.st20_params[e["label"]] = i
+
+        param_id = 0
+        read_value = " "
+        while read_value is not None:
+            read_value = pb.pus_st20_getOnBoardReportInfoName(param_id)
+            if read_value is not None:
+                self.st20_params[read_value] = param_id
+            param_id += 1
+
+        #  In the future library there can be more than one report id
+        param_id = 0
+        read_value = pb.pus_st03_getHkReportInfoName(0, param_id)
+        while read_value is not None:
+            self.st3_12_params[read_value] = param_id
+            param_id += 1
+            read_value = pb.pus_st03_getHkReportInfoName(0, param_id)
+            print(read_value)
 
         self.values = [self.version, self.st3_12_params, self.st20_params]
 
@@ -35,5 +44,5 @@ class MakoTranslate(object):
         else:
             data = json_data
 
-        res = Template(self.template_values+data).render()
+        res = Template(self.template_values + data).render()
         return res

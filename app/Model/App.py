@@ -229,9 +229,15 @@ class App(object):
                 sub_msg = request_data["pck_sec_head"]["msg_type_id"]["msg_subtype_id"]
                 info += "Packet request: ({}, {}).".format(sub_svc, sub_msg)
         elif svc == 20:
-            info = "Param id = {}".format(src_data["param_id"])
-            if msg == 2 or msg == 3:
-                info += " Value = {}".format(src_data["value"])
+            if msg == 2:
+                info = "{}".format(src_data["param_id"])
+                info += " = {}".format(src_data["value"])
+            elif msg == 3:
+                info = "Set " + pb.pus_st20_getOnBoardReportInfoName(src_data["param_id"])
+                info += " to {}".format(src_data["value"])
+            else:
+                info = pb.pus_st20_getOnBoardReportInfoName(src_data["param_id"])
+                info += " request."
         elif svc == 23:
             if msg == 14:
                 src_repo = src_data["source_repository"]

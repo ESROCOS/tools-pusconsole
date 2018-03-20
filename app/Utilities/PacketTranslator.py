@@ -1,11 +1,7 @@
-import os, sys, collections, time, datetime, glob
-
-from ufw.util import msg
-
+import os, sys, collections, time, datetime, json
 lib_path = os.path.join('/home/esrocos/esrocos-ws-pus/tools-libpus/debug/pylib')
 sys.path.append(lib_path)
 import pusbinding as pb
-import json
 
 
 class PacketTranslator(object):
@@ -346,8 +342,7 @@ class PacketTranslator(object):
         num_param = pb.pus_tm_3_25_getNumParameters(packet)
         for i in range(num_param):
             param = pb.pus_tm_3_25_getParameterValue(packet, i)
-            param_name = str()
-            param_name = pb.pus_st03_getHkReportInfoName(report_id, i, param_name)
+            param_name = pb.pus_st03_getHkReportInfoName(report_id, i)
             param_type = pb.pus_st03_getHkReportInfoType(report_id, i)
             casted_param = "Error"
             if pb.getError() == pb.pusError_t.PUS_NO_ERROR:
@@ -700,8 +695,33 @@ class PacketTranslator(object):
         :return: A JSON object with all the parsed information
         """
         data = dict()
-        data["param_id"] = pb.pus_tm_20_2_getParamId(packet)
-        data["value"] = pb.pus_tm_20_2_getParamValue(packet)
+        paramid = pb.pus_tm_20_2_getParamId(packet)
+        data["param_id"] = pb.pus_st20_getOnBoardReportInfoName(paramid)
+        param_type = pb.pus_st20_getOnBoardReportInfoType(paramid)
+        param = pb.pus_tm_20_2_getParamValue(packet)
+        casted_param = "Error"
+        if pb.getError() == pb.pusError_t.PUS_NO_ERROR:
+            if param_type == pb.pusParamType_t.PUS_INT32:
+                casted_param = pb.pus_paramToInt32(param)
+                error = pb.getError()
+            elif param_type == pb.pusParamType_t.PUS_UINT32:
+                casted_param = pb.pus_paramToUint32(param)
+                error = pb.getError()
+            elif param_type == pb.pusParamType_t.PUS_REAL64:
+                casted_param = pb.pus_paramToReal64(param)
+                error = pb.getError()
+            elif param_type == pb.pusParamType_t.PUS_BYTE:
+                casted_param = "0x" + pb.pus_paramToByte(param)
+                error = pb.getError()
+            elif param_type == pb.pusParamType_t.PUS_BOOL:
+                casted_param = pb.pus_paramToBool(param)
+                error = pb.getError()
+            else:
+                error = pb.pusError_t.PUS_ERROR_INVALID_TYPE
+            if error != pb.pusError_t.PUS_NO_ERROR:
+                casted_param = "Error"
+
+        data["value"] = casted_param
         return data
 
     @staticmethod
@@ -727,7 +747,33 @@ class PacketTranslator(object):
         param_id = data["param_id"]
         value = data["value"]
         pb.pus_tc_20_X_setParamId(packet, param_id)
-        pb.pus_tc_20_3_setParamValue(packet, value)
+        param_type = pb.pus_st20_getOnBoardReportInfoType(param_id)
+        error = pb.pusError_t.PUS_NO_ERROR
+        casted_param = 0
+
+        if pb.getError() == pb.pusError_t.PUS_NO_ERROR:
+            if param_type == pb.pusParamType_t.PUS_INT32:
+                casted_param = pb.pus_int32ToParam(value)
+                error = pb.getError()
+            elif param_type == pb.pusParamType_t.PUS_UINT32:
+                casted_param = pb.pus_uint32ToParam(value)
+                error = pb.getError()
+            elif param_type == pb.pusParamType_t.PUS_REAL64:
+                casted_param = pb.pus_real64ToParam(value)
+                error = pb.getError()
+            elif param_type == pb.pusParamType_t.PUS_BYTE:
+                casted_param = pb.pus_byteToParam(value)
+                error = pb.getError()
+            elif param_type == pb.pusParamType_t.PUS_BOOL:
+                casted_param = pb.pus_boolToParam(value)
+                error = pb.getError()
+            else:
+                casted_param = 0
+        if error != pb.pusError_t.PUS_NO_ERROR:
+            casted_param = 0
+
+        # ERRORESS
+        pb.pus_tc_20_3_setParamValue(packet, casted_param)
         return packet
 
     @staticmethod
