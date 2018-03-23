@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'MainView.ui'
 #
-# Created: Tue Mar 13 13:22:15 2018
+# Created: Wed Mar 21 12:04:05 2018
 #      by: pyside-uic 0.2.15 running on PySide 1.2.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -98,10 +98,13 @@ class Ui_MainView(object):
         self.actionCreate_filter.setObjectName("actionCreate_filter")
         self.actionDelete_filter = QtGui.QAction(MainView)
         self.actionDelete_filter.setObjectName("actionDelete_filter")
+        self.actionLoad_TCs = QtGui.QAction(MainView)
+        self.actionLoad_TCs.setObjectName("actionLoad_TCs")
         self.menuFile.addAction(self.actionSave_as)
         self.menuFile.addAction(self.actionLoad)
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionCreate_TC)
+        self.menuFile.addAction(self.actionLoad_TCs)
         self.menuHelp.addAction(self.actionAbout_GMV)
         self.menuFilter.addAction(self.actionCreate_filter)
         self.menuFilter.addAction(self.actionDelete_filter)
@@ -140,3 +143,4 @@ class Ui_MainView(object):
         self.actionCreate_TC.setText(QtGui.QApplication.translate("MainView", "Create TC", None, QtGui.QApplication.UnicodeUTF8))
         self.actionCreate_filter.setText(QtGui.QApplication.translate("MainView", "Create filter", None, QtGui.QApplication.UnicodeUTF8))
         self.actionDelete_filter.setText(QtGui.QApplication.translate("MainView", "Delete filter", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionLoad_TCs.setText(QtGui.QApplication.translate("MainView", "Load TCs", None, QtGui.QApplication.UnicodeUTF8))

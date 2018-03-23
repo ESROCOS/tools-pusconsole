@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'AddTCView.ui'
 #
-# Created: Tue Mar 13 13:22:14 2018
+# Created: Wed Mar 21 12:04:04 2018
 #      by: pyside-uic 0.2.15 running on PySide 1.2.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -51,7 +51,6 @@ class Ui_AddTCView(object):
         self.dateTimeEdit = QtGui.QDateTimeEdit(AddTCView)
         self.dateTimeEdit.setGeometry(QtCore.QRect(100, 100, 131, 27))
         self.dateTimeEdit.setObjectName("dateTimeEdit")
-        self.dateTimeEdit.date
         self.scheduleLbl = QtGui.QLabel(AddTCView)
         self.scheduleLbl.setGeometry(QtCore.QRect(30, 103, 61, 20))
         self.scheduleLbl.setObjectName("scheduleLbl")

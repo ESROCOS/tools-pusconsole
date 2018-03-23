@@ -1,10 +1,11 @@
 from PySide.QtCore import QObject, Signal, Slot
-from PySide.QtCore import QThread
+from PySide.QtCore import QThread, QWaitCondition, QMutex, QTimer
 from . import PacketTranslator
 import json, sys, os
 lib_path = os.path.join('/home/esrocos/esrocos-ws-pus/tools-libpus/debug/pylib')
 sys.path.append(lib_path)
 import pusbinding as pb
+
 
 class MySignal(QObject):
     """
@@ -47,6 +48,11 @@ class PusThread(QThread):
         self.model = model
         self.signal = MySignal()
         self.signal.signal.connect(self.model.add)
+        self.json_file = None
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.update_packets)
+        self.json_file_loaded = QWaitCondition()
+        self.mutex = QMutex()
 
     def run(self):
         """
@@ -55,14 +61,45 @@ class PusThread(QThread):
         seconds between packet and packet according
         to the interval defined in the json file.
         """
-        import time
+        ACTIVITIES_TAG = "activities"
+        INTERVAL_TAG = "interval"
+        PACKET_TAG = "packet"
+
+        self.timer.start(1000)
 
         while True:
-            time.sleep(1)
-            for _ in range(3):
-                packet = pb.pusPacket_t()
-                if pb.pusError_t.PUS_NO_ERROR == pb.pus_notify_readTm(packet): # Comprobar si null
-                    self.signal.throw(packet)
+            self.mutex.lock()
+            self.json_file_loaded.wait(self.mutex)
+            file = self.json_file
+            self.mutex.unlock()
+
+            pt = PacketTranslator()
+            if file is not None:
+                with open(file) as jfile:
+                    activities = json.loads(jfile.read())[ACTIVITIES_TAG]
+                    for activity in activities:
+                        interval = activity[INTERVAL_TAG]
+                        self.sleep(interval)
+                        if PACKET_TAG in activity:
+                            packet = pt.json2packet(activity[PACKET_TAG])
+                            pb.pus_notify_sendPacket(packet)
+                            self.signal.throw(packet)
+            self.mutex.lock()
+            self.json_file = None
+            self.mutex.unlock()
+
+    def update_packets(self):
+        for _ in range(3):
+            packet = pb.pusPacket_t()
+            if pb.pusError_t.PUS_NO_ERROR == pb.pus_notify_readTm(packet):  # Comprobar si null
+                self.signal.throw(packet)
+
+    def load_test(self, json_file):
+        self.mutex.lock()
+        self.json_file = json_file
+        if json_file is not None:
+            self.json_file_loaded.wakeAll()
+        self.mutex.unlock()
 
     # @Slot(pb.pusPacket_t)
     # def add(self, packet):

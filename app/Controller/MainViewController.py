@@ -53,6 +53,7 @@ class MainViewController(object):
         self.view.window.actionDelete_filter.triggered.connect(self.deactivate_filter_callback)
         self.view.window.actionSave_as.triggered.connect(self.open_savefile_window_callback)
         self.view.window.actionLoad.triggered.connect(self.open_openfile_window_callback)
+        self.view.window.actionLoad_TCs.triggered.connect(self.load_tcs_callback)
         self.view.set_close_event(self.close_event_callback)
         self.model.table.onClear = self.clear_qtable_callback
         self.model.table.onChange = self.add_elem
@@ -143,6 +144,20 @@ class MainViewController(object):
             self.model.table.append([i]+list(elem)+[None]) # Revisar
 
         self.__is_not_used__()
+
+    def load_tcs_callback(self):
+        file = QtGui.QFileDialog.getOpenFileName()
+        if file is None:
+            return
+
+        file = file[0]
+        if file[-5:] != ".json":
+            msg_box = QtGui.QMessageBox()
+            msg_box.setText('Please select a json file')
+            msg_box.exec_()
+        self.thread.load_test(file)
+        #execute_tcs_thread = TestThread(self.model, file)
+        #execute_tcs_thread.start()
 
     def close_event_callback(self, event):
         try:
