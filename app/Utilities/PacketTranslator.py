@@ -91,6 +91,8 @@ class PacketTranslator(object):
         elif srvc_type_id == 19:
             if msg_type_id == 1:
                 jsn["data"]["user_data"]["src_data"] = self.tc_19_1_get_data(pack)
+                print("-----------------------------")
+                print(jsn["data"]["user_data"]["src_data"])
             else:
                 jsn["data"]["user_data"]["src_data"] = self.tc_19_2_4_5_get_data(pack)
         elif srvc_type_id == 20:
@@ -618,8 +620,7 @@ class PacketTranslator(object):
         pb.pus_tc_19_1_getAction(packet_reduced, packet)
         data_packet = pb.pusPacket_t()
         pb.pus_packetReduced_createPacketFromPacketReduced(data_packet, packet_reduced)
-        event_id = int()
-        pb.pus_tc_19_X_getEventId(event_id, packet)
+        event_id = pb.pus_tc_19_X_getEventId(packet)
         data["event_id"] = event_id
         data["request"] = self.packet2json(data_packet)
         return data

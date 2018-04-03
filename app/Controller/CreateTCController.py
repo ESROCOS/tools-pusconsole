@@ -285,14 +285,14 @@ class CreateTCController(object):
             pb.pus_tc_18_22_createStopObcpEngineRequest(packet, apid, seq)
         elif svc == 19:
             if msg == 1:
-                scndpacket = self.open_add_tc_window(False)
+                scndpacket, event = self.open_add_tc_window(False)
                 if scndpacket is None:
                     self.view.window.msgComboBox.setCurrentIndex(0)
                     return None, None
                 else:
-                    pb.pus_tc_19_1_createAddEventActionDefinitionsRequest(packet, apid, seq, 0, scndpacket)
+                    pb.pus_tc_19_1_createAddEventActionDefinitionsRequest(packet, apid, seq, event, scndpacket)
             elif msg == 2:
-                print(pb.pus_tc_19_2_createDeleteEventActionDefinitionsRequest(packet, apid, seq, 0))
+                pb.pus_tc_19_2_createDeleteEventActionDefinitionsRequest(packet, apid, seq, 0)
             elif msg == 4:
                 pb.pus_tc_19_4_createEnableEventActionDefinitions(packet, apid, seq, 0)
             elif msg == 5:

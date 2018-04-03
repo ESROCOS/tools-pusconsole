@@ -10,7 +10,7 @@ class MakoTranslate(object):
         self.version = {"V0": 0, "V1": 1, "INVALID_VERSION": 15}
         self.st3_12_params = dict()
         self.st20_params = dict()
-
+        self.st5_events = dict()
         param_id = 0
         read_value = " "
         while read_value is not None:
@@ -26,9 +26,15 @@ class MakoTranslate(object):
             self.st3_12_params[read_value] = param_id
             param_id += 1
             read_value = pb.pus_st03_getHkReportInfoName(0, param_id)
-            print(read_value)
 
-        self.values = [self.version, self.st3_12_params, self.st20_params]
+        param_id = 0
+        read_value = pb.pus_st05_getEventName(param_id)
+        while read_value is not None:
+            self.st5_events[read_value] = param_id
+            param_id += 1
+            read_value = pb.pus_st05_getEventName(param_id)
+
+        self.values = [self.version, self.st3_12_params, self.st20_params, self.st5_events]
 
         self.template_values = ""
         self.__create_value_string__()

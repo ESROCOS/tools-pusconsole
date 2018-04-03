@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'AddTCView.ui'
 #
-# Created: Wed Mar 21 12:04:04 2018
+# Created: Tue Apr  3 11:38:38 2018
 #      by: pyside-uic 0.2.15 running on PySide 1.2.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -54,6 +54,12 @@ class Ui_AddTCView(object):
         self.scheduleLbl = QtGui.QLabel(AddTCView)
         self.scheduleLbl.setGeometry(QtCore.QRect(30, 103, 61, 20))
         self.scheduleLbl.setObjectName("scheduleLbl")
+        self.eventIdLbl = QtGui.QLabel(AddTCView)
+        self.eventIdLbl.setGeometry(QtCore.QRect(35, 103, 61, 17))
+        self.eventIdLbl.setObjectName("eventIdLbl")
+        self.eventIdLineEdit = QtGui.QLineEdit(AddTCView)
+        self.eventIdLineEdit.setGeometry(QtCore.QRect(100, 100, 131, 27))
+        self.eventIdLineEdit.setObjectName("eventIdLineEdit")
 
         self.retranslateUi(AddTCView)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("accepted()"), AddTCView.accept)
@@ -69,4 +75,5 @@ class Ui_AddTCView(object):
         self.pckSecHeaderLbl.setText(QtGui.QApplication.translate("AddTCView", "Packet secondary header", None, QtGui.QApplication.UnicodeUTF8))
         self.srcDataLbl.setText(QtGui.QApplication.translate("AddTCView", "Source data", None, QtGui.QApplication.UnicodeUTF8))
         self.scheduleLbl.setText(QtGui.QApplication.translate("AddTCView", "Schedule", None, QtGui.QApplication.UnicodeUTF8))
+        self.eventIdLbl.setText(QtGui.QApplication.translate("AddTCView", "Event id", None, QtGui.QApplication.UnicodeUTF8))
 

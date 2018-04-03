@@ -20,16 +20,20 @@ class AddTCView(object):
         self.view = QtGui.QDialog()
         self.window = Ui_AddTCView()
         self.window.setupUi(self.view)
+        self.is_19_svc = False
         if show_time:
             self.window.parentTCLbl.setText("st14 telecommand")
             now = QtCore.QDateTime.currentDateTime()
 
             self.window.dateTimeEdit.setDateTime(now)
+            self.window.eventIdLbl.setHidden(True)
+            self.window.eventIdLineEdit.setHidden(True)
 
         else:
             self.window.parentTCLbl.setText("st19 telecommand")
             self.window.scheduleLbl.setHidden(True)
             self.window.dateTimeEdit.setHidden(True)
+            self.is_19_svc = True
 
         self.extra_customization()
         self.view.resizeEvent = self.resize_elements
@@ -138,6 +142,12 @@ class AddTCView(object):
 
     def get_date_time(self):
         return int(self.window.dateTimeEdit.dateTime().toPython().timestamp())
+
+    def get_event_id(self):
+        return self.window.eventIdLineEdit.text()
+
+    def is_svc_19(self):
+        return self.is_19_svc
 
     def destroy(self):
         self.view.destroy()

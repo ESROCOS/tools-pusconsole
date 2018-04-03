@@ -164,17 +164,20 @@ class AddTCController(object):
         pck_sec_header, src_data = self.view.get_tc_text()
         pck_sec_header = json.loads(makoTranslate.replace(pck_sec_header))
         src_data = json.loads(makoTranslate.replace(src_data))
-        print("----------- aqui ----------------------")
-        print(self.command)
-        print("----------- ----------------------")
         self.command["data"]["pck_sec_head"] = pck_sec_header
         self.command["data"]["user_data"]["src_data"] = src_data
         if code == 1:
             packet = packet_translator.json2packet(self.command)
-            print("Devuelvo 1")
-            return packet, self.view.get_date_time()
+            if self.view.is_svc_19():
+                extra_val = self.view.get_event_id()
+                try:
+                    extra_val = int(extra_val)
+                except ValueError as e:
+                    extra_val = pb.pus_st05_getEventId(extra_val)
+            else:
+                extra_val = self.view.get_date_time()
+            return packet, extra_val
         else:
-            print("Devuelvo 2")
             return None, None
 
     def destroy(self):
