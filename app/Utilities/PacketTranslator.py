@@ -57,7 +57,7 @@ class PacketTranslator(object):
             msg_type_id = 2
 
         jsn["data"]["user_data"] = collections.OrderedDict()
-        jsn["data"]["user_data"] = {"src_data": {}, "pack_error_ctrl": 0}
+        jsn["data"]["user_data"]["src_data"] = collections.OrderedDict()
 
         if srvc_type_id == 1:  # If it's a request verification packet
             jsn["data"]["user_data"]["src_data"] = self.tm_1_x_get_data(pack)

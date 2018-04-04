@@ -13,7 +13,7 @@ class ValidateJson(object):
         :param packet: The packet to be checked
         :except: This method raises an exception when the packet is not correct
         """
-        dir = "schemas/"
+        dir = "Schemas/"
         svc = packet["data"]["pck_sec_head"]["msg_type_id"]["service_type_id"]
         msg = packet["data"]["pck_sec_head"]["msg_type_id"]["msg_subtype_id"]
 
@@ -71,7 +71,7 @@ class ValidateJson(object):
     def __validate__(packet: dict, schema: str):
         """
         This method validates the packet in json format according to the jsonschema
-        defined in the schemas file
+        defined in the Schemas file
         :param packet: The packet to be validated
         :param schema: The jsonschema of the packet
         :except: This method raises an exception when the packet

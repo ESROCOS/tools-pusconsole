@@ -188,8 +188,11 @@ class CreateTCController(object):
         if not ok:
             return
 
-        data_section = json.loads(mt.replace(self.view.get_tc_text()))
-        self.command["data"] = data_section
+        pck_sec_header, src_data = self.view.get_tc_text()
+        pck_sec_header = json.loads(mt.replace(pck_sec_header))
+        src_data = json.loads(mt.replace(src_data))
+        self.command["data"]["pck_sec_head"] = pck_sec_header
+        self.command["data"]["user_data"]["src_data"] = src_data
         d.insert_db("INSERT INTO history VALUES(?, ?)", [[save_name, json.dumps(self.command)]])
         self.show_history()
 

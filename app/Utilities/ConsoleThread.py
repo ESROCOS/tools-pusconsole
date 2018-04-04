@@ -1,6 +1,9 @@
 from PySide.QtCore import QObject, Signal, Slot
 from PySide.QtCore import QThread, QWaitCondition, QMutex, QTimer
+
 from . import PacketTranslator
+from Macros import render
+
 import json, sys, os
 lib_path = os.path.join('/home/esrocos/esrocos-ws-pus/tools-libpus/debug/pylib')
 sys.path.append(lib_path)
@@ -76,7 +79,10 @@ class PusThread(QThread):
             pt = PacketTranslator()
             if file is not None:
                 with open(file) as jfile:
-                    activities = json.loads(jfile.read())[ACTIVITIES_TAG]
+                    jsondata = jfile.read()
+                    jsondata = render(jsondata)
+                    print(jsondata)
+                    activities = json.loads(jsondata)[ACTIVITIES_TAG]
                     for activity in activities:
                         interval = activity[INTERVAL_TAG]
                         self.sleep(interval)
