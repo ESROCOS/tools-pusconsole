@@ -79,9 +79,7 @@ class PusThread(QThread):
             pt = PacketTranslator()
             if file is not None:
                 with open(file) as jfile:
-                    jsondata = jfile.read()
-                    jsondata = render(jsondata)
-                    print(jsondata)
+                    jsondata = render(jfile.read())
                     activities = json.loads(jsondata)[ACTIVITIES_TAG]
                     for activity in activities:
                         interval = activity[INTERVAL_TAG]
