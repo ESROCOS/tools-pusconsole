@@ -115,7 +115,6 @@ class CreateTCController(object):
             msg_cbox = self.view.window.msgComboBox
             svc_index = svc_cbox.findData(svc)
             svc_cbox.setCurrentIndex(svc_index)
-            #svc_combobox_changed_callback(svc_index)
             msg_index = msg_cbox.findData(msg)
             msg_cbox.setCurrentIndex(msg_index)
 

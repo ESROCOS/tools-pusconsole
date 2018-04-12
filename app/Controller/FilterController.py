@@ -31,6 +31,7 @@ class FilterController(object):
         the window once the filter is already defined. The filter is saved
         and lately applied
         """
+        SPLIT_CHRS = ", "
         type_combo_box = self.view.window.typeComboBox
         type = type_combo_box.itemData(type_combo_box.currentIndex())
 
@@ -39,13 +40,13 @@ class FilterController(object):
             if svc_text == "":
                 svc = 0
             else:
-                svc = int(svc_text)
+                svc = list(map(int, svc_text.split(SPLIT_CHRS)))
 
             msg_text = self.view.window.msgIdLineEdit.text()
             if msg_text == "":
                 msg = 0
             else:
-                msg = int(msg_text)
+                msg = list(map(int, msg_text.split(SPLIT_CHRS)))
 
             self.model.set_filter_options(type, svc, msg)
             self.view.view.accept()

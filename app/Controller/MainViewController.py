@@ -155,7 +155,8 @@ class MainViewController(object):
             msg_box = QtGui.QMessageBox()
             msg_box.setText('Please select a .json.mako file')
             msg_box.exec_()
-        self.thread.load_test(file)
+        else:
+            self.thread.load_test(file)
 
     def close_event_callback(self, event):
         try:

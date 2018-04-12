@@ -43,7 +43,3 @@ class Macros:
         }
 
         return name + json.dumps(data, indent=8)
-
-if __name__ == "__main__":
-    print(Macros.primary_header_defaults(10))
-    print(Macros.acks(1,0,1,0))

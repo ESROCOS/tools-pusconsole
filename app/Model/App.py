@@ -138,9 +138,9 @@ class App(object):
             if type_ != "":
                 aux = e if e[1] == type_ else None
             if svc != 0 and aux is not None:
-                aux = aux if aux[2] == svc else None
+                aux = aux if aux[2] in svc else None
             if msg != 0 and aux is not None:
-                aux = aux if aux[3] == msg else None
+                aux = aux if aux[3] in msg else None
             return aux is not None
         return True
 
