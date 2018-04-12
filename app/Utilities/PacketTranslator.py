@@ -649,8 +649,7 @@ class PacketTranslator(object):
         """
         data = dict()
         event_id = int()
-        pb.pus_tc_19_X_getEventId(event_id, packet) # REVISAR POR SI DA PROBLEMA EL CAMBIO DE ESE ENTERO
-        data["event_id"] = event_id
+        data["event_id"] = pb.pus_tc_19_X_getEventId(packet)
         return data
 
     @staticmethod
