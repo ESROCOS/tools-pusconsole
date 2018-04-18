@@ -36,7 +36,7 @@ class MainViewController(object):
         """
         self.model = model
         self.view = view
-        self.thread = PusThread(self.model)
+        self.thread = PusThread(self, self.model)
         self.thread.start()
         self.opened_windows = []
         self.set_callbacks()
@@ -69,15 +69,19 @@ class MainViewController(object):
         self.opened_windows.append(create_tc_controller)
         create_tc_controller.show()
 
-    def open_filter_callback(self):
+    @Slot(list)
+    def open_filter_callback(self, filter_index=None):
         """
         This method opens the Create Telecommand Window
         """
-        self.__is_not_used__()
-        filter_view = FilterView()
-        filter_model = FilterModel()
-        filter_controller = FilterController(filter_model, filter_view)
-        filtered_index = self.model.set_filter(filter_controller.show())
+        if filter_index is None:
+            self.__is_not_used__()
+            filter_view = FilterView()
+            filter_model = FilterModel()
+            filter_controller = FilterController(filter_model, filter_view)
+            filtered_index = self.model.set_filter(filter_controller.show())
+        else:
+            filtered_index = filter_index
 
         qtable = self.view.window.packagesTable
 

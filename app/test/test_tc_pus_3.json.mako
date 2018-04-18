@@ -55,4 +55,9 @@
       }
     }
   }
+  {
+    "interval": 5,
+    "comment": "",
+    "action": ${actions.save_database()}
+  }
 ]}

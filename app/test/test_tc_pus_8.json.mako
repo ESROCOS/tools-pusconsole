@@ -1,6 +1,11 @@
 { "activities": [
   {
     "interval": 0,
+    "action": "setfilter",
+    "params": {"type": "", "svc": [17], "msg": 0}
+  },
+  {
+    "interval": 0,
     "packet": {
       ${macros.primary_header_defaults()},
       "data": {
@@ -32,5 +37,10 @@
         }
       }
     }
+  },
+  {
+    "interval": 1,
+    "action": "savedb",
+    "params": "dump_test_st17.db"
   }
 ]}

@@ -1,6 +1,6 @@
 { "activities": [
   {
-    "interval": 1,
+    "interval": 0,
     "packet": {
       ${macros.primary_header_defaults()},
       "data": {
@@ -19,7 +19,7 @@
     }
   },
   {
-    "interval": 1,
+    "interval": 2,
     "packet": {
       ${macros.primary_header_defaults()},
       "data": {

@@ -539,7 +539,7 @@ class PacketTranslator(object):
         id = data["obcp_id"]
         code = data["obcpcode"]
         pb.pus_tc_18_X_setObcpId(packet, id)
-        pb.pus_tc_18_1_setObcpCode(packet, code)
+        pb.pus_tc_18_1_setObcpCode(packet, code, len(code))
         return packet
 
     @staticmethod
@@ -649,6 +649,7 @@ class PacketTranslator(object):
         """
         data = dict()
         event_id = int()
+
         data["event_id"] = pb.pus_tc_19_X_getEventId(packet)
         return data
 
