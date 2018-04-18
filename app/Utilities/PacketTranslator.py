@@ -256,7 +256,7 @@ class PacketTranslator(object):
         elif (svc, msg) == (17, 1):
             pb.pus_tc_17_1_createConnectionTestRequest(packet, 0, 0)
         elif (svc, msg) == (18, 1):
-            pb.pus_tc_18_1_createLoadObcpDirectRequest(packet, 0, 0, "", [], 0)
+            pb.pus_tc_18_1_createLoadObcpDirectRequest(packet, 0, 0, "", [1], 1)
         elif (svc, msg) == (18, 2):
             pb.pus_tc_18_2_createUnloadObcpRequest(packet, 0, 0, "")
         elif (svc, msg) == (18, 3):
@@ -530,15 +530,14 @@ class PacketTranslator(object):
         data = dict()
         obcpid = str()
         data["obcp_id"] = pb.pus_tc_18_X_getObcpId(obcpid, packet)
-        obcpcode = str()
+        obcpcode = ""
         data["obcpcode"] = pb.pus_tc_18_1_getObcpCode(obcpcode, packet)
         return data
 
     @staticmethod
     def tc_18_1_set_data(packet, data):
         id = data["obcp_id"]
-        code = data["obcpcode"].replace("\\x", "")
-        code = bytes.fromhex(code)
+        code = data["obcpcode"]
         pb.pus_tc_18_X_setObcpId(packet, id)
         pb.pus_tc_18_1_setObcpCode(packet, code, len(code))
         return packet

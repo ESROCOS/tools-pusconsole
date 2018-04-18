@@ -91,7 +91,7 @@
               "type": "object", 
               "properties": {
                 "obcpcode": {
-                  "type": "string"
+                  "type": "array"
                 },
                 "obcp_id": {
                   "type": "string"
