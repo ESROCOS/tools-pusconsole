@@ -1,4 +1,4 @@
-from Utilities.MyTable import Table
+from Utilities import Table
 from Utilities import PacketTranslator
 from PySide.QtCore import Slot
 import os, json, sys, time
@@ -101,6 +101,7 @@ class App(object):
         This method sets a filter and applies it to the table
         :param filter_: The filter to be applied
         """
+        print(filter_)
         self.currentFilter = filter_
         return self.apply_filter()
 

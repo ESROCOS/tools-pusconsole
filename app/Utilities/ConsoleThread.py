@@ -1,7 +1,9 @@
 from PySide.QtCore import QObject, Signal, Slot
 from PySide.QtCore import QThread, QWaitCondition, QMutex, QTimer
 
-from . import PacketTranslator, MakoTranslate
+from . import PacketTranslator, MakoTranslate, Database
+from .TestTags import TestTags
+from Model.FilterModel import FilterModel
 
 import json, sys, os
 lib_path = os.path.join('/home/esrocos/esrocos-ws-pus/tools-libpus/debug/pylib')
@@ -9,7 +11,27 @@ sys.path.append(lib_path)
 import pusbinding as pb
 
 
-class MySignal(QObject):
+class AddTableSignal(QObject):
+    """
+    This class overrides a QObject to be
+    able to emit custom signals
+    """
+    signal = Signal(dict)
+
+    def __init__(self):
+        QObject.__init__(self)
+
+    def throw(self, elem):
+        """
+        This method emits the signal object defined
+        inside the class
+        :param elem: The element that will be emited with
+        the signal
+        """
+        self.signal.emit(elem)
+
+
+class FilterTableSignal(QObject):
     """
     This class overrides a QObject to be
     able to emit custom signals
@@ -40,7 +62,7 @@ class PusThread(QThread):
     packets from a json file.
 
     """
-    def __init__(self, model):
+    def __init__(self, controller, model):
         """
         This is the constructor of the class
         :param file: The json file where the packets are defined
@@ -48,8 +70,11 @@ class PusThread(QThread):
         """
         QThread.__init__(self)
         self.model = model
-        self.signal = MySignal()
-        self.signal.signal.connect(self.model.add)
+        self.controller = controller
+        self.add_table_signal = AddTableSignal()
+        self.add_table_signal.signal.connect(self.model.add)
+        self.filter_table_signal = AddTableSignal()
+        self.filter_table_signal.signal.connect(self.controller.open_filter_callback)
         self.json_file = None
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_packets)
@@ -63,9 +88,6 @@ class PusThread(QThread):
         seconds between packet and packet according
         to the interval defined in the json file.
         """
-        ACTIVITIES_TAG = "activities"
-        INTERVAL_TAG = "interval"
-        PACKET_TAG = "packet"
 
         self.timer.start(1000)
 
@@ -80,14 +102,32 @@ class PusThread(QThread):
             if file is not None:
                 with open(file) as jfile:
                     jsondata = mt.replace(jfile.read())
-                    activities = json.loads(jsondata)[ACTIVITIES_TAG]
+                    activities = json.loads(jsondata)[TestTags.ACTIVITIES_TAG]
                     for activity in activities:
-                        interval = activity[INTERVAL_TAG]
+                        interval = activity[TestTags.INTERVAL_TAG]
                         self.sleep(interval)
-                        if PACKET_TAG in activity:
-                            packet = pt.json2packet(activity[PACKET_TAG])
+                        if TestTags.PACKET_TAG in activity:
+                            packet = pt.json2packet(activity[TestTags.PACKET_TAG])
                             pb.pus_notify_sendPacket(packet)
-                            self.signal.throw(packet)
+                            self.add_table_signal.throw(packet)
+                        elif TestTags.ACTIONS_TAG in activity:
+                            if activity[TestTags.ACTIONS_TAG] == TestTags.SAVEDB_TAG:
+                                file = activity[TestTags.PARAMS_TAG]
+
+                                d = Database(file)
+                                d.create_dump_table()
+                                packages = [tuple(e[1:-1]) for e in self.model.table]
+
+                                d.insert_db("INSERT INTO packages VALUES(?,?,?,?,?,?,?,?,?,?)", packages)
+
+                            elif activity[TestTags.ACTIONS_TAG] == TestTags.SETFILTER_TAG:
+                                filter_ = FilterModel()
+                                type_ = activity[TestTags.PARAMS_TAG]["type"]
+                                svc = activity[TestTags.PARAMS_TAG]["svc"]
+                                msg = activity[TestTags.PARAMS_TAG]["msg"]
+                                filter_.set_filter_options(type_, svc, msg)
+                                filter_index = self.model.set_filter(filter_.get_filter_options())
+                                self.filter_table_signal.throw(filter_index)
             self.mutex.lock()
             self.json_file = None
             self.mutex.unlock()
@@ -96,7 +136,7 @@ class PusThread(QThread):
         for _ in range(3):
             packet = pb.pusPacket_t()
             if pb.pusError_t.PUS_NO_ERROR == pb.pus_notify_readTm(packet):  # Comprobar si null
-                self.signal.throw(packet)
+                self.add_table_signal.throw(packet)
 
     def load_test(self, json_file):
         self.mutex.lock()
@@ -104,14 +144,3 @@ class PusThread(QThread):
         if json_file is not None:
             self.json_file_loaded.wakeAll()
         self.mutex.unlock()
-
-    # @Slot(pb.pusPacket_t)
-    # def add(self, packet):
-    #     """
-    #     This method adds an element to the table model
-    #     :param packet: The element to be added
-    #     :return:
-    #     """
-    #     pt = PacketTranslator()
-    #     elem = pt.packet2json(packet)
-    #     self.model.add(elem, packet)

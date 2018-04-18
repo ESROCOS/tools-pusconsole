@@ -30,4 +30,6 @@ class FilterModel(object):
         """
         if self.type == "" and self.subsvc == 0 and self.submsg == 0:
             return None
-        return {"type": self.type, "svc": self.subsvc, "msg": self.submsg}
+        filtr = {"type": self.type, "svc": self.subsvc, "msg": self.submsg}
+        print(filtr)
+        return filtr
