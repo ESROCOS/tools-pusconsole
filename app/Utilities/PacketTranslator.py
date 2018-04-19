@@ -343,9 +343,10 @@ class PacketTranslator(object):
         data["hk_param_report"]["params"] = dict()
         num_param = pb.pus_tm_3_25_getNumParameters(packet)
         for i in range(num_param):
+            j = pb.pus_st03_getHkInfoNameFromReport(report_id, i)
             param = pb.pus_tm_3_25_getParameterValue(packet, i)
-            param_name = pb.pus_st03_getHkReportInfoName(report_id, i)
-            param_type = pb.pus_st03_getHkReportInfoType(report_id, i)
+            param_name = pb.pus_st03_getHkReportInfoName(j)
+            param_type = pb.pus_st03_getHkReportInfoType(j)
             casted_param = "Error"
             if pb.getError() == pb.pusError_t.PUS_NO_ERROR:
                 if param_type == pb.pusParamType_t.PUS_INT32:
