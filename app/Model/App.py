@@ -24,7 +24,7 @@ class App(object):
         self.currentFilter = None
         self.elem_count = 0
 
-        with open('apid.json', 'r') as json_apid:
+        with open('config.json', 'r') as json_apid:
             apid_value = json.load(json_apid)['apid']
             pb.pus_initApidInfo_null(self.tc_apid, apid_value)
 

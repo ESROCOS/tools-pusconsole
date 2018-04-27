@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'CodeView.ui'
 #
-# Created: Tue Apr  3 11:38:39 2018
+# Created: Wed Apr 25 11:24:58 2018
 #      by: pyside-uic 0.2.15 running on PySide 1.2.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -25,8 +25,11 @@ class Ui_CodeView(object):
         self.obcpIdLbl.setGeometry(QtCore.QRect(10, 20, 68, 17))
         self.obcpIdLbl.setObjectName("obcpIdLbl")
         self.obcpIdValue = QtGui.QLineEdit(CodeView)
-        self.obcpIdValue.setGeometry(QtCore.QRect(80, 15, 321, 27))
+        self.obcpIdValue.setGeometry(QtCore.QRect(80, 15, 211, 27))
         self.obcpIdValue.setObjectName("obcpIdValue")
+        self.loadObcpFile = QtGui.QPushButton(CodeView)
+        self.loadObcpFile.setGeometry(QtCore.QRect(300, 15, 99, 27))
+        self.loadObcpFile.setObjectName("loadObcpFile")
 
         self.retranslateUi(CodeView)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("accepted()"), CodeView.accept)
@@ -36,4 +39,5 @@ class Ui_CodeView(object):
     def retranslateUi(self, CodeView):
         CodeView.setWindowTitle(QtGui.QApplication.translate("CodeView", "Code", None, QtGui.QApplication.UnicodeUTF8))
         self.obcpIdLbl.setText(QtGui.QApplication.translate("CodeView", "Obcp id:", None, QtGui.QApplication.UnicodeUTF8))
+        self.loadObcpFile.setText(QtGui.QApplication.translate("CodeView", "Load file", None, QtGui.QApplication.UnicodeUTF8))
 

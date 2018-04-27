@@ -7,3 +7,4 @@ from .ConsoleThread import PusThread
 from .DigitalClock import DigitalClock
 from .Macros import Macros
 from .TestTags import TestTags
+from .mpyToHex import convert_py_to_hex

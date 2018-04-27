@@ -89,7 +89,7 @@ class PusThread(QThread):
         to the interval defined in the json file.
         """
 
-        self.timer.start(1000)
+        self.timer.start(500)
 
         while True:
             self.mutex.lock()
@@ -133,7 +133,7 @@ class PusThread(QThread):
             self.mutex.unlock()
 
     def update_packets(self):
-        for _ in range(3):
+        for _ in range(10):
             packet = pb.pusPacket_t()
             if pb.pusError_t.PUS_NO_ERROR == pb.pus_notify_readTm(packet):  # Comprobar si null
                 self.add_table_signal.throw(packet)
